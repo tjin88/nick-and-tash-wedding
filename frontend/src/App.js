@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Start from './components/Start';
 import Navbar from './components/Navbar';
 import Welcome from './components/Welcome';
 import Rsvp from './components/Rsvp';
@@ -10,18 +11,33 @@ import Vendors from './components/Vendors';
 import './App.css';
 
 function App() {
+  const [isOpened, setIsOpened] = useState(false);
+  const [givenPlusOne, setGivenPlusOne] = useState(true);
   const [navOption, setNavOption] = useState('welcome');
+  const name = 'Tristan';
+  // const listOfNames = ['Nick Jin', 'Tash Dalton', 'Tristan Jin', 'Megan Does', 'John Doe', 'Jane Doe'];
+  const listOfNames = ['Nick Jin'];
+
+  // key = object, value = if bought
+  const registry = {
+    'Lawn Mower': false,
+    'Robot Vaccum': false,
+    'Smart Lights': true,
+    'Clothes': false,
+    'Pot Plants': true
+  };
   
   return (
     <div className="App">
-      <Navbar setNavOption={setNavOption}/>
-      { navOption === 'welcome' && <Welcome/> }
-      { navOption === 'rsvp' && <Rsvp/> }
-      { navOption === 'menu' && <Menu/> }
-      { navOption === 'schedule' && <Schedule/> }
-      { navOption === 'registry' && <Registry/> }
-      { navOption === 'photos' && <Photos/> }
-      { navOption === 'vendors' && <Vendors/> }
+      {!isOpened && <Start setIsOpened={setIsOpened} name={name}/>}
+      { isOpened && <Navbar setNavOption={setNavOption}/>}
+      { isOpened && navOption === 'welcome' && <Welcome/> }
+      { isOpened && navOption === 'rsvp' && <Rsvp listOfNames={listOfNames} givenPlusOne={givenPlusOne}/> }
+      { isOpened && navOption === 'menu' && <Menu/> }
+      { isOpened && navOption === 'schedule' && <Schedule/> }
+      { isOpened && navOption === 'registry' && <Registry initialRegistry={registry}/> }
+      { isOpened && navOption === 'photos' && <Photos/> }
+      { isOpened && navOption === 'vendors' && <Vendors/> }
     </div>
   );
 }

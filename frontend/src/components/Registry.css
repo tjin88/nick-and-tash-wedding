@@ -1,0 +1,22 @@
+.registry {
+    width: 80vw;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+
+.registry-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .registry-item.bought p {
+    text-decoration: line-through;
+    color: grey;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  

@@ -1,4 +1,4 @@
-import React, { setState } from 'react';
+import React from 'react';
 import './Navbar.css';
 
 function Navbar({ setNavOption }) {

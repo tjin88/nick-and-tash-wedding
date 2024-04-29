@@ -1,0 +1,64 @@
+.schedule .schedule-title {
+    font-weight: 700;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #000000;
+  }
+
+  @media (min-width: 991px) {
+    .schedule .schedule-column {
+      margin: 0 8vw;
+    }
+  }
+  
+  .schedule .schedule-item {
+    padding: 0 0 20px;
+    margin-top: -2px;
+    border-left: 2px solid #b5838d;
+    position: relative;
+  }
+  
+  .schedule .schedule-item h2 {
+    line-height: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-family: "Poppins", sans-serif;
+    color: #b5838d;
+    margin: 0 0 10px;
+  }
+  
+  .schedule .schedule-item h3 {
+    background: #f7f8f9;
+    padding: 5px 15px;
+    display: inline-block;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+
+  .schedule .schedule-item p {
+    margin: 0 0 10px;
+  }
+  
+  .schedule .schedule-item ul {
+    padding-left: 20px;
+  }
+  
+  .schedule .schedule-item ul li {
+    padding-bottom: 10px;
+  }
+  
+  .schedule .schedule-item:last-child {
+    padding-bottom: 0;
+  }
+  
+  .schedule .schedule-item::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50px;
+    left: -9px;
+    top: 0;
+    background: #fff;
+    border: 2px solid #b5838d;
+  }

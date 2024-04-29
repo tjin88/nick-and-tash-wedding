@@ -1,0 +1,31 @@
+.vendors-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .vendors-container h1 {
+    color: #333;
+    font-family: 'Georgia', serif;
+    margin-bottom: 16px;
+  }
+  
+  .vendors-container p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    padding: 8px 0;
+    font-family: 'Arial', sans-serif;
+  }

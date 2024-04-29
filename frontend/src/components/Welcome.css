@@ -1,0 +1,45 @@
+.welcome-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #faf4f4;
+  color: #505050;
+  font-family: 'Georgia', serif;
+}
+
+.welcome-container h1 {
+  font-size: 2.5em;
+  color: #b5838d;
+  margin-bottom: 8px;
+}
+
+.welcome-container h2 {
+  font-size: 1.5em;
+  margin-bottom: 16px;
+  color: #6d6875;
+}
+
+.welcomeCountdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  font-size: 1.2em;
+  color: #6d6875;
+}
+
+.welcomeCountdown p {
+  margin: 0 10px;
+}
+
+.welcome-photo {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.story-text {
+  font-size: 1.1em;
+  margin-top: 20px;
+  padding: 0 10%;
+  color: #6d6875;
+}
