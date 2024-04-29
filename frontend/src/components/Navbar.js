@@ -8,7 +8,7 @@ function Navbar({ setNavOption }) {
         <p>N&N</p>
       </div>
       <ul className="nav-links">
-        <li onClick={() => setNavOption("welcome")}><p>Welcome</p></li>
+        {/* <li onClick={() => setNavOption("welcome")}><p>Welcome</p></li> */}
         <li onClick={() => setNavOption("rsvp")}><p>Rsvp</p></li>
         <li onClick={() => setNavOption("menu")}><p>Menu</p></li>
         <li onClick={() => setNavOption("schedule")}><p>Schedule</p></li>

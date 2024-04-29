@@ -1,43 +1,69 @@
 .rsvp-table-container {
-    width: 80vw;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  thead {
-    background-color: #f5f5f5;
-  }
-  
-  th, td {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  input[type="text"] {
-    width: 95%;
-    padding: 5px;
-    margin: 2px 0;
-    box-sizing: border-box;
-  }
-  
-  input[type="text"]:focus {
-    border-color: #665851;
-  }
-  
-  .inputHorizontal input[type="text"] {
-    width: 48%;
-    display: inline-block;
-    margin-right: 4%;
-  }
-  
-  .inputHorizontal input[type="text"]:last-child {
-    margin-right: 0;
-  }
-  
+  text-align: center;
+  padding: 20px;
+  background-color: #faf4f4;
+  color: #505050;
+  font-family: 'Georgia', serif;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rsvp-table-container table {
+  width: 80%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.rsvp-table-container thead {
+  background-color: #b5838d;
+  color: #FFF;
+}
+
+.rsvp-table-container th, td {
+  padding: 12px 8px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+input[type="text"] {
+  width: 90%;
+  padding: 8px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: #b5838d;
+}
+
+.inputHorizontal input[type="text"] {
+  width: 48%;
+  display: inline-block;
+  margin-right: 4%;
+}
+
+.inputHorizontal input[type="text"]:last-child {
+  margin-right: 0;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #b5838d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #6d6875;
+}

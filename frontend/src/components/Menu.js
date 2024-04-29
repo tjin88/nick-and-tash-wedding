@@ -2,7 +2,7 @@ import React from 'react'
 
 function Menu() {
   return (
-    <h1>Menu</h1>
+    <h1 className='title'>Menu</h1>
   )
 }
 

@@ -13,7 +13,7 @@ import './App.css';
 function App() {
   const [isOpened, setIsOpened] = useState(false);
   const [givenPlusOne, setGivenPlusOne] = useState(true);
-  const [navOption, setNavOption] = useState('welcome');
+  const [navOption, setNavOption] = useState('rsvp');
   const name = 'Tristan';
   // const listOfNames = ['Nick Jin', 'Tash Dalton', 'Tristan Jin', 'Megan Does', 'John Doe', 'Jane Doe'];
   const listOfNames = ['Nick Jin'];
@@ -24,20 +24,38 @@ function App() {
     'Robot Vaccum': false,
     'Smart Lights': true,
     'Clothes': false,
-    'Pot Plants': true
+    'Pot Plants': true,
+    'S': false,
+    'd': false,
+    'Smart': true,
+    'Clothedds': false,
+    'Pot': true,
+    'Mower': false,
+    'Vaccum': false,
+    ' Lights': true,
+    'dddsdsdf': false,
+    'Pot adsf': true
+  };
+
+  const vendors = {
+    'Florist': 'Flowers by Jane',
+    'Photographer': 'Snap Happy Photography',
+    'Music': 'The Wedding Singers',
+    'Catering': 'Food for All',
+    'Wedding Planner': 'Plan My Wedding'
   };
   
   return (
     <div className="App">
       {!isOpened && <Start setIsOpened={setIsOpened} name={name}/>}
       { isOpened && <Navbar setNavOption={setNavOption}/>}
-      { isOpened && navOption === 'welcome' && <Welcome/> }
+      {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
       { isOpened && navOption === 'rsvp' && <Rsvp listOfNames={listOfNames} givenPlusOne={givenPlusOne}/> }
       { isOpened && navOption === 'menu' && <Menu/> }
       { isOpened && navOption === 'schedule' && <Schedule/> }
       { isOpened && navOption === 'registry' && <Registry initialRegistry={registry}/> }
       { isOpened && navOption === 'photos' && <Photos/> }
-      { isOpened && navOption === 'vendors' && <Vendors/> }
+      { isOpened && navOption === 'vendors' && <Vendors vendors={vendors}/> }
     </div>
   );
 }

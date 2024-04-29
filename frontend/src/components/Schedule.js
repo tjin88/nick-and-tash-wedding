@@ -9,8 +9,11 @@ const Schedule = (props) => {
           <h1 class="schedule-title">Schedule</h1>
           <div class="schedule-item">
             <h2>Event 1</h2>
-            <h3>October 10, 1 - 5 pm</h3>
-            <p><em>The first place - Check in ?</em></p>
+            <div className='scheduleHorizontal'>
+              <h3>October 10, 5 - 5:30 pm</h3>
+              <h3>|</h3>
+              <h3><em>Some Given Location</em></h3>
+            </div>
             <ul>              
               <li>Lil description</li>
               <li>It's a pre cool one</li>
@@ -18,8 +21,11 @@ const Schedule = (props) => {
           </div>
           <div class="schedule-item">
             <h2>Drinks</h2>
-            <h3>October 10, 5 - 5:30 pm</h3>
-            <p><em>Appy's at the bar</em></p>
+            <div className='scheduleHorizontal'>
+              <h3>October 10, 5 - 5:30 pm</h3>
+              <h3>|</h3>
+              <h3><em>Some Given Location</em></h3>
+            </div>
             <ul>
               <li>Lil description</li>
               <li>It's a pre cool one</li>
@@ -27,8 +33,11 @@ const Schedule = (props) => {
           </div>
           <div class="schedule-item">
             <h2>Main Event</h2>
-            <h3>October 10, 6 - close</h3>
-            <p><em>Some big big place</em></p>
+            <div className='scheduleHorizontal'>
+              <h3>October 10, 5 - 5:30 pm</h3>
+              <h3>|</h3>
+              <h3><em>Some Given Location</em></h3>
+            </div>
             <ul>
               <li>Big description</li>
               <li>It's really cool</li>
@@ -37,8 +46,11 @@ const Schedule = (props) => {
           </div>
           <div class="schedule-item">
             <h2>After Party</h2>
-            <h3>October 11, 12 - 12</h3>
-            <p><em>Some big big place</em></p>
+            <div className='scheduleHorizontal'>
+              <h3>October 10, 5 - 5:30 pm</h3>
+              <h3>|</h3>
+              <h3><em>Some Given Location</em></h3>
+            </div>
             <ul>
               <li>Whoot</li>
             </ul>

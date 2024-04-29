@@ -14,18 +14,20 @@ function Registry({ initialRegistry }) {
 
   return (
     <div className='registry'>
-      <h1>Registry</h1>
-      {Object.entries(registry).map(([key, value]) => (
-        <div key={key} className={`registry-item ${value ? 'bought' : ''}`}>
-          <input
-            type="checkbox"
-            checked={value}
-            onChange={() => handleCheckboxChange(key)}
-            readOnly={value}
-          />
-          <p>{key}</p>
-        </div>
-      ))}
+      <h1 className='title'>Registry</h1>
+      <ul>
+        {Object.entries(registry).map(([key, value]) => (
+          <li key={key} className={`listItem ${value ? 'bought' : ''}`} onClick={() => handleCheckboxChange(key)}>
+            <input
+              type="checkbox"
+              checked={value}
+              onChange={() => {}} // Change handler is not needed since the li onClick handles it, and this is needed because it removes a warning
+              readOnly={value}
+            />
+            {key}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
