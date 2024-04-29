@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import Welcome from './components/Welcome';
+import Rsvp from './components/Rsvp';
+import Menu from './components/Menu';
+import Schedule from './components/Schedule';
+import Registry from './components/Registry';
+import Photos from './components/Photos';
+import Vendors from './components/Vendors';
 import './App.css';
 
 function App() {
+  const [navOption, setNavOption] = useState('welcome');
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar setNavOption={setNavOption}/>
+      { navOption === 'welcome' && <Welcome/> }
+      { navOption === 'rsvp' && <Rsvp/> }
+      { navOption === 'menu' && <Menu/> }
+      { navOption === 'schedule' && <Schedule/> }
+      { navOption === 'registry' && <Registry/> }
+      { navOption === 'photos' && <Photos/> }
+      { navOption === 'vendors' && <Vendors/> }
     </div>
   );
 }
