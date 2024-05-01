@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Start from './components/Start';
 import Navbar from './components/Navbar';
-import Welcome from './components/Welcome';
+// import Welcome from './components/Welcome';
 import Rsvp from './components/Rsvp';
 import Menu from './components/Menu';
 import Schedule from './components/Schedule';
