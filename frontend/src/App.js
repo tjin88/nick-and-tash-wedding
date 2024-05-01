@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Start from './components/Start';
 import Navbar from './components/Navbar';
 // import Welcome from './components/Welcome';
@@ -45,38 +45,28 @@ function App() {
     'Wedding Planner': 'Plan My Wedding'
   });
 
-  const [photos, setPhotos] = useState([
-    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
-    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
-    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
-    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
-    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
-    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
-    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
-    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
-    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
-    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
-    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
-    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-  ]);
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/photos');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setPhotos(data.map(photo => photo.url)); // Adjust according to your actual data structure
+      } catch (error) {
+        alert('Error fetching photos:', error.message);
+        // setError(error.message);
+      }
+      setLoading(false);
+    };
+
+    fetchPhotos();
+  }, []);
   
   return (
     <div className="App">
