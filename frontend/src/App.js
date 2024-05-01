@@ -19,7 +19,7 @@ function App() {
   const listOfNames = ['Nick Jin'];
 
   // key = object, value = if bought
-  const registry = {
+  const [registry, setRegistry] = useState({
     'Lawn Mower': false,
     'Robot Vaccum': false,
     'Smart Lights': true,
@@ -35,15 +35,48 @@ function App() {
     ' Lights': true,
     'dddsdsdf': false,
     'Pot adsf': true
-  };
+  });
 
-  const vendors = {
+  const [vendors, setVendors] = useState({
     'Florist': 'Flowers by Jane',
     'Photographer': 'Snap Happy Photography',
     'Music': 'The Wedding Singers',
     'Catering': 'Food for All',
     'Wedding Planner': 'Plan My Wedding'
-  };
+  });
+
+  const [photos, setPhotos] = useState([
+    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
+    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
+    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
+    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
+    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
+    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
+    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
+    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
+    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://drive.google.com/thumbnail?id=1W31NVmrreZgVN4RpXW3ZvLYmCwUgZVUt&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1zZlxOB2Y-FAt5ZiJrSpPih542da8RJj_&sz=w1000',
+    'https://drive.google.com/thumbnail?id=1F_zAFeMgWAbyTasg7S7mttH-kyMVX6kM&sz=w1000',
+    'https://drive.google.com/thumbnail?id=16BPQKTiedGpyKO-h8cuc7GzKV4Zq5091&sz=w1000',
+    'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://images.pexels.com/photos/1858115/pexels-photo-1858115.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+  ]);
   
   return (
     <div className="App">
@@ -54,7 +87,7 @@ function App() {
       { isOpened && navOption === 'menu' && <Menu/> }
       { isOpened && navOption === 'schedule' && <Schedule/> }
       { isOpened && navOption === 'registry' && <Registry initialRegistry={registry}/> }
-      { isOpened && navOption === 'photos' && <Photos/> }
+      { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos}/> }
       { isOpened && navOption === 'vendors' && <Vendors vendors={vendors}/> }
     </div>
   );

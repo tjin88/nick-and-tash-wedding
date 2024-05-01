@@ -1,13 +1,13 @@
 import React from 'react';
 import './Schedule.css';
 
-const Schedule = (props) => {
+function Schedule (props) {
   return (
-    <div class="schedule">
-      <div class="row">
-        <div class="schedule-column col-lg-10">
-          <h1 class="schedule-title">Schedule</h1>
-          <div class="schedule-item">
+    <div className="schedule">
+      <div className="row">
+        <div className="schedule-column col-lg-10">
+          <h1 className="schedule-title">Schedule</h1>
+          <div className="schedule-item">
             <h2>Event 1</h2>
             <div className='scheduleHorizontal'>
               <h3>October 10, 5 - 5:30 pm</h3>
@@ -19,7 +19,7 @@ const Schedule = (props) => {
               <li>It's a pre cool one</li>
             </ul>
           </div>
-          <div class="schedule-item">
+          <div className="schedule-item">
             <h2>Drinks</h2>
             <div className='scheduleHorizontal'>
               <h3>October 10, 5 - 5:30 pm</h3>
@@ -31,7 +31,7 @@ const Schedule = (props) => {
               <li>It's a pre cool one</li>
             </ul>
           </div>
-          <div class="schedule-item">
+          <div className="schedule-item">
             <h2>Main Event</h2>
             <div className='scheduleHorizontal'>
               <h3>October 10, 5 - 5:30 pm</h3>
@@ -44,7 +44,7 @@ const Schedule = (props) => {
               <li>Whoot</li>
             </ul>
           </div>
-          <div class="schedule-item">
+          <div className="schedule-item">
             <h2>After Party</h2>
             <div className='scheduleHorizontal'>
               <h3>October 10, 5 - 5:30 pm</h3>
