@@ -9,6 +9,7 @@ import multer from 'multer';
 // Schema Imports
 import Photo from "./schemas/PhotoSchema.js";
 import Registry from "./schemas/RegistrySchema.js";
+import Vendors from "./schemas/VendorsSchema.js";
 
 // Environment Variables
 dotenv.config();
@@ -117,12 +118,12 @@ app.post('/api/registry', async (req, res) => {
   }
 });
 
-app.put('/api/registry/:id', async (req, res) => {
-  const { id } = req.params;
+app.put('/api/registry/:item', async (req, res) => {
+  const { item } = req.params;
   const { isBought } = req.body;
 
   try {
-    const updatedItem = await Registry.findByIdAndUpdate(id, { isBought }, { new: true });
+    const updatedItem = await Registry.findOneAndUpdate({ item: item }, { isBought }, { new: true });
     if (!updatedItem) {
       return res.status(404).json({ message: "Registry item not found. Failed to update item." });
     }
@@ -132,13 +133,64 @@ app.put('/api/registry/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/registry/:id', async (req, res) => {
+app.delete('/api/registry/:item', async (req, res) => {
   try {
-    const deletedItem = await Registry.findByIdAndDelete(req.params.id);
+    const deletedItem = await Registry.findOneAndDelete({ item: item });
     if (!deletedItem) {
       return res.status(404).json({ message: "Registry item not found. Failed to delete item." });
     }
     res.status(200).json({ message: "Registry item deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ############################### Vendor Routes ###############################
+app.get('/api/vendors', async (req, res) => {
+  try {
+    const items = await Vendors.find();
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/vendors', async (req, res) => {
+  const { role, name } = req.body;
+  const newVendor = new Vendors({ role, name });
+
+  try {
+    await newVendor.save();
+    res.status(201).json(newVendor);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to add Vendor to database", error });
+  }
+});
+
+app.put('/api/vendors/:name', async (req, res) => {
+  const { name } = req.params;
+  const { role } = req.body;
+
+  try {
+    const updatedItem = await Vendors.findOneAndUpdate({ name: name }, { role }, { new: true });
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Vendor not found. Failed to update Vendor." });
+    }
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to update Vendor.", error });
+  }
+});
+
+app.delete('/api/vendors/:name', async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    const deletedVendor = await Vendors.findOneAndDelete({ name: name });
+    if (!deletedVendor) {
+      return res.status(404).json({ message: "Vendor not found. Failed to delete vendor." });
+    }
+    res.status(200).json({ message: "Vendor deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

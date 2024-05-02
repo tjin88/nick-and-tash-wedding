@@ -14,28 +14,30 @@ function App() {
   const [isOpened, setIsOpened] = useState(false);
   const [givenPlusOne, setGivenPlusOne] = useState(true);
   const [navOption, setNavOption] = useState('rsvp');
+  const [isAdmin, setIsAdmin] = useState(true);
   const name = 'Tristan';
   // const listOfNames = ['Nick Jin', 'Tash Dalton', 'Tristan Jin', 'Megan Does', 'John Doe', 'Jane Doe'];
   const listOfNames = ['Nick Jin'];
 
   // key = object, value = if bought
-  const [registry, setRegistry] = useState({
-    'Lawn Mower': false,
-    'Robot Vaccum': false,
-    'Smart Lights': true,
-    'Clothes': false,
-    'Pot Plants': true,
-    'S': false,
-    'd': false,
-    'Smart': true,
-    'Clothedds': false,
-    'Pot': true,
-    'Mower': false,
-    'Vaccum': false,
-    ' Lights': true,
-    'dddsdsdf': false,
-    'Pot adsf': true
-  });
+  const [registry, setRegistry] = useState({});
+  // const [registry, setRegistry] = useState({
+  //   'Lawn Mower': false,
+  //   'Robot Vaccum': false,
+  //   'Smart Lights': true,
+  //   'Clothes': false,
+  //   'Pot Plants': true,
+  //   'S': false,
+  //   'd': false,
+  //   'Smart': true,
+  //   'Clothedds': false,
+  //   'Pot': true,
+  //   'Mower': false,
+  //   'Vaccum': false,
+  //   ' Lights': true,
+  //   'dddsdsdf': false,
+  //   'Pot adsf': true
+  // });
 
   const [vendors, setVendors] = useState({
     'Florist': 'Flowers by Jane',
@@ -87,8 +89,30 @@ function App() {
       setLoading(false);
     };
 
+    const fetchVendors = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/vendors');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        const vendorObject = data.reduce((obj, vendor) => {
+          obj[vendor.role] = vendor.name;
+          return obj;
+        }, {});
+        setVendors(vendorObject);
+      } catch (error) {
+        // TODO: Change to setError rather than alert
+        alert('Error fetching vendors:', error.message);
+        // setError(error.message);
+      }
+      setLoading(false);
+    };
+
     fetchPhotos();
     fetchRegistry();
+    fetchVendors();
   }, []);
   
   return (
@@ -99,9 +123,9 @@ function App() {
       { isOpened && navOption === 'rsvp' && <Rsvp listOfNames={listOfNames} givenPlusOne={givenPlusOne}/> }
       { isOpened && navOption === 'menu' && <Menu/> }
       { isOpened && navOption === 'schedule' && <Schedule/> }
-      { isOpened && navOption === 'registry' && <Registry initialRegistry={registry}/> }
+      { isOpened && navOption === 'registry' && <Registry initialRegistry={registry} isAdmin={isAdmin}/> }
       { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos}/> }
-      { isOpened && navOption === 'vendors' && <Vendors vendors={vendors}/> }
+      { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>
   );
 }
