@@ -57,15 +57,38 @@ function App() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setPhotos(data.map(photo => photo.url)); // Adjust according to your actual data structure
+        setPhotos(data.map(photo => photo.url));
       } catch (error) {
+        // TODO: Change to setError rather than alert
         alert('Error fetching photos:', error.message);
         // setError(error.message);
       }
       setLoading(false);
     };
 
+    const fetchRegistry = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/registry');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        const registryObject = data.reduce((obj, item) => {
+          obj[item.item] = item.isBought;
+          return obj;
+        }, {});
+        setRegistry(registryObject);
+      } catch (error) {
+        // TODO: Change to setError rather than alert
+        alert('Error fetching registry:', error.message);
+        // setError(error.message);
+      }
+      setLoading(false);
+    };
+
     fetchPhotos();
+    fetchRegistry();
   }, []);
   
   return (
