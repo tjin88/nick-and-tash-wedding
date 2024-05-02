@@ -1,7 +1,7 @@
 import React from 'react';
 import './Schedule.css';
 
-function Schedule (props) {
+function Schedule () {
   return (
     <div className="schedule">
       <div className="row">
@@ -46,6 +46,17 @@ function Schedule (props) {
           </div>
           <div className="schedule-item">
             <h2>After Party</h2>
+            <div className='scheduleHorizontal'>
+              <h3>October 10, 5 - 5:30 pm</h3>
+              <h3>|</h3>
+              <h3><em>Some Given Location</em></h3>
+            </div>
+            <ul>
+              <li>Whoot</li>
+            </ul>
+          </div>
+          <div className="schedule-item">
+            <h2>Something Else</h2>
             <div className='scheduleHorizontal'>
               <h3>October 10, 5 - 5:30 pm</h3>
               <h3>|</h3>

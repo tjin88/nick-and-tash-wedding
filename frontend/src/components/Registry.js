@@ -6,20 +6,14 @@ function Registry({ initialRegistry, isAdmin }) {
 
   const handleCheckboxChange = async (key) => {
     const updatedValue = !registry[key];
-    const newRegistry = {
-      ...registry,
-      [key]: updatedValue
-    };
+    const newRegistry = { ...registry, [key]: updatedValue };
 
     try {
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${key}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isBought: updatedValue })
       });
-
       if (!response.ok) throw new Error('Failed to update the registry item.');
       setRegistry(newRegistry);
     } catch (error) {
@@ -35,9 +29,7 @@ function Registry({ initialRegistry, isAdmin }) {
     try {
       const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/registry', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ item: itemName, isBought: false })
       });
       const newItem = await response.json();
@@ -55,7 +47,6 @@ function Registry({ initialRegistry, isAdmin }) {
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${key}`, {
         method: 'DELETE',
       });
-
       if (!response.ok) throw new Error('Failed to delete the registry item.');
 
       const { [key]: deletedItem, ...remainingItems } = registry;
@@ -68,20 +59,22 @@ function Registry({ initialRegistry, isAdmin }) {
 
   return (
     <div className='registry'>
-      <div>
+      <div className='left-side'>
         <h1 className='registry-title'>Registry</h1>
-        {isAdmin && <button onClick={handleAddItem} className='update-registry'>Add new items to Registry</button>}
+        {isAdmin && <button onClick={handleAddItem} className='update-registry'>Add new item</button>}
       </div>
-      <ul>
+      <ul className='right-side'>
         {Object.entries(registry).map(([key, value]) => (
           <li key={key} className={`listItem ${value ? 'bought' : ''}`} onClick={() => handleCheckboxChange(key)}>
-            <input
-              type="checkbox"
-              checked={value}
-              onChange={() => {}} // This is just to avoid React warnings about read-only fields without onChange handlers.
-              readOnly={value}
-            />
-            {key}
+            <div>
+              <input
+                type="checkbox"
+                checked={value}
+                onChange={() => {}} // This is just to avoid React warnings about read-only fields without onChange handlers.
+                readOnly={value}
+              />
+              {key}
+            </div>
             {isAdmin && <button onClick={() => handleDeleteItem(key)} className='delete-item'>Delete</button>}
           </li>
         ))}

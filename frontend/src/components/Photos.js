@@ -32,6 +32,7 @@ function Photos({ photos, setPhotos }) {
     }
   };
 
+  // TODO: Add delete functionality
   return (
     <div className="photo-container">
       <h1 className='title'>Photos</h1>

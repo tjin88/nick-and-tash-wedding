@@ -19,25 +19,7 @@ function App() {
   // const listOfNames = ['Nick Jin', 'Tash Dalton', 'Tristan Jin', 'Megan Does', 'John Doe', 'Jane Doe'];
   const listOfNames = ['Nick Jin'];
 
-  // key = object, value = if bought
   const [registry, setRegistry] = useState({});
-  // const [registry, setRegistry] = useState({
-  //   'Lawn Mower': false,
-  //   'Robot Vaccum': false,
-  //   'Smart Lights': true,
-  //   'Clothes': false,
-  //   'Pot Plants': true,
-  //   'S': false,
-  //   'd': false,
-  //   'Smart': true,
-  //   'Clothedds': false,
-  //   'Pot': true,
-  //   'Mower': false,
-  //   'Vaccum': false,
-  //   ' Lights': true,
-  //   'dddsdsdf': false,
-  //   'Pot adsf': true
-  // });
 
   const [vendors, setVendors] = useState({
     'Florist': 'Flowers by Jane',
@@ -47,7 +29,10 @@ function App() {
     'Wedding Planner': 'Plan My Wedding'
   });
 
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState([
+    'http://res.cloudinary.com/dzqvochvq/image/upload/v1714594750/demo/d0ggt0nnezguphxhxu0f.png',
+    'http://res.cloudinary.com/dzqvochvq/image/upload/v1714619917/demo/aaua4o0hwdllxg4qtpoc.jpg'
+  ]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

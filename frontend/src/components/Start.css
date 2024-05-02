@@ -48,7 +48,7 @@
     margin: 0 10px;
   }
   
-  button {
+  .startInvitation button {
     padding: 10px 20px;
     font-size: 1em;
     background-color: #6d6875;
@@ -60,7 +60,7 @@
     color: #ffffff;
   }
   
-  button:hover {
+  .startInvitation button:hover {
     background-color: #b5838d;
   }
   

@@ -1,6 +1,6 @@
 .vendors {
     width: 100vw;
-    padding: 20px;
+    padding: 20px 0;
     text-align: center;
     background-color: #faf4f4;
     border-radius: 10px;
@@ -33,6 +33,7 @@
   .vendorListItem {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
     padding: 10px;
     font-size: 1.25rem;
