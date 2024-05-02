@@ -52,7 +52,7 @@ function App() {
     const fetchPhotos = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/photos');
+        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/photos');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

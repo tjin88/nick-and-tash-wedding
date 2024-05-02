@@ -3,7 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 
 // Schema Imports
@@ -16,7 +16,9 @@ const PORT = process.env.PORT || 3003;
 // NODE JS SERVER SETUP ##################################################
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
 // Connect to MongoDB
 mongoose.connect(

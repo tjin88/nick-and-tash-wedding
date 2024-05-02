@@ -13,7 +13,7 @@ function Photos({ photos, setPhotos }) {
       formData.append('file', file);
 
       try {
-        const response = await fetch('/api/upload', {
+        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/upload', {
           method: 'POST',
           body: formData,
         });
