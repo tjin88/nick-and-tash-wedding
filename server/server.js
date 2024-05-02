@@ -134,6 +134,8 @@ app.put('/api/registry/:item', async (req, res) => {
 });
 
 app.delete('/api/registry/:item', async (req, res) => {
+  const { item } = req.params;
+
   try {
     const deletedItem = await Registry.findOneAndDelete({ item: item });
     if (!deletedItem) {
@@ -167,26 +169,35 @@ app.post('/api/vendors', async (req, res) => {
   }
 });
 
-app.put('/api/vendors/:name', async (req, res) => {
-  const { name } = req.params;
-  const { role } = req.body;
+app.put('/api/vendors/:previousName', async (req, res) => {
+  const { previousName } = req.params;
+  const { name, role } = req.body;
 
   try {
-    const updatedItem = await Vendors.findOneAndUpdate({ name: name }, { role }, { new: true });
-    if (!updatedItem) {
-      return res.status(404).json({ message: "Vendor not found. Failed to update Vendor." });
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (role) updateData.role = role;
+
+    const updatedVendor = await Vendors.findOneAndUpdate(
+      { name: previousName },
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedVendor) {
+      return res.status(404).json({ message: "Vendor not found. Failed to update vendor." });
     }
-    res.json(updatedItem);
+    res.json(updatedVendor);
   } catch (error) {
-    res.status(400).json({ message: "Failed to update Vendor.", error });
+    res.status(400).json({ message: "Failed to update vendor.", error });
   }
 });
 
-app.delete('/api/vendors/:name', async (req, res) => {
-  const { name } = req.params;
+app.delete('/api/vendors/:role', async (req, res) => {
+  const { role } = req.params;
 
   try {
-    const deletedVendor = await Vendors.findOneAndDelete({ name: name });
+    const deletedVendor = await Vendors.findOneAndDelete({ role: role });
     if (!deletedVendor) {
       return res.status(404).json({ message: "Vendor not found. Failed to delete vendor." });
     }
