@@ -103,6 +103,29 @@ button:hover {
   vertical-align: top;
 }
 
+.link-and-qr-code {
+  vertical-align: middle;
+  text-align: center;
+  height: 100%;
+}
+
+.link-and-qr-code a {
+  display: block;
+  margin-bottom: 10px;
+  color: #b5838d;
+  text-decoration: none;
+}
+
+.link-and-qr-code a:hover {
+  text-decoration: underline;
+}
+
+.qr-code {
+  display: inline-block;
+  padding: 5px;
+  border-radius: 4px;
+}
+
 @media (max-width: 1185px) {
   .admin-see-invites table {
     width: 95%;

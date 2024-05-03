@@ -53,6 +53,25 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// Used for security purposes
+// const verifyToken = (adminRequired = false) => (req, res, next) => {
+//   const token = req.headers.authorization;
+//   if (!token) return res.status(401).json({ message: "Unauthorized: Token not provided." });
+
+//   jwt.verify(token, SECRET, (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ message: "Unauthorized: Invalid token." });
+//     }
+
+//     if (adminRequired && !decoded.isAdmin) {
+//       return res.status(403).json({ message: "Access denied: Admin privileges required!" });
+//     }
+
+//     req.user = decoded;
+//     next();
+//   });
+// };
+
 // Routes
 app.get('/', (req, res) => {
   res.send('Yup, we are up and running :)');

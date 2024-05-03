@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import QRCode from 'qrcode.react';
 import './Rsvp.css';
 
 function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
@@ -138,6 +139,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <th>Dietary Requirements</th>
                 <th>Has RSVP'd?</th>
                 <th>Given Plus One?</th>
+                <th>Link</th>
               </tr>
             </thead>
             <tbody>
@@ -150,6 +152,10 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                       <td>{guest.dietaryRequirements}</td>
                       <td rowSpan={invite.guests.length}>{invite.hasRSVPd ? 'Yes' : 'No'}</td>
                       <td rowSpan={invite.guests.length}>{invite.givenPlusOne ? 'Yes' : 'No'}</td>
+                      <td rowSpan={invite.guests.length} className='link-and-qr-code'>
+                        <a href={`https://nick-and-tash-wedding.web.app/invite/${invite._id}`}>Link</a>
+                        <QRCode value={`https://nick-and-tash-wedding.web.app/invite/${invite._id}`} size={64} className="qr-code" />
+                      </td>
                     </>
                   )}
                   {i !== 0 && (
