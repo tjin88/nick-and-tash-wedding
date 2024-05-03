@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { io } from "socket.io-client";
 import Start from './components/Start';
 import Navbar from './components/Navbar';
 // import Welcome from './components/Welcome';
@@ -26,6 +27,38 @@ function App({ isAdmin }) {
   const [vendors, setVendors] = useState({});
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const socket = io('https://nick-and-tash-wedding.onrender.com');
+
+  useEffect(() => {
+    // Handle photo updates
+    socket.on('photo-updated', (newPhotoUrl) => {
+      setPhotos(prevPhotos => [...prevPhotos, newPhotoUrl]);
+    });
+  
+    // Handle registry updates
+    socket.on('registry-item-added', (newItem) => {
+      setRegistry(prevRegistry => ({ ...prevRegistry, [newItem.key]: newItem.isBought }));
+    });
+    
+    socket.on('registry-updated', (updatedItem) => {
+      setRegistry(prev => ({ ...prev, [updatedItem.key]: updatedItem.isBought }));
+    });
+  
+    socket.on('registry-item-deleted', (key) => {
+      setRegistry(prev => {
+        const { [key]: _, ...newState } = prev;
+        return newState;
+      });
+    });
+  
+    return () => {
+      socket.off('photo-updated');
+      socket.off('registry-item-added');
+      socket.off('registry-updated');
+      socket.off('registry-item-deleted');
+    };
+  }, []);
+  
 
   /* 
     TODO: Add security to site by verifying they are:
@@ -139,7 +172,7 @@ function App({ isAdmin }) {
       { isOpened && navOption === 'rsvp' && <Rsvp isAdmin={isAdmin} invites={invites} fetchAllInvites={fetchAllInvites} fetchInviteById={fetchInviteById} inviteId={inviteId} guests={guests} setGuests={setGuests} hasRSVPd={hasRSVPd} givenPlusOne={givenPlusOne}/> }
       { isOpened && navOption === 'menu' && <Menu/> }
       { isOpened && navOption === 'schedule' && <Schedule/> }
-      { isOpened && navOption === 'registry' && <Registry initialRegistry={registry} isAdmin={isAdmin}/> }
+      { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
       { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos}/> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>

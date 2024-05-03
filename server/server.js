@@ -218,6 +218,7 @@ app.post('/api/registry', async (req, res) => {
   try {
     await newItem.save();
     res.status(201).json(newItem);
+    io.emit('registry-item-added', { key: newItem.item, isBought: newItem.isBought });
   } catch (error) {
     res.status(400).json({ message: "Failed to add item to registry", error });
   }
@@ -233,6 +234,7 @@ app.put('/api/registry/:item', async (req, res) => {
       return res.status(404).json({ message: "Registry item not found. Failed to update item." });
     }
     res.json(updatedItem);
+    io.emit('registry-updated', { key: item, isBought: isBought });
   } catch (error) {
     res.status(400).json({ message: "Failed to update registry item", error });
   }
@@ -247,6 +249,7 @@ app.delete('/api/registry/:item', async (req, res) => {
       return res.status(404).json({ message: "Registry item not found. Failed to delete item." });
     }
     res.status(200).json({ message: "Registry item deleted successfully" });
+    io.emit('registry-item-deleted', item);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -324,10 +327,6 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('disconnect', () => {
     console.log('user disconnected');
-  });
-
-  socket.on('new-photo', (photo) => {
-    socket.broadcast.emit('photo-updated', photo);
   });
 });
 

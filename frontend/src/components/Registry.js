@@ -1,9 +1,8 @@
 // TODO: Add socket to update registry in real-time
-import React, { useState } from 'react';
+import React from 'react';
 import './Registry.css';
 
-function Registry({ initialRegistry, isAdmin }) {
-  const [registry, setRegistry] = useState(initialRegistry);
+function Registry({ registry, setRegistry, isAdmin }) {
 
   const handleCheckboxChange = async (key) => {
     const updatedValue = !registry[key];
