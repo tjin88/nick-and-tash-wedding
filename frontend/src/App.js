@@ -35,7 +35,6 @@ function App({ isAdmin }) {
 
   const fetchAllInvites = async () => {
     try {
-      // const response = await fetch('http://localhost:3003/api/all-invites');
       const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/all-invites');
       if (!response.ok) throw new Error('Failed to fetch invites');
       const data = await response.json();
@@ -48,8 +47,7 @@ function App({ isAdmin }) {
   const fetchInviteById = async () => {
     if (!inviteId) return;
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${inviteId}`);
-      // const response = await fetch(`http://localhost:3003/api/invites/${inviteId}`);
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`);
       if (!response.ok) throw new Error('Failed to fetch invite by ID');
       const data = await response.json();
       setGuests(data.guests);

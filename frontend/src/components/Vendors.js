@@ -28,7 +28,7 @@ function Vendors({ initialVendors, isAdmin }) {
     if (!window.confirm(`Are you sure you want to delete ${role}?`)) return;
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/vendors/${role}`, {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/vendors/${encodeURIComponent(role)}`, {
         method: 'DELETE'
       });
       if (!response.ok) throw new Error('Failed to delete vendor');

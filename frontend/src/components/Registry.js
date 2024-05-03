@@ -1,3 +1,4 @@
+// TODO: Add socket to update registry in real-time
 import React, { useState } from 'react';
 import './Registry.css';
 
@@ -9,7 +10,7 @@ function Registry({ initialRegistry, isAdmin }) {
     const newRegistry = { ...registry, [key]: updatedValue };
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${key}`, {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${encodeURIComponent(key)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isBought: updatedValue })
@@ -40,11 +41,12 @@ function Registry({ initialRegistry, isAdmin }) {
     }
   };
 
-  const handleDeleteItem = async (key) => {
+  const handleDeleteItem = async (event, key) => {
+    event.stopPropagation(); // Prevents the listItem onClick from being called
     if (!window.confirm(`Are you sure you want to delete "${key}"?`)) return;
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${key}`, {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${encodeURIComponent(key)}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete the registry item.');
@@ -57,7 +59,6 @@ function Registry({ initialRegistry, isAdmin }) {
     }
   };
 
-  // TODO: Add socket to update registry in real-time
   return (
     <div className='registry'>
       <div className='left-side'>
@@ -76,7 +77,7 @@ function Registry({ initialRegistry, isAdmin }) {
               />
               {key}
             </div>
-            {isAdmin && <button onClick={() => handleDeleteItem(key)} className='delete-item'>Delete</button>}
+            {isAdmin && <button onClick={(e) => handleDeleteItem(e, key)} className='delete-item'>Delete</button>}
           </li>
         ))}
       </ul>
@@ -84,4 +85,4 @@ function Registry({ initialRegistry, isAdmin }) {
   );
 }
 
-export default Registry;
+export default Registry;  

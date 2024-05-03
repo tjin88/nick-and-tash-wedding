@@ -15,7 +15,7 @@ function ValidateInvite() {
   useEffect(() => {
     const checkValidity = async () => {
       try {
-        const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/check-invite/${inviteId}`);
+        const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/check-invite/${encodeURIComponent(inviteId)}`);
         const data = await response.json();
         setIsValid(data.isValid);
       } catch (error) {

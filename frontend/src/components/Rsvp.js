@@ -52,7 +52,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         body = guests;
       }
 
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${inviteId}`, {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ guests: body })
@@ -66,6 +66,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     }
   };
 
+  // TODO: Canada vs Australia Wedding ???
   return (
     <div className="rsvp-table-container">
       <h1>RSVP</h1>

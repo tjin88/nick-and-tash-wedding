@@ -10,12 +10,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 }
 
 .rsvp-table-container table {
   border-collapse: collapse;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin: 10px 0;
+  display: block;
+  width: auto;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .rsvp-table-container thead {
@@ -24,9 +28,10 @@
 }
 
 .rsvp-table-container th, td {
-  padding: 12px 8px;
+  padding: 8px;
   border: 1px solid #ccc;
   text-align: left;
+  white-space: nowrap;
 }
 
 input[type="text"], input[type="text"]:focus {
@@ -35,11 +40,6 @@ input[type="text"], input[type="text"]:focus {
   border: 2px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-  transition: border-color 0.3s;
-}
-
-input[type="text"]:focus {
-  border-color: #b5838d;
 }
 
 .inputHorizontal input[type="text"] {
@@ -60,7 +60,6 @@ button {
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 button:hover {
@@ -75,9 +74,18 @@ button:hover {
   margin-bottom: 0;
 }
 
-.admin-see-invites table {
+.admin-see-invites {
   width: 100%;
-  border-collapse: collapse;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-see-invites table {
+  /* width: calc(100% - 40px); */
+  width: auto;
+  padding: 0 20px;
+  max-width: 100%;
 }
 
 .admin-see-invites th, .admin-see-invites td {
@@ -95,7 +103,30 @@ button:hover {
   vertical-align: top;
 }
 
-.admin-see-invites span {
-  display: inline-block;
-  margin-right: 5px;
+@media (max-width: 1185px) {
+  .admin-see-invites table {
+    width: 95%;
+    padding: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .inputHorizontal input[type="text"] {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .rsvp-table-container th, .rsvp-table-container td {
+    padding: 4px;
+    font-size: 12px;
+  }
+
+  button {
+    width: 90%;
+    margin-top: 10px;
+  }
+
+  .admin-add-invite {
+    padding: 0 5%;
+  }
 }
