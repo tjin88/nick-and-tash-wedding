@@ -106,7 +106,7 @@ app.put('/api/invites/:id', async (req, res) => {
   try {
     const updatedInvite = await Invite.findByIdAndUpdate(
       id,
-      { $set: { guests: guests, hasRSVPd: true } },
+      { $set: { guests: guests, hasRSVPd: true, givenPlusOne: false } },
       { new: true }
     );
     if (!updatedInvite) return res.status(404).json({ message: "Invite not found. Failed to update invite." });

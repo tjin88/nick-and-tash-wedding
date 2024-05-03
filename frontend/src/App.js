@@ -11,11 +11,10 @@ import Photos from './components/Photos';
 import Vendors from './components/Vendors';
 import './App.css';
 
-function App() {
+function App({ isAdmin }) {
   const [isOpened, setIsOpened] = useState(false);
   const [givenPlusOne, setGivenPlusOne] = useState(true);
   const [navOption, setNavOption] = useState('rsvp');
-  const [isAdmin, setIsAdmin] = useState(true);
   const [invites, setInvites] = useState([]);
   const [hasRSVPd, setHasRSVPd] = useState(false);
   const [guests, setGuests] = useState(["testing testing", "Guest 1", "Guest 2"]);
@@ -31,19 +30,19 @@ function App() {
       2. Invited guests
   */
 
-  useEffect(() => {
-    const fetchAllInvites = async () => {
-      try {
-        // const response = await fetch('http://localhost:3003/api/all-invites');
-        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/all-invites');
-        if (!response.ok) throw new Error('Failed to fetch invites');
-        const data = await response.json();
-        setInvites(data);
-      } catch (error) {
-        console.error('Error fetching invites:', error.message);
-      }
-    };
+  const fetchAllInvites = async () => {
+    try {
+      // const response = await fetch('http://localhost:3003/api/all-invites');
+      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/all-invites');
+      if (!response.ok) throw new Error('Failed to fetch invites');
+      const data = await response.json();
+      setInvites(data);
+    } catch (error) {
+      console.error('Error fetching invites:', error.message);
+    }
+  };
 
+  useEffect(() => {
     const fetchInviteById = async () => {
       if (!inviteId) return;
       try {
@@ -137,7 +136,7 @@ function App() {
       { !isOpened && <Start setIsOpened={setIsOpened} guests={guests}/> }
       { isOpened && <Navbar setNavOption={setNavOption}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
-      { isOpened && navOption === 'rsvp' && <Rsvp isAdmin={isAdmin} invites={invites} inviteId={inviteId} guests={guests} setGuests={setGuests} hasRSVPd={hasRSVPd} givenPlusOne={givenPlusOne}/> }
+      { isOpened && navOption === 'rsvp' && <Rsvp isAdmin={isAdmin} invites={invites} fetchAllInvites={fetchAllInvites} inviteId={inviteId} guests={guests} setGuests={setGuests} hasRSVPd={hasRSVPd} givenPlusOne={givenPlusOne}/> }
       { isOpened && navOption === 'menu' && <Menu/> }
       { isOpened && navOption === 'schedule' && <Schedule/> }
       { isOpened && navOption === 'registry' && <Registry initialRegistry={registry} isAdmin={isAdmin}/> }

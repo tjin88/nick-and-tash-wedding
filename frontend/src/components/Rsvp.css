@@ -13,7 +13,6 @@
 }
 
 .rsvp-table-container table {
-  width: 80%;
   border-collapse: collapse;
   margin-bottom: 20px;
   margin-top: 10px;
@@ -30,7 +29,7 @@
   text-align: left;
 }
 
-input[type="text"] {
+input[type="text"], input[type="text"]:focus {
   width: 90%;
   padding: 8px;
   border: 2px solid #ccc;
@@ -66,4 +65,37 @@ button {
 
 button:hover {
   background-color: #6d6875;
+}
+
+.admin-add-invite * {
+  margin-bottom: 10px;
+}
+
+.admin-add-invite *:last-child {
+  margin-bottom: 0;
+}
+
+.admin-see-invites table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-see-invites th, .admin-see-invites td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.admin-see-invites th {
+  background-color: #b5838d;
+  color: white;
+}
+
+.admin-see-invites td {
+  vertical-align: top;
+}
+
+.admin-see-invites span {
+  display: inline-block;
+  margin-right: 5px;
 }

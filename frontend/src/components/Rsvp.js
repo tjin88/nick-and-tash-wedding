@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './Rsvp.css';
 
-function Rsvp({ isAdmin, invites, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
+function Rsvp({ isAdmin, invites, fetchAllInvites, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
+  const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '' });
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
 
@@ -10,6 +11,11 @@ function Rsvp({ isAdmin, invites, inviteId, guests, setGuests, hasRSVPd, givenPl
     updatedGuests[index] = { ...updatedGuests[index], [field]: value };
     setGuests(updatedGuests);
   };
+
+  const handlePlusOneChange = (field, value) => {
+    setPlusOne(prev => ({ ...prev, [field]: value }));
+  };
+  
 
   const handleNewGuestChange = (index, field, value) => {
     const updatedNewGuests = [...newGuests];
@@ -29,6 +35,7 @@ function Rsvp({ isAdmin, invites, inviteId, guests, setGuests, hasRSVPd, givenPl
         body: JSON.stringify({ guests: newGuests, givenPlusOne: isNewGuestGivenPlusOne })
       });
       const data = await response.json();
+      fetchAllInvites();
       alert(`New invite created with ID: ${data._id}`);
     } catch (error) {
       console.error('Failed to create new invite:', error);
@@ -38,10 +45,17 @@ function Rsvp({ isAdmin, invites, inviteId, guests, setGuests, hasRSVPd, givenPl
 
   const handleRSVPUpdate = async () => {
     try {
+      let body;
+      if (givenPlusOne) {
+        body = [...guests, plusOne];
+      } else {
+        body = guests;
+      }
+
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${inviteId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guests: guests })
+        body: JSON.stringify({ guests: body })
       });
       const data = await response.json();
       alert(`RSVP updated successfully for Invite ID: ${data._id}`);
@@ -82,10 +96,29 @@ function Rsvp({ isAdmin, invites, inviteId, guests, setGuests, hasRSVPd, givenPl
               <tr>
                 <td>Plus One</td>
                 <td className="inputHorizontal">
-                  <input type="text" placeholder="First Name" className="half-width" />
-                  <input type="text" placeholder="Last Name" className="half-width" />
+                  <input 
+                    type="text" 
+                    placeholder="First Name" 
+                    className="half-width" 
+                    value={plusOne.firstName}
+                    onChange={(e) => handlePlusOneChange('firstName', e.target.value)} 
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Last Name" 
+                    className="half-width"
+                    value={plusOne.lastName}
+                    onChange={(e) => handlePlusOneChange('lastName', e.target.value)} 
+                  />
                 </td>
-                <td><input type="text" placeholder="Any dietary requirements?" /></td>
+                <td>
+                  <input 
+                    type="text" 
+                    placeholder="Any dietary requirements?"
+                    value={plusOne.dietaryRequirements}
+                    onChange={(e) => handlePlusOneChange('dietaryRequirements', e.target.value)} 
+                  />
+                </td>
               </tr>
             )}
           </tbody>
@@ -98,23 +131,33 @@ function Rsvp({ isAdmin, invites, inviteId, guests, setGuests, hasRSVPd, givenPl
           <table>
             <thead>
               <tr>
-                <th>Guests</th>
+                <th>Invite ID</th>
                 <th>Name</th>
                 <th>Dietary Requirements</th>
+                <th>Has RSVP'd?</th>
+                <th>Given Plus One?</th>
               </tr>
             </thead>
             <tbody>
-              {invites.map((invite, index) => (
-                <tr key={index}>
-                  <td>{invite._id}</td>
-                  {invite.guests.map((guest, i) => (
-                    <React.Fragment key={i}>
+              {invites.map((invite, index) => invite.guests.map((guest, i) => (
+                <tr key={`${index}-${i}`}>
+                  {i === 0 && (
+                    <>
+                      <td rowSpan={invite.guests.length}>{invite._id}</td>
                       <td>{guest.firstName} {guest.lastName}</td>
                       <td>{guest.dietaryRequirements}</td>
-                    </React.Fragment>
-                  ))}
+                      <td rowSpan={invite.guests.length}>{invite.hasRSVPd ? 'Yes' : 'No'}</td>
+                      <td rowSpan={invite.guests.length}>{invite.givenPlusOne ? 'Yes' : 'No'}</td>
+                    </>
+                  )}
+                  {i !== 0 && (
+                    <>
+                      <td>{guest.firstName} {guest.lastName}</td>
+                      <td>{guest.dietaryRequirements}</td>
+                    </>
+                  )}
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

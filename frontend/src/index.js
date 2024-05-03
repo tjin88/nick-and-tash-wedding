@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -8,10 +8,11 @@ import reportWebVitals from './reportWebVitals';
 function ValidateInvite() {
   const { inviteId } = useParams();
 
-  const [isValid, setIsValid] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkValidity = async () => {
       try {
         const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/check-invite/${inviteId}`);
@@ -26,6 +27,7 @@ function ValidateInvite() {
 
     if (inviteId === 'admin') {
       setIsValid(true);
+      setIsAdmin(true);
       setLoading(false);
     } else {
       checkValidity();
@@ -36,7 +38,7 @@ function ValidateInvite() {
     return <p>Loading...</p>;
   }
 
-  return isValid ? <App /> : <Navigate to="/invalid-invite" replace />;
+  return isValid ? <App isAdmin={isAdmin}/> : <Navigate to="/invalid-invite" replace />;
 }
 
 function InvalidInvite() {
