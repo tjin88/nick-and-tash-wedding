@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
+import { Server } from 'socket.io';
+import http from 'http';
 
 // Schema Imports
 import Invite from "./schemas/InviteSchema.js";
@@ -182,6 +184,7 @@ app.post('/api/upload-photo', upload.single('file'), async (req, res) => {
     const photo = new Photo({ url: result.url });
     await photo.save();
     res.status(201).json(photo);
+    io.emit('photo-updated', photo.url);
   } catch (error) {
     console.error("Upload Error:", error);
     res.status(500).json({ message: "Failed to upload image", error });
@@ -309,7 +312,26 @@ app.delete('/api/vendors/:role', async (req, res) => {
   }
 });
 
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ['https://nick-and-tash-wedding.web.app', 'http://localhost:3000'],
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on('new-photo', (photo) => {
+    socket.broadcast.emit('photo-updated', photo);
+  });
+});
+
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

@@ -67,8 +67,8 @@ function Registry({ initialRegistry, isAdmin }) {
       </div>
       <ul className='right-side'>
         {Object.entries(registry).map(([key, value]) => (
-          <li key={key} className={`listItem ${value ? 'bought' : ''}`} onClick={() => handleCheckboxChange(key)}>
-            <div>
+          <li key={key} className='listItem' onClick={() => handleCheckboxChange(key)}>
+            <div className={`${value ? 'bought' : ''}`}>
               <input
                 type="checkbox"
                 checked={value}

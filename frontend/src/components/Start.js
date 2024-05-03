@@ -7,8 +7,8 @@ function Start({ setIsOpened, guests }) {
   const days = Math.floor(Math.abs(weddingDate - currentDate) / (24*60*60*1000));
   const guestNames = guests.map(guest => `${guest.firstName} ${guest.lastName}`);
   const formattedGuestNames = guestNames.length > 1
-    ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`
-    : guestNames.join();
+    ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`.trim()
+    : guestNames.join().trim();
 
   return (
     <div className="startInvitation">

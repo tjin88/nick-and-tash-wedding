@@ -70,8 +70,8 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   const handleDeleteInvite = async (id, guests) => {
     const guestNames = guests.map(guest => `${guest.firstName} ${guest.lastName}`);
     const formattedGuestNames = guestNames.length > 1
-      ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`
-      : guestNames.join();
+      ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`.trim()
+      : guestNames.join().trim();
 
     if (!window.confirm(`Are you sure you want to delete the invite for ${formattedGuestNames}?`)) return;
 

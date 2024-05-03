@@ -58,25 +58,25 @@ function App({ isAdmin }) {
     }
   };
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/photos');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setPhotos(data.map(photo => photo.url));
-      } catch (error) {
-        // TODO: Change to setError rather than alert
-        console.error('Error fetching photos:', error.message);
-        // alert('Error fetching photos:', error.message);
-        // setError(error.message);
+  const fetchPhotos = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/photos');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-      setLoading(false);
-    };
+      const data = await response.json();
+      setPhotos(data.map(photo => photo.url));
+    } catch (error) {
+      // TODO: Change to setError rather than alert
+      console.error('Error fetching photos:', error.message);
+      // alert('Error fetching photos:', error.message);
+      // setError(error.message);
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     const fetchRegistry = async () => {
       setLoading(true);
       try {
@@ -140,7 +140,7 @@ function App({ isAdmin }) {
       { isOpened && navOption === 'menu' && <Menu/> }
       { isOpened && navOption === 'schedule' && <Schedule/> }
       { isOpened && navOption === 'registry' && <Registry initialRegistry={registry} isAdmin={isAdmin}/> }
-      { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos}/> }
+      { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos}/> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>
   );

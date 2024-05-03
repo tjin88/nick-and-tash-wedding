@@ -62,7 +62,7 @@
   width: calc(100% - 40px);
 }
 
-.listItem.bought {
+.listItem .bought {
   text-decoration: line-through;
   color: grey;
 }

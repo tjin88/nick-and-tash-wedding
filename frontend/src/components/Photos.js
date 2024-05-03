@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { io } from "socket.io-client";
 import './Photos.css';
 
-function Photos({ photos, setPhotos }) {
+const socket = io('https://nick-and-tash-wedding.onrender.com');
+
+function Photos({ photos, setPhotos, fetchPhotos }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadError, setUploadError] = useState('');
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  useEffect(() => {
+    socket.on('photo-updated', (newPhotoUrl) => {
+      setPhotos(prevPhotos => [...prevPhotos, newPhotoUrl]);
+    });
+
+    return () => {
+      socket.off('photo-updated');
+    };
+  }, []);
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];
