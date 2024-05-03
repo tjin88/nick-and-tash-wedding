@@ -67,6 +67,28 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     }
   };
 
+  const handleDeleteInvite = async (id, guests) => {
+    const guestNames = guests.map(guest => `${guest.firstName} ${guest.lastName}`);
+    const formattedGuestNames = guestNames.length > 1
+      ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`
+      : guestNames.join();
+
+    if (!window.confirm(`Are you sure you want to delete the invite for ${formattedGuestNames}?`)) return;
+
+    try {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      fetchAllInvites();
+      alert(`Successfully deleted invite`);
+    } catch (error) {
+      console.error('Failed to delete invite:', error);
+      alert('Failed to delete invite.');
+    }
+  };
+
   // TODO: Canada vs Australia Wedding ???
   return (
     <div className="rsvp-table-container">
@@ -140,6 +162,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <th>Has RSVP'd?</th>
                 <th>Given Plus One?</th>
                 <th>Link</th>
+                <th>Options</th>
               </tr>
             </thead>
             <tbody>
@@ -156,6 +179,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                         <a href={`https://nick-and-tash-wedding.web.app/invite/${invite._id}`}>Link</a>
                         <QRCode value={`https://nick-and-tash-wedding.web.app/invite/${invite._id}`} size={64} className="qr-code" />
                       </td>
+                      <td rowSpan={invite.guests.length} onClick={() => handleDeleteInvite(invite._id, invite.guests)}>Delete Invitation</td>
                     </>
                   )}
                   {i !== 0 && (

@@ -126,7 +126,7 @@ button:hover {
   border-radius: 4px;
 }
 
-@media (max-width: 1185px) {
+@media (max-width: 1100px) {
   .admin-see-invites table {
     width: 95%;
     padding: 0;
