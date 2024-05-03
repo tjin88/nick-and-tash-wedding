@@ -57,6 +57,7 @@ function Registry({ initialRegistry, isAdmin }) {
     }
   };
 
+  // TODO: Add socket to update registry in real-time
   return (
     <div className='registry'>
       <div className='left-side'>

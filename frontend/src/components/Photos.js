@@ -33,6 +33,7 @@ function Photos({ photos, setPhotos }) {
   };
 
   // TODO: Add delete functionality
+  // TODO: Add socket to update photos in real-time
   return (
     <div className="photo-container">
       <h1 className='title'>Photos</h1>

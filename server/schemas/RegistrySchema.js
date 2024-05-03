@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 
 const registrySchema = new mongoose.Schema({
-  item: String,
+  item: {
+    type: String,
+    required: true,
+  },
   isBought: Boolean
 });
 

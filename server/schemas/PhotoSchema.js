@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 
 const photoSchema = new mongoose.Schema({
-  url: String,
+  url: {
+    type: String,
+    required: true,
+  },
   uploadedAt: {
     type: Date,
     default: Date.now,

@@ -7,6 +7,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 
 // Schema Imports
+import Invite from "./schemas/InviteSchema.js";
 import Photo from "./schemas/PhotoSchema.js";
 import Registry from "./schemas/RegistrySchema.js";
 import Vendors from "./schemas/VendorsSchema.js";
@@ -55,6 +56,90 @@ const upload = multer({ storage: storage });
 // Routes
 app.get('/', (req, res) => {
   res.send('Yup, we are up and running :)');
+});
+
+// ############################### Security Routes ###############################
+app.get('/api/check-invite/:id', async (req, res) => {
+  try {
+    const invite = await Invite.findById(req.params.id);
+    if (!invite) {
+      res.json({ isValid: false });
+    } else {
+      res.json({ isValid: true });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error checking invite validity", error });
+  }
+});
+
+
+/* 
+  TODO: Add security to all routes by verifying they are:
+    1. Admin
+    2. Invited guests
+*/
+// ############################### Invite/RSVP Routes ###############################
+app.get('/api/all-invites', async (req, res) => {
+  try {
+    const allInvites = await Invite.find();
+    res.json(allInvites);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/invites/:id', async (req, res) => {
+  try {
+    const invite = await Invite.findById(req.params.id);
+    if (!invite) return res.status(404).json({ message: "Invite not found" });
+    console.log(invite);
+    res.json(invite);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.put('/api/invites/:id', async (req, res) => {
+  const { id } = req.params;
+  const { guests } = req.body;
+
+  try {
+    const updatedInvite = await Invite.findByIdAndUpdate(
+      id,
+      { $set: { guests: guests, hasRSVPd: true } },
+      { new: true }
+    );
+    if (!updatedInvite) return res.status(404).json({ message: "Invite not found. Failed to update invite." });
+    res.json(updatedInvite);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to update invite", error });
+  }
+});
+
+app.post('/api/invites', async (req, res) => {
+  const { guests, givenPlusOne } = req.body;
+  const invite = new Invite({
+    guests: guests,
+    givenPlusOne: givenPlusOne,
+    hasRSVPd: false
+  });
+
+  try {
+    const newInvite = await invite.save();
+    res.status(201).json(newInvite);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete('/api/invites/:id', async (req, res) => {
+  try {
+    const invite = await Invite.findByIdAndDelete(req.params.id);
+    if (!invite) return res.status(404).json({ message: "Invite not found" });
+    res.status(200).json({ message: "Invite deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 // ############################### Photo Routes ###############################
