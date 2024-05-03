@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Rsvp.css';
 
-function Rsvp({ isAdmin, invites, fetchAllInvites, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
+function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
   const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '' });
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
@@ -58,6 +58,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, inviteId, guests, setGuests, 
         body: JSON.stringify({ guests: body })
       });
       const data = await response.json();
+      fetchInviteById();
       alert(`RSVP updated successfully for Invite ID: ${data._id}`);
     } catch (error) {
       console.error('Failed to update RSVP:', error);

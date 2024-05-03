@@ -92,7 +92,6 @@ app.get('/api/invites/:id', async (req, res) => {
   try {
     const invite = await Invite.findById(req.params.id);
     if (!invite) return res.status(404).json({ message: "Invite not found" });
-    console.log(invite);
     res.json(invite);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -153,7 +152,6 @@ app.get('/api/photos', async (req, res) => {
 });
 
 app.post('/api/upload-photo', upload.single('file'), async (req, res) => {
-  console.log(req.file);
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded." });
   }
