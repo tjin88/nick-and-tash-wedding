@@ -12,6 +12,11 @@ const personSchema = new mongoose.Schema({
   dietaryRequirements: {
     type: String,
     default: ''
+  },
+  attendingStatus: {
+    type: String,
+    enum: ['Canada Only', 'Australia Only', 'Both Australia and Canada', 'Not Attending', ''],
+    default: ''
   }
 });
 

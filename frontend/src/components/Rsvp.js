@@ -3,7 +3,7 @@ import QRCode from 'qrcode.react';
 import './Rsvp.css';
 
 function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
-  const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '' });
+  const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '', attendingStatus: ''});
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
 
@@ -17,7 +17,6 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     setPlusOne(prev => ({ ...prev, [field]: value }));
   };
   
-
   const handleNewGuestChange = (index, field, value) => {
     const updatedNewGuests = [...newGuests];
     updatedNewGuests[index] = { ...updatedNewGuests[index], [field]: value };
@@ -92,7 +91,14 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     }
   };
 
-  // TODO: Canada vs Australia Wedding ???
+  const fillAllRSVP = () => {
+    const firstGuestStatus = guests[0].attendingStatus;
+    const updatedGuests = guests.map(guest => ({ ...guest, attendingStatus: firstGuestStatus }));
+    const updatedPlusOne = { ...plusOne, attendingStatus: firstGuestStatus };
+    setGuests(updatedGuests);
+    setPlusOne(updatedPlusOne);
+  };
+
   return (
     <div className="rsvp-table-container">
       <h1>RSVP</h1>
@@ -103,6 +109,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               <th>Guests</th>
               <th>Name</th>
               <th>Dietary Requirements</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -117,6 +124,22 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     value={guest.dietaryRequirements}
                     onChange={(e) => handleGuestChange(index, 'dietaryRequirements', e.target.value)}
                   />
+                </td>
+                <td>
+                  <select
+                    value={guest.attendingStatus || ''}
+                    defaultValue={''}
+                    onChange={(e) => handleGuestChange(index, 'attendingStatus', e.target.value)}
+                  >
+                    <option value="" disabled>Select one</option>
+                    <option value="Canada Only">Canada Only</option>
+                    <option value="Australia Only">Australia Only</option>
+                    <option value="Both Australia and Canada">Both Australia and Canada</option>
+                    <option value="Not Attending">Not Attending</option>
+                  </select>
+                  {index === 0 && (
+                    <button onClick={fillAllRSVP}>All RSVP the same?</button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -146,6 +169,19 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     value={plusOne.dietaryRequirements}
                     onChange={(e) => handlePlusOneChange('dietaryRequirements', e.target.value)} 
                   />
+                </td>
+                <td>
+                  <select
+                    value={plusOne.attendingStatus || ''}
+                    defaultValue={''}
+                    onChange={(e) => handlePlusOneChange('attendingStatus', e.target.value)}
+                  >
+                    <option value="" disabled>Select one</option>
+                    <option value="Canada Only">Canada Only</option>
+                    <option value="Australia Only">Australia Only</option>
+                    <option value="Both Australia and Canada">Both Australia and Canada</option>
+                    <option value="Not Attending">Not Attending</option>
+                  </select>
                 </td>
               </tr>
             )}
