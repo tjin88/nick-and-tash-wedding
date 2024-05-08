@@ -74,32 +74,32 @@ button:hover {
   margin-bottom: 0;
 }
 
-.admin-see-invites {
+.rsvp-table {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.admin-see-invites table {
+.rsvp-table table {
   /* width: calc(100% - 40px); */
   width: auto;
   padding: 0 20px;
   max-width: 100%;
 }
 
-.admin-see-invites th, .admin-see-invites td {
+.rsvp-table th, .rsvp-table td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
 
-.admin-see-invites th {
+.rsvp-table th {
   background-color: #b5838d;
   color: white;
 }
 
-.admin-see-invites td {
+.rsvp-table td {
   vertical-align: top;
 }
 
@@ -126,10 +126,16 @@ button:hover {
   border-radius: 4px;
 }
 
+.horizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .rsvpAllButton {
   background-color: white;
   color: #b5838d;
-  margin-left: 10px;
+  margin: 0 0 0 10px;
   padding: 5px;
 }
 
@@ -139,7 +145,7 @@ button:hover {
 }
 
 @media (max-width: 1100px) {
-  .admin-see-invites table {
+  .rsvp-table table {
     width: 95%;
     padding: 0;
   }

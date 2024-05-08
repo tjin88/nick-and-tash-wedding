@@ -109,7 +109,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               <th>Guests</th>
               <th>Name</th>
               <th>Dietary Requirements</th>
-              <th>
+              <th className='horizontal'>
                 Status
                 <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>
               </th>
@@ -190,7 +190,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         <button onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
       </div>)}
       {isAdmin && (
-        <div className='admin-see-invites'>
+        <div className='rsvp-table'>
           <h2>Invites</h2>
           <table>
             <thead>
