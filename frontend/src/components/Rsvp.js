@@ -109,7 +109,10 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               <th>Guests</th>
               <th>Name</th>
               <th>Dietary Requirements</th>
-              <th>Status</th>
+              <th>
+                Status
+                <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -137,9 +140,6 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     <option value="Both Australia and Canada">Both Australia and Canada</option>
                     <option value="Not Attending">Not Attending</option>
                   </select>
-                  {index === 0 && (
-                    <button onClick={fillAllRSVP}>All RSVP the same?</button>
-                  )}
                 </td>
               </tr>
             ))}
@@ -198,7 +198,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <th>Invite ID</th>
                 <th>Name</th>
                 <th>Dietary Requirements</th>
-                <th>Has RSVP'd?</th>
+                <th>RSVP status</th>
                 <th>Given Plus One?</th>
                 <th>Link</th>
                 <th>Options</th>
@@ -212,7 +212,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                       <td rowSpan={invite.guests.length}>{invite._id}</td>
                       <td>{guest.firstName} {guest.lastName}</td>
                       <td>{guest.dietaryRequirements}</td>
-                      <td rowSpan={invite.guests.length}>{invite.hasRSVPd ? 'Yes' : 'No'}</td>
+                      <td>{guest.attendingStatus}</td>
                       <td rowSpan={invite.guests.length}>{invite.givenPlusOne ? 'Yes' : 'No'}</td>
                       <td rowSpan={invite.guests.length} className='link-and-qr-code'>
                         <a href={`https://nick-and-tash-wedding.web.app/invite/${invite._id}`}>Link</a>
@@ -225,6 +225,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     <>
                       <td>{guest.firstName} {guest.lastName}</td>
                       <td>{guest.dietaryRequirements}</td>
+                      <td>{guest.attendingStatus}</td>
                     </>
                   )}
                 </tr>

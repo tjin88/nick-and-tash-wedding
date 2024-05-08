@@ -126,6 +126,18 @@ button:hover {
   border-radius: 4px;
 }
 
+.rsvpAllButton {
+  background-color: white;
+  color: #b5838d;
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.rsvpAllButton:hover {
+  background-color: #b5838d;
+  color: white;
+}
+
 @media (max-width: 1100px) {
   .admin-see-invites table {
     width: 95%;
