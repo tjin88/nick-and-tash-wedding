@@ -42,13 +42,13 @@ input[type="text"], input[type="text"]:focus {
   box-sizing: border-box;
 }
 
-.inputHorizontal input[type="text"] {
+.plusOneInput input[type="text"] {
   width: 48%;
   display: inline-block;
   margin-right: 4%;
 }
 
-.inputHorizontal input[type="text"]:last-child {
+.plusOneInput input[type="text"]:last-child {
   margin-right: 0;
 }
 
@@ -134,9 +134,11 @@ button:hover {
 }
 
 @media (max-width: 700px) {
-  .inputHorizontal input[type="text"] {
+  .plusOneInput input[type="text"] {
     width: 100%;
+    display: block;
     margin-right: 0;
+    margin-bottom: 10px;
   }
 
   .rsvp-table-container th, .rsvp-table-container td {

@@ -38,6 +38,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       const data = await response.json();
       fetchAllInvites();
       alert(`New invite created with ID: ${data._id}`);
+
+      setNewGuests([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
+      setIsNewGuestGivenPlusOne(false);
     } catch (error) {
       console.error('Failed to create new invite:', error);
       alert('Failed to create new invite.');
@@ -120,7 +123,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             {givenPlusOne && (
               <tr>
                 <td>Plus One</td>
-                <td className="inputHorizontal">
+                <td className="plusOneInput">
                   <input 
                     type="text" 
                     placeholder="First Name" 
