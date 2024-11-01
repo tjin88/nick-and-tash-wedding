@@ -12,7 +12,8 @@ const vendorsSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    enum: [WEDDING_LOCATIONS.CANADA, WEDDING_LOCATIONS.AUSTRALIA],
+    enum: [WEDDING_LOCATIONS.CANADA, WEDDING_LOCATIONS.AUSTRALIA, WEDDING_LOCATIONS.BOTH],
+    default: WEDDING_LOCATIONS.BOTH,
     required: true
   },
   contact: {

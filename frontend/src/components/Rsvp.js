@@ -86,8 +86,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });
-      const data = await response.json();
-      if (!data.success) throw new Error('Failed to delete invite');
+      await response.json();
+      // const data = await response.json();
+      // if (!data.success) throw new Error('Failed to delete invite');
       fetchAllInvites();
       alert(`Successfully deleted invite`);
     } catch (error) {
