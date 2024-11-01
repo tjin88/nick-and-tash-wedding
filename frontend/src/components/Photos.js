@@ -1,3 +1,4 @@
+// TODO: Currently this is implemented to show ALL photos, not just Canada or just Australia **
 import React, { useState } from 'react';
 import './Photos.css';
 
@@ -13,8 +14,9 @@ function Photos({ photos, setPhotos }) {
       formData.append('file', file);
 
       try {
-        const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/upload-photo', {
-          method: 'POST',
+        // const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/upload-photo', {
+        const response = await fetch('http://localhost:3003/api/upload-photo', {
+            method: 'POST',
           body: formData,
         });
 
@@ -33,7 +35,6 @@ function Photos({ photos, setPhotos }) {
   };
 
   // TODO: Add delete functionality
-  // TODO: Add socket to update photos in real-time
   return (
     <div className="photo-container">
       <h1 className='title'>Photos</h1>

@@ -9,8 +9,9 @@ function Registry({ registry, setRegistry, isAdmin }) {
     const newRegistry = { ...registry, [key]: updatedValue };
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${encodeURIComponent(key)}`, {
-        method: 'PUT',
+      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${encodeURIComponent(key)}`, {
+      const response = await fetch(`http://localhost:3003/api/registry/${encodeURIComponent(key)}`, {
+          method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isBought: updatedValue })
       });
@@ -27,8 +28,9 @@ function Registry({ registry, setRegistry, isAdmin }) {
     if (!itemName) return;
 
     try {
-      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/registry', {
-        method: 'POST',
+      // const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/registry', {
+      const response = await fetch('http://localhost:3003/api/registry', {
+          method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ item: itemName, isBought: false })
       });
@@ -45,8 +47,9 @@ function Registry({ registry, setRegistry, isAdmin }) {
     if (!window.confirm(`Are you sure you want to delete "${key}"?`)) return;
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${encodeURIComponent(key)}`, {
-        method: 'DELETE',
+      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/registry/${encodeURIComponent(key)}`, {
+      const response = await fetch(`http://localhost:3003/api/registry/${encodeURIComponent(key)}`, {
+          method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete the registry item.');
 

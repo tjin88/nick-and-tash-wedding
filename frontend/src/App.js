@@ -22,17 +22,23 @@ function App({ isAdmin }) {
     "firstName": "Admin",
     "lastName": ""
   }]);
+
+  const [invitedLocation, setInvitedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  // const [events, setEvents] = useState({}); // TODO: Currently not in use
+
   const { inviteId } = useParams();
   const [registry, setRegistry] = useState({});
   const [vendors, setVendors] = useState({});
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
   const socket = io('https://nick-and-tash-wedding.onrender.com');
+  // const socket = io('http://localhost:3003');
 
   useEffect(() => {
-    // Handle photo updates
-    socket.on('photo-updated', (newPhotoUrl) => {
-      setPhotos(prevPhotos => [...prevPhotos, newPhotoUrl]);
+    // Handle photo updates --> photoData = {url: '...', location: '...'}
+    socket.on('photo-updated', (photoData) => {
+      setPhotos(prevPhotos => [...prevPhotos, photoData]);
     });
   
     // Handle registry updates
@@ -69,6 +75,7 @@ function App({ isAdmin }) {
   const fetchAllInvites = async () => {
     try {
       const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/all-invites');
+      // const response = await fetch('http://localhost:3003/api/all-invites');
       if (!response.ok) throw new Error('Failed to fetch invites');
       const data = await response.json();
       setInvites(data);
@@ -81,20 +88,37 @@ function App({ isAdmin }) {
     if (!inviteId) return;
     try {
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`);
+      // const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(inviteId)}`);
       if (!response.ok) throw new Error('Failed to fetch invite by ID');
       const data = await response.json();
       setGuests(data.guests);
       setHasRSVPd(data.hasRSVPd);
       setGivenPlusOne(data.givenPlusOne);
+      setInvitedLocation(data.invitedLocation);
     } catch (error) {
       console.error('Error fetching invite by ID:', error);
     }
   };
 
+  // const fetchEvents = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/events');
+  //     // const response = await fetch('http://localhost:3003/api/events');
+  //     if (!response.ok) throw new Error('Failed to fetch events');
+  //     const data = await response.json();
+  //     setEvents(data);
+  //   } catch (error) {
+  //     console.error('Error fetching events:', error);
+  //   }
+  //   setLoading(false);
+  // };
+
   const fetchPhotos = async () => {
     setLoading(true);
     try {
       const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/photos');
+      // const response = await fetch('http://localhost:3003/api/photos');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -114,6 +138,7 @@ function App({ isAdmin }) {
       setLoading(true);
       try {
         const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/registry');
+        // const response = await fetch('http://localhost:3003/api/registry');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -136,6 +161,7 @@ function App({ isAdmin }) {
       setLoading(true);
       try {
         const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/vendors');
+        // const response = await fetch('http://localhost:3003/api/vendors');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -167,11 +193,26 @@ function App({ isAdmin }) {
   return (
     <div className="App">
       { !isOpened && <Start setIsOpened={setIsOpened} guests={guests}/> }
-      { isOpened && <Navbar setNavOption={setNavOption}/> }
+      { isOpened && <Navbar setNavOption={setNavOption} invitedLocation={invitedLocation}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
-      { isOpened && navOption === 'rsvp' && <Rsvp isAdmin={isAdmin} invites={invites} fetchAllInvites={fetchAllInvites} fetchInviteById={fetchInviteById} inviteId={inviteId} guests={guests} setGuests={setGuests} hasRSVPd={hasRSVPd} givenPlusOne={givenPlusOne}/> }
-      { isOpened && navOption === 'menu' && <Menu/> }
-      { isOpened && navOption === 'schedule' && <Schedule/> }
+      { isOpened && navOption === 'rsvp' && 
+        <Rsvp 
+          isAdmin={isAdmin} 
+          invites={invites} 
+          fetchAllInvites={fetchAllInvites} 
+          fetchInviteById={fetchInviteById} 
+          inviteId={inviteId} 
+          guests={guests} 
+          setGuests={setGuests} 
+          hasRSVPd={hasRSVPd} 
+          givenPlusOne={givenPlusOne}
+          invitedLocation={invitedLocation}
+          selectedLocation={selectedLocation}
+          setSelectedLocation={setSelectedLocation}
+        /> 
+      }
+      { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
+      { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
       { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos}/> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }

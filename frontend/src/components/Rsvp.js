@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import QRCode from 'qrcode.react';
 import './Rsvp.css';
 
-function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne }) {
+function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation }) {
   const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '', attendingStatus: ''});
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
+  const [newInviteLocation, setNewInviteLocation] = useState('Canada');
 
   const handleGuestChange = (index, field, value) => {
     const updatedGuests = [...guests];
@@ -29,10 +30,11 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
 
   const handleSubmitNewInvite = async () => {
     try {
-      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/invites', {
+      // const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/invites', {
+      const response = await fetch('http://localhost:3003/api/invites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guests: newGuests, givenPlusOne: isNewGuestGivenPlusOne })
+        body: JSON.stringify({ guests: newGuests, givenPlusOne: isNewGuestGivenPlusOne, invitedLocation: newInviteLocation })
       });
       const data = await response.json();
       fetchAllInvites();
@@ -55,8 +57,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         body = guests;
       }
 
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
-        method: 'PUT',
+      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
+      const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(inviteId)}`, {
+          method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ guests: body })
       });
@@ -78,8 +81,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     if (!window.confirm(`Are you sure you want to delete the invite for ${formattedGuestNames}?`)) return;
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(id)}`, {
-        method: 'DELETE',
+      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(id)}`, {
+      const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(id)}`, {
+          method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await response.json();
@@ -97,6 +101,31 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     const updatedPlusOne = { ...plusOne, attendingStatus: firstGuestStatus };
     setGuests(updatedGuests);
     setPlusOne(updatedPlusOne);
+  };
+
+  // Helper function to get available RSVP options
+  const getAvailableOptions = () => {
+    switch(invitedLocation) {
+      case 'Canada':
+        return [
+          <option value="Canada Only">Canada (Some Location Here)</option>,
+          <option value="Not Attending">Not Attending</option>
+        ];
+      case 'Australia':
+        return [
+          <option value="Australia Only">Australia (Some Location Here)</option>,
+          <option value="Not Attending">Not Attending</option>
+        ];
+      case 'Both Australia and Canada':
+        return [
+          <option value="Canada Only">Attending Canada Only (Some Location Here)</option>,
+          <option value="Australia Only">Attending Australia Only (Some Location Here)</option>,
+          <option value="Both Australia and Canada">Attending Both Canada and Australia</option>,
+          <option value="Not Attending">Not Attending</option>
+        ];
+      default:
+        return [];
+    }
   };
 
   return (
@@ -135,10 +164,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     onChange={(e) => handleGuestChange(index, 'attendingStatus', e.target.value)}
                   >
                     <option value="" disabled>Select one</option>
-                    <option value="Canada Only">Canada Only</option>
-                    <option value="Australia Only">Australia Only</option>
-                    <option value="Both Australia and Canada">Both Australia and Canada</option>
-                    <option value="Not Attending">Not Attending</option>
+                    {getAvailableOptions()}
                   </select>
                 </td>
               </tr>
@@ -177,10 +203,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     onChange={(e) => handlePlusOneChange('attendingStatus', e.target.value)}
                   >
                     <option value="" disabled>Select one</option>
-                    <option value="Canada Only">Canada Only</option>
-                    <option value="Australia Only">Australia Only</option>
-                    <option value="Both Australia and Canada">Both Australia and Canada</option>
-                    <option value="Not Attending">Not Attending</option>
+                    {getAvailableOptions()}
                   </select>
                 </td>
               </tr>
@@ -199,6 +222,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <th>Name</th>
                 <th>Dietary Requirements</th>
                 <th>RSVP status</th>
+                <th>Invited To</th>
                 <th>Given Plus One?</th>
                 <th>Link</th>
                 <th>Options</th>
@@ -213,6 +237,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                       <td>{guest.firstName} {guest.lastName}</td>
                       <td>{guest.dietaryRequirements}</td>
                       <td>{guest.attendingStatus}</td>
+                      <td rowSpan={invite.guests.length}>{invite.invitedLocation}</td>
                       <td rowSpan={invite.guests.length}>{invite.givenPlusOne ? 'Yes' : 'No'}</td>
                       <td rowSpan={invite.guests.length} className='link-and-qr-code'>
                         <a href={`https://nick-and-tash-wedding.web.app/invite/${invite._id}`}>Link</a>
@@ -237,6 +262,18 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       {isAdmin && (
         <div className="admin-add-invite">
           <h2>Add New Invite</h2>
+          <div className="invite-location-selector">
+            <label>Invited To:</label>
+            <select 
+              defaultValue={''}
+              onChange={(e) => setNewInviteLocation(e.target.value)}
+            >
+              <option value="" disabled>Select one</option>
+              <option value="Canada">Canada Only</option>
+              <option value="Australia">Australia Only</option>
+              <option value="Both Australia and Canada">Both Locations</option>
+            </select>
+          </div>
           {newGuests.map((guest, index) => (
             <div key={index} className="new-guest-inputs">
               <input
@@ -262,7 +299,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
           <button onClick={handleAddGuest}>Add Another Guest</button>
           <div>
             <input 
-              type="checkbox" 
+              type="checkbox"
               id="plusOne" 
               value={isNewGuestGivenPlusOne}
               onChange={() => setIsNewGuestGivenPlusOne(!isNewGuestGivenPlusOne)}

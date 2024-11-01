@@ -1,73 +1,104 @@
 import React from 'react';
 import './Schedule.css';
 
-function Schedule () {
+function Schedule({ invitedLocation }) {
+
+  const canadianSchedule = [
+    {
+      title: "Welcome Dinner",
+      time: "August 22, 2025, 6:00 PM",
+      location: "Toronto Location",
+      details: [
+        "Welcome dinner for all guests",
+        "Casual attire"
+      ]
+    },
+    {
+      title: "Wedding Ceremony",
+      time: "August 23, 2025, 3:00 PM",
+      location: "Toronto Wedding Venue",
+      details: [
+        "Ceremony begins promptly",
+        "Formal attire"
+      ]
+    },
+    {
+      title: "Reception",
+      time: "August 23, 2025, 5:00 PM",
+      location: "Toronto Reception Venue",
+      details: [
+        "Cocktail hour",
+        "Dinner and dancing to follow"
+      ]
+    }
+  ];
+
+  const australianSchedule = [
+    {
+      title: "Welcome Drinks",
+      time: "October 10, 2025, 6:00 PM",
+      location: "Sydney Location",
+      details: [
+        "Welcome drinks for all guests",
+        "Smart casual attire"
+      ]
+    },
+    {
+      title: "Wedding Ceremony",
+      time: "October 11, 2025, 2:00 PM",
+      location: "Sydney Wedding Venue",
+      details: [
+        "Ceremony begins promptly",
+        "Formal attire"
+      ]
+    },
+    {
+      title: "Reception",
+      time: "October 11, 2025, 4:00 PM",
+      location: "Sydney Reception Venue",
+      details: [
+        "Cocktail hour",
+        "Dinner and dancing to follow"
+      ]
+    }
+  ];
+
+  const renderLocationSchedule = (location) => (
+    <div className="schedule-section">
+      <div className="schedule-column col-lg-10">
+        <h2 className="schedule-location-title">{invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}Wedding Events</h2>
+        {(location === 'Canada' ? canadianSchedule : australianSchedule).map((item, index) => (
+          <div key={index} className="schedule-item">
+            <h2>{item.title}</h2>
+            <div className='scheduleHorizontal'>
+              <h3>{item.time}</h3>
+              <h3>|</h3>
+              <h3><em>{item.location}</em></h3>
+            </div>
+            <ul>
+              {item.details.map((detail, i) => (
+                <li key={i}>{detail}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="schedule">
-      <div className="row">
-        <div className="schedule-column col-lg-10">
-          <h1 className="schedule-title">Schedule</h1>
-          <div className="schedule-item">
-            <h2>Event 1</h2>
-            <div className='scheduleHorizontal'>
-              <h3>October 10, 5 - 5:30 pm</h3>
-              <h3>|</h3>
-              <h3><em>Some Given Location</em></h3>
-            </div>
-            <ul>              
-              <li>Lil description</li>
-              <li>It's a pre cool one</li>
-            </ul>
-          </div>
-          <div className="schedule-item">
-            <h2>Drinks</h2>
-            <div className='scheduleHorizontal'>
-              <h3>October 10, 5 - 5:30 pm</h3>
-              <h3>|</h3>
-              <h3><em>Some Given Location</em></h3>
-            </div>
-            <ul>
-              <li>Lil description</li>
-              <li>It's a pre cool one</li>
-            </ul>
-          </div>
-          <div className="schedule-item">
-            <h2>Main Event</h2>
-            <div className='scheduleHorizontal'>
-              <h3>October 10, 5 - 5:30 pm</h3>
-              <h3>|</h3>
-              <h3><em>Some Given Location</em></h3>
-            </div>
-            <ul>
-              <li>Big description</li>
-              <li>It's really cool</li>
-              <li>Whoot</li>
-            </ul>
-          </div>
-          <div className="schedule-item">
-            <h2>After Party</h2>
-            <div className='scheduleHorizontal'>
-              <h3>October 10, 5 - 5:30 pm</h3>
-              <h3>|</h3>
-              <h3><em>Some Given Location</em></h3>
-            </div>
-            <ul>
-              <li>Whoot</li>
-            </ul>
-          </div>
-          <div className="schedule-item">
-            <h2>Something Else</h2>
-            <div className='scheduleHorizontal'>
-              <h3>October 10, 5 - 5:30 pm</h3>
-              <h3>|</h3>
-              <h3><em>Some Given Location</em></h3>
-            </div>
-            <ul>
-              <li>Whoot</li>
-            </ul>
-          </div>
+      {console.log(invitedLocation)}
+      <h1 className="schedule-title">Schedule</h1>
+      {invitedLocation === 'Both Australia and Canada' ? (
+        <div className="schedule-container">
+          {renderLocationSchedule('Canada')}
+          <div className="schedule-divider"></div>
+          {renderLocationSchedule('Australia')}
         </div>
-      </div>
+      ) : (
+        renderLocationSchedule(invitedLocation)
+      )}
     </div>
   );
 }

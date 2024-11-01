@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 
-function Navbar({ setNavOption }) {
+function Navbar({ setNavOption, invitedLocation }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClick = (option) => {
     setNavOption(option);
     setIsMenuOpen(false);
   };
+
+  // const getLocationSpecificOptions = () => {
+  //   if (invitedLocation === 'Both Australia and Canada') {
+  //     return [
+  //       <li key="canada-menu" onClick={() => handleClick("menu-canada")}><p>Canada Menu</p></li>,
+  //       <li key="canada-schedule" onClick={() => handleClick("schedule-canada")}><p>Canada Schedule</p></li>,
+  //       <li key="australia-menu" onClick={() => handleClick("menu-australia")}><p>Australia Menu</p></li>,
+  //       <li key="australia-schedule" onClick={() => handleClick("schedule-australia")}><p>Australia Schedule</p></li>
+  //     ];
+  //   }
+    
+  //   return [
+  //     <li key="menu" onClick={() => handleClick("menu")}><p>Menu</p></li>,
+  //     <li key="schedule" onClick={() => handleClick("schedule")}><p>Schedule</p></li>
+  //   ];
+  // };
 
   return (
     <nav className="navbar">

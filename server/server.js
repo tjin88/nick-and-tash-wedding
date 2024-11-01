@@ -9,7 +9,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 
 // Schema Imports
-import Invite from "./schemas/InviteSchema.js";
+import { Invite, Event, WEDDING_LOCATIONS, RSVP_STATUSES } from "./schemas/InviteSchema.js";
 import Photo from "./schemas/PhotoSchema.js";
 import Registry from "./schemas/RegistrySchema.js";
 import Vendors from "./schemas/VendorsSchema.js";
@@ -93,6 +93,37 @@ app.get('/api/check-invite/:id', async (req, res) => {
   }
 });
 
+// ############################### Event Routes ###############################
+app.get('/api/events', async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/events/:location', async (req, res) => {
+  try {
+    const events = await Event.find({ location: req.params.location });
+    if (!events || !events.length) return res.status(404).json({ message: "No events found for this location" });
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/events', async (req, res) => {
+  const eventData = req.body;
+  const event = new Event(eventData);
+
+  try {
+    const newEvent = await event.save();
+    res.status(201).json(newEvent);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 /* 
   TODO: Add security to all routes by verifying they are:
@@ -121,15 +152,37 @@ app.get('/api/invites/:id', async (req, res) => {
 
 app.put('/api/invites/:id', async (req, res) => {
   const { id } = req.params;
-  const { guests } = req.body;
+  const { guests, invitedLocation } = req.body;
 
   try {
+    // Validate RSVP status for each guest
+    const invite = await Invite.findById(id);
+    if (!invite) {
+      return res.status(404).json({ message: "Invite not found" });
+    }
+
+    // Validate each guest's RSVP status
+    for (const guest of guests) {
+      if (!invite.isValidRSVPStatus(guest.attendingStatus)) {
+        return res.status(400).json({
+          message: `Invalid RSVP status for ${guest.firstName}. They can only RSVP to events they're invited to.`
+        });
+      }
+    }
+
     const updatedInvite = await Invite.findByIdAndUpdate(
       id,
-      { $set: { guests: guests, hasRSVPd: true, givenPlusOne: false } },
+      { 
+        $set: { 
+          guests,
+          hasRSVPd: true,
+          rsvpSubmittedAt: new Date(),
+          invitedLocation
+        }
+      },
       { new: true }
     );
-    if (!updatedInvite) return res.status(404).json({ message: "Invite not found. Failed to update invite." });
+
     res.json(updatedInvite);
   } catch (error) {
     res.status(400).json({ message: "Failed to update invite", error });
@@ -137,10 +190,14 @@ app.put('/api/invites/:id', async (req, res) => {
 });
 
 app.post('/api/invites', async (req, res) => {
-  const { guests, givenPlusOne } = req.body;
+  // const { guests, givenPlusOne, invitedLocation, rsvpDeadline } = req.body;
+  const { guests, givenPlusOne, invitedLocation } = req.body;
+
   const invite = new Invite({
-    guests: guests,
-    givenPlusOne: givenPlusOne,
+    guests,
+    givenPlusOne,
+    invitedLocation,
+    // rsvpDeadline,
     hasRSVPd: false
   });
 
@@ -165,7 +222,9 @@ app.delete('/api/invites/:id', async (req, res) => {
 // ############################### Photo Routes ###############################
 app.get('/api/photos', async (req, res) => {
   try {
-    const photos = await Photo.find();
+    const location = req.query.location;
+    const query = location ? { location } : {};
+    const photos = await Photo.find(query);
     res.json(photos);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -181,10 +240,11 @@ app.post('/api/upload-photo', upload.single('file'), async (req, res) => {
       folder: "demo",
       upload_preset: 'ml_default'
     });
-    const photo = new Photo({ url: result.url });
+    const photo = new Photo({ url: result.url, location: req.body.location  });
+
     await photo.save();
     res.status(201).json(photo);
-    io.emit('photo-updated', photo.url);
+    io.emit('photo-updated', { url: photo.url, location: photo.location });
   } catch (error) {
     console.error("Upload Error:", error);
     res.status(500).json({ message: "Failed to upload image", error });
@@ -258,16 +318,23 @@ app.delete('/api/registry/:item', async (req, res) => {
 // ############################### Vendor Routes ###############################
 app.get('/api/vendors', async (req, res) => {
   try {
-    const items = await Vendors.find();
-    res.json(items);
+    const location = req.query.location;
+    const query = location ? { location } : {};
+    const vendors = await Vendors.find(query);
+    res.json(vendors);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
 app.post('/api/vendors', async (req, res) => {
-  const { role, name } = req.body;
-  const newVendor = new Vendors({ role, name });
+  const { role, name, location, contact } = req.body;
+  const newVendor = new Vendors({ 
+    role, 
+    name, 
+    location,
+    contact 
+  });
 
   try {
     await newVendor.save();
@@ -279,12 +346,14 @@ app.post('/api/vendors', async (req, res) => {
 
 app.put('/api/vendors/:previousName', async (req, res) => {
   const { previousName } = req.params;
-  const { name, role } = req.body;
+  const { role, name, location, contact } = req.body;
 
   try {
     const updateData = {};
     if (name) updateData.name = name;
     if (role) updateData.role = role;
+    if (location) updateData.location = location;
+    if (contact) updateData.contact = contact;
 
     const updatedVendor = await Vendors.findOneAndUpdate(
       { name: previousName },

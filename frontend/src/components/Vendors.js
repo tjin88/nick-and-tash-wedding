@@ -11,8 +11,9 @@ function Vendors({ initialVendors, isAdmin }) {
 
     const newVendor = { role, name };
     try {
-      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/vendors', {
-        method: 'POST',
+      // const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/vendors', {
+      const response = await fetch('http://localhost:3003/api/vendors', {
+          method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newVendor)
       });
@@ -28,8 +29,9 @@ function Vendors({ initialVendors, isAdmin }) {
     if (!window.confirm(`Are you sure you want to delete ${role}?`)) return;
 
     try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/vendors/${encodeURIComponent(role)}`, {
-        method: 'DELETE'
+      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/vendors/${encodeURIComponent(role)}`, {
+      const response = await fetch(`http://localhost:3003/api/vendors/${encodeURIComponent(role)}`, {
+          method: 'DELETE'
       });
       if (!response.ok) throw new Error('Failed to delete vendor');
       const updatedVendors = { ...vendors };

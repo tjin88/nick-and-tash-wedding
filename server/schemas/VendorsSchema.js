@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { WEDDING_LOCATIONS } from "./InviteSchema.js";
 
 const vendorsSchema = new mongoose.Schema({
   role: {
@@ -8,6 +9,15 @@ const vendorsSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+  },
+  location: {
+    type: String,
+    enum: [WEDDING_LOCATIONS.CANADA, WEDDING_LOCATIONS.AUSTRALIA],
+    required: true
+  },
+  contact: {
+    email: String,
+    phone: String
   }
 });
 
