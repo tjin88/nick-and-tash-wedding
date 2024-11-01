@@ -30,8 +30,8 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
 
   const handleSubmitNewInvite = async () => {
     try {
-      // const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/invites', {
-      const response = await fetch('http://localhost:3003/api/invites', {
+      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/invites', {
+      // const response = await fetch('http://localhost:3003/api/invites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ guests: newGuests, givenPlusOne: isNewGuestGivenPlusOne, invitedLocation: newInviteLocation })
@@ -57,9 +57,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         body = guests;
       }
 
-      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
-      const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(inviteId)}`, {
-          method: 'PUT',
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
+      // const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(inviteId)}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ guests: body })
       });
@@ -81,12 +81,13 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     if (!window.confirm(`Are you sure you want to delete the invite for ${formattedGuestNames}?`)) return;
 
     try {
-      // const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(id)}`, {
-      const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(id)}`, {
-          method: 'DELETE',
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(id)}`, {
+      // const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await response.json();
+      if (!data.success) throw new Error('Failed to delete invite');
       fetchAllInvites();
       alert(`Successfully deleted invite`);
     } catch (error) {

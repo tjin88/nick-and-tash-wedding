@@ -181,6 +181,7 @@ function App({ isAdmin }) {
     };
 
     if (isAdmin) {
+      setInvitedLocation("Both Australia and Canada");
       fetchAllInvites();
     } else {
       fetchInviteById();
