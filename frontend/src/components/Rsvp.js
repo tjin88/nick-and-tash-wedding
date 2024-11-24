@@ -51,7 +51,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   const handleRSVPUpdate = async () => {
     try {
       let body;
-      if (givenPlusOne) {
+      if (givenPlusOne && plusOne.firstName && plusOne.lastName) {
         body = [...guests, plusOne];
       } else {
         body = guests;
@@ -64,8 +64,12 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         body: JSON.stringify({ guests: body })
       });
       const data = await response.json();
-      fetchInviteById();
-      alert(`RSVP updated successfully for Invite ID: ${data._id}`);
+      if (data._id) {
+        fetchInviteById();
+        alert(`RSVP updated successfully for Invite ID: ${data._id}`);
+      } else {
+        alert(`Failed to update RSVP - Please ensure all statuses are filled out.`);
+      }
     } catch (error) {
       console.error('Failed to update RSVP:', error);
       alert('Failed to update RSVP.');
@@ -86,11 +90,13 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });
-      await response.json();
-      // const data = await response.json();
-      // if (!data.success) throw new Error('Failed to delete invite');
-      fetchAllInvites();
-      alert(`Successfully deleted invite`);
+      const data = await response.json();
+      if (data && data.message && data.message === "Invite deleted successfully") {
+        fetchAllInvites();
+        alert(`Successfully deleted invite`);
+      } else {
+        throw new Error('Failed to delete invite');
+      }
     } catch (error) {
       console.error('Failed to delete invite:', error);
       alert('Failed to delete invite.');
@@ -105,25 +111,24 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     setPlusOne(updatedPlusOne);
   };
 
-  // Helper function to get available RSVP options
   const getAvailableOptions = () => {
     switch(invitedLocation) {
       case 'Canada':
         return [
-          <option value="Canada Only">Canada (Some Location Here)</option>,
-          <option value="Not Attending">Not Attending</option>
+          <option value="Canada Only" key="Canada Only">Canada</option>,
+          <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
         ];
       case 'Australia':
         return [
-          <option value="Australia Only">Australia (Some Location Here)</option>,
-          <option value="Not Attending">Not Attending</option>
+          <option value="Australia Only" key="Australia Only">Australia</option>,
+          <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
         ];
       case 'Both Australia and Canada':
         return [
-          <option value="Canada Only">Attending Canada Only (Some Location Here)</option>,
-          <option value="Australia Only">Attending Australia Only (Some Location Here)</option>,
-          <option value="Both Australia and Canada">Attending Both Canada and Australia</option>,
-          <option value="Not Attending">Not Attending</option>
+          <option value="Canada Only" key="Canada Only">Attending Canada only</option>,
+          <option value="Australia Only" key="Australia Only">Attending Australia Only</option>,
+          <option value="Both Australia and Canada" key="Both Australia and Canada">Attending Both Canada and Australia</option>,
+          <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
         ];
       default:
         return [];
@@ -133,6 +138,10 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   return (
     <div className="rsvp-table-container">
       <h1>RSVP</h1>
+      <p>Please join us in celebrating Nicholas and Natasha’s wedding</p>
+      <p>Kindly let us know if you’ll be joining us in celebrating our special day by RSVP-ing before May 1, 2025 — we can’t wait to hear from you!</p>
+      {(invitedLocation === "Canada" || invitedLocation === "Both Australia and Canada") && <p>Canada Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>}
+      {(invitedLocation === "Australia" || invitedLocation === "Both Australia and Canada") && <p>Australia Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
       {!isAdmin && (<div className='rsvp-table'>
         <table>
           <thead>
@@ -142,7 +151,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               <th>Dietary Requirements</th>
               <th className='horizontal'>
                 Status
-                <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>
+                {guests.length > 1 && <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>}
               </th>
             </tr>
           </thead>
@@ -162,10 +171,10 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <td>
                   <select
                     value={guest.attendingStatus || ''}
-                    defaultValue={''}
+                    // defaultValue={''}
                     onChange={(e) => handleGuestChange(index, 'attendingStatus', e.target.value)}
                   >
-                    <option value="" disabled>Select one</option>
+                    <option value="" key="" disabled>Select one</option>
                     {getAvailableOptions()}
                   </select>
                 </td>
@@ -201,7 +210,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <td>
                   <select
                     value={plusOne.attendingStatus || ''}
-                    defaultValue={''}
+                    // defaultValue={''}
                     onChange={(e) => handlePlusOneChange('attendingStatus', e.target.value)}
                   >
                     <option value="" disabled>Select one</option>

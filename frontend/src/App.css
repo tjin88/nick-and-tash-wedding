@@ -2,3 +2,7 @@
   color: #b5838d;
   font-size: 2.5em;
 }
+
+table {
+  border-radius:6px;
+}

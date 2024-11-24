@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 
-function Navbar({ setNavOption, invitedLocation }) {
+function Navbar({ setNavOption, setIsOpened, invitedLocation }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClick = (option) => {
+    if (option === "start") {
+      setIsOpened(false);
+      return;
+    }
     setNavOption(option);
     setIsMenuOpen(false);
   };
@@ -27,7 +31,7 @@ function Navbar({ setNavOption, invitedLocation }) {
 
   return (
     <nav className="navbar">
-      <div className="logo">
+      <div className="logo" onClick={() => handleClick("start")}>
         <p>N&N</p>
       </div>
       <div className="menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -37,9 +41,10 @@ function Navbar({ setNavOption, invitedLocation }) {
         <li onClick={() => handleClick("rsvp")}><p>Rsvp</p></li>
         <li onClick={() => handleClick("menu")}><p>Menu</p></li>
         <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>
-        <li onClick={() => handleClick("registry")}><p>Registry</p></li>
-        <li onClick={() => handleClick("photos")}><p>Photos</p></li>
-        <li onClick={() => handleClick("vendors")}><p>Vendors</p></li>
+        {invitedLocation !== "Canada" && <li onClick={() => handleClick("registry")}><p>Registry</p></li>}
+        {invitedLocation !== "Canada" && <li onClick={() => handleClick("photos")}><p>Photos</p></li>}
+        <li onClick={() => handleClick("faq")}><p>FAQ</p></li>
+        {invitedLocation !== "Canada" && <li onClick={() => handleClick("vendors")}><p>Vendors</p></li>}
       </ul>
     </nav>
   );

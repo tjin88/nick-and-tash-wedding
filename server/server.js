@@ -170,6 +170,8 @@ app.put('/api/invites/:id', async (req, res) => {
       }
     }
 
+    const shouldResetPlusOne = guests.length > invite.guests.length;
+
     const updatedInvite = await Invite.findByIdAndUpdate(
       id,
       { 
@@ -177,7 +179,8 @@ app.put('/api/invites/:id', async (req, res) => {
           guests,
           hasRSVPd: true,
           rsvpSubmittedAt: new Date(),
-          invitedLocation
+          invitedLocation,
+          givenPlusOne: shouldResetPlusOne ? false : invite.givenPlusOne
         }
       },
       { new: true }

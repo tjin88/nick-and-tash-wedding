@@ -1,0 +1,137 @@
+.faq-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Times New Roman', serif; /* Classic wedding font */
+  }
+  
+  .faq-header {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-weight: normal;
+    letter-spacing: 1px;
+  }
+  
+  .faq-list {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .faq-item {
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+  
+  .faq-question {
+    width: 100%;
+    padding: 1.25rem;
+    background: #fff;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    color: #333;
+    transition: background-color 0.3s ease;
+  }
+  
+  .faq-question:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .faq-question span {
+    flex: 1;
+    padding-right: 1rem;
+  }
+  
+  .faq-icon {
+    width: 20px;
+    height: 20px;
+    color: #666;
+    flex-shrink: 0;
+  }
+  
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease;
+    background-color: #f9f9f9;
+  }
+  
+  .faq-answer.open {
+    max-height: 500px;
+    padding: 1.25rem;
+  }
+  
+  .faq-answer p {
+    margin: 0;
+    line-height: 1.6;
+    color: #666;
+  }
+  
+  .faq-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .faq-question[aria-expanded="true"] .faq-icon {
+    transform: rotate(180deg);
+  }
+  
+  .faq-question:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map-container {
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .directions-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background-color: #4a90e2;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .directions-link:hover {
+    background-color: #357abd;
+  }
+
+  @media (max-width: 600px) {
+    .faq-container {
+      margin: 1rem auto;
+    }
+    
+    .faq-header {
+      font-size: 1.5rem;
+    }
+    
+    .faq-question {
+      font-size: 1rem;
+      padding: 1rem;
+    }
+    
+    .faq-answer.open {
+      padding: 1rem;
+    }
+
+    .map-container iframe {
+        height: 200px;
+    }
+  }

@@ -88,7 +88,6 @@ function Schedule({ invitedLocation }) {
 
   return (
     <div className="schedule">
-      {console.log(invitedLocation)}
       <h1 className="schedule-title">Schedule</h1>
       {invitedLocation === 'Both Australia and Canada' ? (
         <div className="schedule-container">

@@ -3,7 +3,8 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('../images/Welcome_Photo.png');
+    /* background-image: url('../images/Welcome_Photo.png'); */
+    background-image: url('../images/nick_and_tash_cropped.jpg');
     background-size: cover;
     background-position: center;
     color: #ffffff;

@@ -31,17 +31,6 @@ const personSchema = new mongoose.Schema({
     type: String,
     enum: Object.values(RSVP_STATUS),
     default: RSVP_STATUS.PENDING
-  },
-  // TODO: Add menus for each location
-  menuChoice: {
-    canada: {
-      type: String,
-      default: ''
-    },
-    australia: {
-      type: String,
-      default: ''
-    }
   }
 });
 
@@ -119,11 +108,6 @@ const eventSchema = new mongoose.Schema({
   schedule: [{
     time: String,
     description: String
-  }],
-  menuOptions: [{
-    name: String,
-    description: String,
-    dietaryInfo: String
   }]
 });
 

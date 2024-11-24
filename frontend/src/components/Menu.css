@@ -1,0 +1,96 @@
+.menu-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  
+  .title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    /* border-bottom: 2px solid gold; */
+    padding-bottom: 1rem;
+  }
+  
+  .Canada-menu-section,
+  .Australia-menu-section {
+    margin: 2rem 0;
+    padding: 1rem;
+  }
+  
+  .menu-course {
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #fafafa;
+    border-radius: 6px;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    /* color: #34495e; */
+    margin: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  li {
+    margin: 0.8rem 0;
+    font-size: 1.1rem;
+    /* color: #555; */
+    line-height: 1.6;
+  }
+  
+  .menu-divider {
+    height: 2px;
+    /* background: linear-gradient(to right, transparent, gold, transparent); */
+    margin: 3rem auto;
+    width: 50%;
+  }
+  
+  /* Hover effects */
+  .menu-course:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Media Queries for Responsive Design */
+  @media (max-width: 768px) {
+    .menu-container {
+      padding: 1rem;
+      margin: 1rem;
+    }
+  
+    .title {
+      font-size: 2rem;
+    }
+  
+    h2 {
+      font-size: 1.75rem;
+    }
+  
+    h3 {
+      font-size: 1.25rem;
+    }
+  
+    li {
+      font-size: 1rem;
+    }
+  }
+}

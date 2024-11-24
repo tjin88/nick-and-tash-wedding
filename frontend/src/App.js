@@ -9,6 +9,7 @@ import Menu from './components/Menu';
 import Schedule from './components/Schedule';
 import Registry from './components/Registry';
 import Photos from './components/Photos';
+import FAQ from './components/Faq';
 import Vendors from './components/Vendors';
 import './App.css';
 
@@ -18,10 +19,7 @@ function App({ isAdmin }) {
   const [navOption, setNavOption] = useState('rsvp');
   const [invites, setInvites] = useState([]);
   const [hasRSVPd, setHasRSVPd] = useState(false);
-  const [guests, setGuests] = useState([{
-    "firstName": "Admin",
-    "lastName": ""
-  }]);
+  const [guests, setGuests] = useState([{"firstName": "Admin", "lastName": ""}]);
 
   const [invitedLocation, setInvitedLocation] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -193,8 +191,8 @@ function App({ isAdmin }) {
   
   return (
     <div className="App">
-      { !isOpened && <Start setIsOpened={setIsOpened} guests={guests}/> }
-      { isOpened && <Navbar setNavOption={setNavOption} invitedLocation={invitedLocation}/> }
+      { !isOpened && <Start setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
+      { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
       { isOpened && navOption === 'rsvp' && 
         <Rsvp 
@@ -216,6 +214,7 @@ function App({ isAdmin }) {
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
       { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos}/> }
+      { isOpened && navOption === 'faq' && <FAQ invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>
   );
