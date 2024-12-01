@@ -5,31 +5,28 @@ function Schedule({ invitedLocation }) {
 
   const canadianSchedule = [
     {
-      title: "Welcome Dinner",
-      time: "August 22, 2025, 6:00 PM",
-      location: "Toronto Location",
-      details: [
-        "Welcome dinner for all guests",
-        "Casual attire"
-      ]
+      title: "5 PM: Appetizers and Family Group Photos",
+      // time: "August 23, 2025, 5:00 PM",
+      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
+      details: [],
     },
     {
-      title: "Wedding Ceremony",
-      time: "August 23, 2025, 3:00 PM",
-      location: "Toronto Wedding Venue",
-      details: [
-        "Ceremony begins promptly",
-        "Formal attire"
-      ]
+      title: "6 PM: Guests to be Seated",
+      // time: "August 23, 2025, 6:00 PM",
+      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
+      details: [],
     },
     {
-      title: "Reception",
-      time: "August 23, 2025, 5:00 PM",
-      location: "Toronto Reception Venue",
-      details: [
-        "Cocktail hour",
-        "Dinner and dancing to follow"
-      ]
+      title: "6:30 PM: Food is Served",
+      // time: "August 23, 2025, 6:30 PM",
+      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
+      details: [],
+    },
+    {
+      title: "Dinner and dancing to follow",
+      // time: "August 23, 2025, 6:30 PM",
+      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
+      details: [],
     }
   ];
 
@@ -66,15 +63,15 @@ function Schedule({ invitedLocation }) {
   const renderLocationSchedule = (location) => (
     <div className="schedule-section">
       <div className="schedule-column col-lg-10">
-        <h2 className="schedule-location-title">{invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}Wedding Events</h2>
+        {location !== 'Canada' && <h2 className="schedule-location-title">{invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}Wedding Events</h2>}
         {(location === 'Canada' ? canadianSchedule : australianSchedule).map((item, index) => (
           <div key={index} className="schedule-item">
             <h2>{item.title}</h2>
-            <div className='scheduleHorizontal'>
+            {item.time && item.location && <div className='scheduleHorizontal'>
               <h3>{item.time}</h3>
               <h3>|</h3>
               <h3><em>{item.location}</em></h3>
-            </div>
+            </div>}
             <ul>
               {item.details.map((detail, i) => (
                 <li key={i}>{detail}</li>
@@ -88,7 +85,7 @@ function Schedule({ invitedLocation }) {
 
   return (
     <div className="schedule">
-      <h1 className="schedule-title">Schedule</h1>
+      <h1 className="title schedule-title">Schedule</h1>
       {invitedLocation === 'Both Australia and Canada' ? (
         <div className="schedule-container">
           {renderLocationSchedule('Canada')}

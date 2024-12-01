@@ -1,4 +1,8 @@
+// Adjust mobile to take up full page height and width
 import React, { useState } from 'react';
+import Logo from '../images/logo.png';
+import GooseWhite from '../images/goose_no_white.png';
+import GooseTransparent from '../images/goose_white_wheels.png';
 import './Navbar.css';
 
 function Navbar({ setNavOption, setIsOpened, invitedLocation }) {
@@ -31,9 +35,9 @@ function Navbar({ setNavOption, setIsOpened, invitedLocation }) {
 
   return (
     <nav className="navbar">
-      <div className="logo" onClick={() => handleClick("start")}>
-        <p>N&N</p>
-      </div>
+      {/* <img src={Logo} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
+      <img src={GooseWhite} alt="N&N" className="logo" onClick={() => handleClick("start")} />
+      {/* <img src={GooseTransparent} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
       <div className="menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <p>{isMenuOpen ? 'X' : '☰'}</p>
       </div>

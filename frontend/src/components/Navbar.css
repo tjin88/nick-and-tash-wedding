@@ -4,15 +4,18 @@
   align-items: center;
   position: sticky;
   top: 0;
-  background-color: #fff;
+  /* background-color: #edc7c7; */
+  background-color: #E6C3C1;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 0 20px;
   z-index: 1000;
 }
 
-.logo p {
+.logo {
+  width: 150px;
+  height: auto;
   font-size: 20px;
-  color: #b5838d;
+  color: #3C4C24;
 }
 
 .menu-icon {
@@ -34,16 +37,22 @@
 
 .nav-links p {
   margin: 0;
-  color: #333;
+  color: #3C4C24;
   font-size: 16px;
+  font-weight: bold;
 }
 
 .nav-links p:hover {
-  color: #007BFF;
+  color: #566d31;
 }
 
 /* Media Settings for Mobile */
 @media (max-width: 700px) {
+  .logo {
+    width: 75px;
+    height: auto;
+  }
+
   .menu-icon {
     display: block;
   }
@@ -54,9 +63,9 @@
     width: 100%;
     display: none;
     position: absolute;
-    top: 60px;
+    top: 75px;
     left: 0;
-    background-color: #fff;
+    background-color: #E6C3C1;
     box-shadow: 0 4px 5px rgba(0,0,0,0.2);
   }
 

@@ -33,6 +33,23 @@ function App({ isAdmin }) {
   const socket = io('https://nick-and-tash-wedding.onrender.com');
   // const socket = io('http://localhost:3003');
 
+  const locations = {
+    canada: {
+      venue: "Sheraton Toronto Airport Hotel & Conference Centre",
+      address: "801 Dixon Road, Toronto, ON",
+      date: "August 23, 2025",
+      time: "[Canadian Time]",
+      fullAddress: "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON"
+    },
+    australia: {
+      venue: "Tiffany’s Maleny",
+      address: "409 Mountain View Road, Maleny Qld 4552",
+      date: "October 11, 2025",
+      time: "[Australian Time]",
+      fullAddress: "Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552"
+    }
+  };
+
   useEffect(() => {
     // Handle photo updates --> photoData = {url: '...', location: '...'}
     socket.on('photo-updated', (photoData) => {
@@ -191,7 +208,7 @@ function App({ isAdmin }) {
   
   return (
     <div className="App">
-      { !isOpened && <Start setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
+      { !isOpened && <Start locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
       { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
       { isOpened && navOption === 'rsvp' && 
@@ -208,13 +225,14 @@ function App({ isAdmin }) {
           invitedLocation={invitedLocation}
           selectedLocation={selectedLocation}
           setSelectedLocation={setSelectedLocation}
+          locations={locations}
         /> 
       }
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
       { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos}/> }
-      { isOpened && navOption === 'faq' && <FAQ invitedLocation={invitedLocation} /> }
+      { isOpened && navOption === 'faq' && <FAQ locations={locations} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>
   );

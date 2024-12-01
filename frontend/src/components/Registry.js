@@ -64,7 +64,7 @@ function Registry({ registry, setRegistry, isAdmin }) {
   return (
     <div className='registry'>
       <div className='left-side'>
-        <h1 className='registry-title'>Registry</h1>
+        <h1 className='title'>Registry</h1>
         {isAdmin && <button onClick={handleAddItem} className='update-registry'>Add new item</button>}
       </div>
       <ul className='right-side'>

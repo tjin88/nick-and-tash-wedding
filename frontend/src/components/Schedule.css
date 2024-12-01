@@ -2,13 +2,9 @@
   padding-left: 10px;
 }
 
-.schedule .schedule-title {
-    padding: 0 0 0 20px;
-    font-weight: 700;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: #000000;
-  }
+.schedule-title {
+  margin: 20px 8vw;
+}
 
   @media (min-width: 991px) {
     .schedule .schedule-column {
@@ -19,16 +15,16 @@
   .schedule .schedule-item {
     padding: 0 0 20px 20px;
     margin-top: -2px;
-    border-left: 2px solid #b5838d;
+    border-left: 2px solid #E6C3C1;
     position: relative;
   }
   
   .schedule .schedule-item h2 {
-    line-height: 18px;
+    /* line-height: 18px; */
     font-weight: 600;
     text-transform: uppercase;
     font-family: "Poppins", sans-serif;
-    color: #b5838d;
+    color: #3C4C24;
     margin: 0 0 10px;
   }
   
@@ -67,7 +63,7 @@
     left: -9px;
     top: 0;
     background: #fff;
-    border: 2px solid #b5838d;
+    border: 2px solid #E6C3C1;
   }
 
   .schedule .schedule-item .scheduleHorizontal {

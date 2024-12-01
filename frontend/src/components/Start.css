@@ -1,67 +1,231 @@
 .startInvitation {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    /* background-image: url('../images/Welcome_Photo.png'); */
-    background-image: url('../images/nick_and_tash_cropped.jpg');
-    background-size: cover;
-    background-position: center;
-    color: #ffffff;
-    position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  /* background-image: url('../images/nick_and_tash_cropped.jpg');
+  background-size: cover;
+  background-position: left; */
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.startInvitation::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.4) 0%,
+      rgba(0,0,0,0.5) 50%,
+      rgba(0,0,0,0.6) 100%
+  );
+  z-index: 1;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../images/nick_and_tash_cropped.jpg');
+  background-size: cover;
+  background-position: left;
+  transition: opacity 1.5s ease;
+}
+
+.background-image-mobile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../images/nick_and_tash_vertical.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.content {
+  text-align: center;
+  padding: 20px;
+  z-index: 1;
+  width: 100%;
+  max-width: 800px;
+}
+  
+.startInvitation h1 {
+  font-size: 2.5em;
+  margin: 10px 0;
+}
+
+.startInvitation p {
+  font-size: 1.2em;
+  margin: 5px 0;
+}
+
+.startCountdown {
+  display: flex;
+  justify-content: center;
+  font-size: 1em;
+  margin-top: 20px;
+}
+
+.startCountdown p {
+  margin: 0 10px;
+}
+
+.startInvitation button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #6d6875;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+  color: #ffffff;
+}
+
+.startInvitation button:hover {
+  background-color: #E6C3C1;
+}
+
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.countdown-table {
+  border-collapse: separate;
+  border-spacing: 15px 10px;
+}
+
+.countdown-table td {
+  white-space: nowrap;
+  text-align: center;
+  border: 0px;
+  padding: 0px;
+}
+
+.location-cell {
+  color: white;
+  text-decoration: none;
+}
+
+/* .location-cell {
+  min-width: 80px;
+}
+
+.date-cell {
+  min-width: 140px;
+}
+
+.days-cell {
+  min-width: 120px;
+} */
+
+@media screen and (max-width: 768px) {
+  .background-image {
+    opacity: 0;
   }
   
-  .startInvitation::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+  .background-image-mobile {
+      opacity: 1;
   }
-  
+
+  /* .startInvitation {
+      background-image: url('../images/nick_and_tash_vertical.jpg');
+      background-position: center;
+  } */
+
   .content {
-    text-align: center;
-    padding: 20px;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 60px;
+    height: 100%;
   }
-  
+
+  .startInvitation::before {
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.2) 0%,
+      rgba(0,0,0,0.3) 60%,
+      rgba(0,0,0,0.6) 90%,
+      rgba(0,0,0,0.8) 100%
+    );
+  }
+
   .startInvitation h1 {
-    font-size: 2.5em;
-    margin: 10px 0;
+    font-size: 1.8em;
+    margin: 8px 0;
+  }
+
+  .startInvitation p {
+    font-size: 1em;
+    margin: 4px 0;
+  }
+
+  .canadaStartCountdown,
+  .australiaStartCountdown {
+    margin: 8px 0;
+  }
+
+  .startInvitation button {
+    margin: 16px auto;
+    width: 80%;
+    max-width: 300px;
+    padding: 12px 20px;
+  }
+
+  .countdown-table {
+    border-spacing: 8px 8px;
+  }
+
+  .countdown-table td {
+      font-size: 0.9em;
+  }
+
+  /* .location-cell {
+      min-width: 60px;
+  }
+
+  .date-cell {
+      min-width: 110px;
+  }
+
+  .days-cell {
+      min-width: 90px;
+  } */
+}
+
+/* Add specific iPhone SE/small device optimization */
+@media screen and (max-width: 380px) {
+  .startInvitation h1 {
+    font-size: 1.5em;
   }
   
   .startInvitation p {
-    font-size: 1.2em;
-    margin: 5px 0;
+    font-size: 0.9em;
   }
-  
-  .startCountdown {
-    display: flex;
-    justify-content: center;
-    font-size: 1em;
-    margin-top: 20px;
+
+  .content {
+    padding-bottom: 40px;
   }
-  
-  .startCountdown p {
-    margin: 0 10px;
+
+  .countdown-table {
+    border-spacing: 4px 6px;
   }
-  
-  .startInvitation button {
-    padding: 10px 20px;
-    font-size: 1em;
-    background-color: #6d6875;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s;
-    color: #ffffff;
+
+  .countdown-table td {
+      font-size: 0.8em;
   }
-  
-  .startInvitation button:hover {
-    background-color: #b5838d;
-  }
-  
+}

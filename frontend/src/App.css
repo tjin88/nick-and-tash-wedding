@@ -1,6 +1,12 @@
 .title {
-  color: #b5838d;
+  color: #3C4C24;
   font-size: 2.5em;
+  text-align: center;
+}
+
+.h1 {
+  color: #3C4C24;
+  /* font-size: 2em; */
 }
 
 table {

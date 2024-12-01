@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import QRCode from 'qrcode.react';
 import './Rsvp.css';
 
-function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation }) {
+function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation, locations }) {
   const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '', attendingStatus: ''});
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
@@ -135,30 +135,109 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     }
   };
 
+  const getLocationGoogleMaps = () => {
+    if (invitedLocation === 'Both Australia and Canada') {
+      return (
+        <div className="map-large-container">
+          <div className="map-container">
+            <iframe
+              title="Wedding Venue Location"
+              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(locations.canada.fullAddress)}`}
+              width="100%"
+              height="300"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <a 
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.canada.fullAddress)}`}
+              className="directions-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get Directions →
+            </a>
+          </div>
+          <div className="map-container">
+            <iframe
+              title="Wedding Venue Location"
+              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(locations.australia.fullAddress)}`}
+              width="100%"
+              height="300"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <a 
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.australia.fullAddress)}`}
+              className="directions-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get Directions →
+            </a>
+          </div>
+        </div>
+      );
+    }
+    const locationInfo = invitedLocation === 'Australia' ? locations.australia : locations.canada;
+    return (
+      <div className="map-container">
+        <iframe
+          title="Wedding Venue Location"
+          src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(locationInfo.fullAddress)}`}
+          width="100%"
+          height="300"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+        <a 
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locationInfo.fullAddress)}`}
+          className="directions-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Get Directions →
+        </a>
+      </div>
+    );
+  };
+
   return (
     <div className="rsvp-table-container">
-      <h1>RSVP</h1>
+      <h1 className='title'>RSVP</h1>
       <p>Please join us in celebrating Nicholas and Natasha’s wedding</p>
       <p>Kindly let us know if you’ll be joining us in celebrating our special day by RSVP-ing before May 1, 2025 — we can’t wait to hear from you!</p>
-      {(invitedLocation === "Canada" || invitedLocation === "Both Australia and Canada") && <p>Canada Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>}
-      {(invitedLocation === "Australia" || invitedLocation === "Both Australia and Canada") && <p>Australia Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
+      {invitedLocation === "Canada" && <p>Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>}
+      {invitedLocation === "Australia" && <p>Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
+      {invitedLocation === "Both Australia and Canada" && 
+        <>
+          <p>Canada Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>
+          <p>Australia Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>
+        </>
+      }
+      {getLocationGoogleMaps()}
       {!isAdmin && (<div className='rsvp-table'>
         <table>
           <thead>
             <tr>
               <th>Guests</th>
-              <th>Name</th>
+              {/* {givenPlusOne && <th>Name</th>} */}
               <th>Dietary Requirements</th>
               <th className='horizontal'>
                 Status
-                {guests.length > 1 && <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>}
+                {/* {guests.length > 1 && <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>} */}
               </th>
             </tr>
           </thead>
           <tbody>
             {guests.map((guest, index) => (
               <tr key={index}>
-                <td>Invited</td>
+                {/* {givenPlusOne && <td>Invited</td>} */}
                 <td>{guest.firstName} {guest.lastName}</td>
                 <td>
                   <input
@@ -182,7 +261,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             ))}
             {givenPlusOne && (
               <tr>
-                <td>Plus One</td>
+                {/* <td>Plus One</td> */}
                 <td className="plusOneInput">
                   <input 
                     type="text" 

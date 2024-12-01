@@ -10,12 +10,6 @@
     flex-direction: column;
     align-items: center;
   }
-  
-  .title {
-    font-size: 2.5em;
-    color: #b5838d;
-    margin-bottom: 16px;
-  }
 
   .subtitle {
     font-size: 1.5em;

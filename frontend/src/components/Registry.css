@@ -27,11 +27,11 @@
 
 .registry-title {
   font-size: 2.5em;
-  color: #b5838d;
+  color: #E6C3C1;
 }
 
 .update-registry, .delete-item {
-  background-color: #b5838d;
+  background-color: #E6C3C1;
   color: white;
   border: none;
   border-radius: 4px;
@@ -69,11 +69,11 @@
 
 input[type="checkbox"] {
   margin-right: 10px;
-  accent-color: #b5838d;
+  accent-color: #E6C3C1;
 }
 
 input[type="checkbox"]:focus {
-  border-color: #b5838d;
+  border-color: #E6C3C1;
 }
 
 /* Media Query for Mobile Devices */

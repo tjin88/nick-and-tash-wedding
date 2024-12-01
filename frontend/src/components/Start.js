@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Start.css';
 
-function Start({ setIsOpened, guests, invitedLocation }) {
+function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
   const currentDate = new Date();
   const canadaWeddingDate = new Date('August 23, 2025 00:00:00');
   const australiaWeddingDate = new Date('October 11, 2025 00:00:00');
@@ -15,27 +15,82 @@ function Start({ setIsOpened, guests, invitedLocation }) {
 
   const [showCanada, setShowCanada] = useState(false);
   const [showAustralia, setShowAustralia] = useState(false);
-    
+  const [password, setPassword] = useState('');
+
   useEffect(() => {
     setShowCanada(invitedLocation === 'Canada' || invitedLocation === 'Both Australia and Canada');
     setShowAustralia(invitedLocation === 'Australia' || invitedLocation === 'Both Australia and Canada');
   }, [invitedLocation, showCanada, showAustralia]);
+
+  const handlePasswordCheck = () => {
+    if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
+      setIsOpened(true);
+    } else {
+      window.location.href = "/invalid-invite";
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handlePasswordCheck();
+    }
+  };
   
   return (
     <div className="startInvitation">
+      <div className="background-image"></div>
+      <div className="background-image-mobile"></div>
       <div className="content">
         <p>{formattedGuestNames}, you're invited to</p>
         <h1>Nicholas and Natasha’s Wedding</h1>
-        <button onClick={() => setIsOpened(true)}>Open Invitation</button>
-
-        {/* TODO: Might be better to make these two a table, then center each */}
-        <div>
-          {showCanada && (<div className='canadaStartCountdown'>
-            <p>Toronto | August 23, 2025 | {canadaDaysRemaining} Days To Go</p>
-          </div>)}
-          {showAustralia && (<div className='australiaStartCountdown'>
-            <p>Brisbane | October 11, 2025 | {australiaDaysRemaining} Days To Go</p>
-          </div>)}
+        {isAdmin ? (
+          <div className="password-container">
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="password-input"
+            />
+            <button onClick={handlePasswordCheck}>Open Invitation</button>
+          </div>
+        ) : (
+          <button onClick={() => setIsOpened(true)}>Open Invitation</button>
+        )}
+        <div className="countdown-container">
+          <table className="countdown-table">
+            <tbody>
+              {showCanada && (
+                <tr className="canada-row">
+                  <a 
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.canada.fullAddress)}`}
+                    className="location-cell"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {locations.canada.fullAddress}
+                  </a>
+                  <td className="date-cell">August 23, 2025</td>
+                  <td className="days-cell">{canadaDaysRemaining} Days To Go</td>
+                </tr>
+              )}
+              {showAustralia && (
+                <tr className="australia-row">
+                  <a 
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.australia.fullAddress)}`}
+                    className="location-cell"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {locations.australia.fullAddress}
+                  </a>
+                  <td className="date-cell">October 11, 2025</td>
+                  <td className="days-cell">{australiaDaysRemaining} Days To Go</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

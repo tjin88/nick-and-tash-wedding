@@ -47,27 +47,53 @@ const FAQItem = ({ question, answer, isOpen, onClick, location }) => {
   );
 };
 
-const FAQ = ({ invitedLocation }) => {
+const FAQ = ({ invitedLocation, locations }) => {
   const [openItems, setOpenItems] = useState(new Set());
 
-  const locations = {
-    canada: {
-      venue: "Sheraton Toronto Airport Hotel & Conference Centre",
-      address: "801 Dixon Road, Toronto, ON",
-      date: "August 23, 2025",
-      time: "[Canadian Time]",
-      fullAddress: "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON"
-    },
-    australia: {
-      venue: "Tiffany’s Maleny",
-      address: "409 Mountain View Road, Maleny Qld 4552",
-      date: "October 11, 2025",
-      time: "[Australian Time]",
-      fullAddress: "Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552"
-    }
-  };
-
   const generateFAQData = () => {
+    const canadaFAQs = [
+      {
+        question: "Is there a group rate for the Sheraton Parkway Toronto North Hotel & Suites?",
+        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.\nIf interested, please use this link to make your reservation: Book your group rate for Natasha & Nicholas Wedding Reception\nFYI: The wedding party, including parents will be staying at the Sheraton:\nChecking-in: Friday, August 22, 2025\nChecking-out: Sunday, August 24, 2025\nPlease note that the last day to book at this group rate is Wednesday, July 23, 2025"
+      },
+      {
+        question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
+        answer: "Please email Susie Jin. Invitations are intended for family and friends of Nick and Natasha, including spouses and established partners of family and friends. If we missed your significant other, please email Susie.jin@alumni.uToronto.ca to let us know you have a plus one that we missed😳"
+      },
+      {
+        question: "Will there be parking available?",
+        answer: "Yes, LOTS of parking available"
+      },
+      {
+        question: "What is the dress code?",
+        answer: "The dress code for our wedding is semi-formal. Elegant attire such as suits or cocktail dresses are suggested. The entire Canadian wedding reception is expected to take place indoors of the Sheraton ballroom. Thus, inclement weather should not be an issue."
+      },
+      {
+        question: "Can I bring my kids?",
+        answer: "Up to you… he he… Kids are welcome. Some kids are fine with the regular 10-course meal with dessert. However, please let us know if we could be helpful by making arrangements for anything like a booster chair (or high-chair) or a kids meal. Email either or both of susie.jin@alumni.utoronto.ca or 2tennisbums@gmail.com."
+      },
+      {
+        question: "What if I have a dietary requirement?",
+        answer: "The menu is a traditional 10-course with dessert Chinese wedding reception meal. Please take a look at the “menu” tab. If you have any dietary requirements, please make a note when you RSVP so that we are able to accommodate for you."
+      },
+      {
+        question: "Wheelchair and accessibility access",
+        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to either or both of susie.jin@alumni.utoronto. ca or 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible (e.g., if you prefer to be seated as close as possible to the dance floor to minimize walking 💃🏻💃🏻😊)"
+      },
+      {
+        question: "Do you have a gift registry?",
+        answer: "Hugs are THE BEST present❣️ However, if you really feel it necessary to give beyond a hug, a small gift can be sent via e-transfer to nnjin22@gmail.com. We will also have a decorated box at the reception to collect cards and well wishes."
+      },
+      {
+        question: "Where can I find the photos afterward?",
+        answer: "Photos taken by the professional photographer will be available on this website shortly after the celebration"
+      },
+      {
+        question: "Who should I contact if I have questions about the wedding?",
+        answer: "Please reach out to either or both of: Susie and James Jin. susie.jin@alumni.utoronto.ca or 2tennisbums@gmail.com"
+      },
+    ];
+
     const commonFAQs = [
       {
         question: "Can I bring a plus one?",
@@ -93,34 +119,31 @@ const FAQ = ({ invitedLocation }) => {
         question: "Accommodation",
         answer: "[Some answer]"
       },
-      {
-        question: "Parking",
-        answer: "[Some answer]"
-      },
-      {
-        question: "Photos",
-        answer: "[Some answer]"
-      },
     ];
 
-    if (invitedLocation === 'Both Australia and Canada') {
-      return [
-        {
-          question: "When and where is the Australian wedding?",
-          answer: `Our Australian wedding ceremony will take place on: ${locations.australia.date} at ${locations.australia.venue}, ${locations.australia.address}. The ceremony will begin at ${locations.australia.time}.`,
-          location: locations.australia.fullAddress
-        },
-        {
-          question: "When and where is the Canadian wedding?",
-          answer: `Our Canadian wedding ceremony will take place on: ${locations.canada.date} at ${locations.canada.venue}, ${locations.canada.address}. The ceremony will begin at ${locations.canada.time}.`,
-          location: locations.canada.fullAddress
-        },
-        {
-          question: "Do I need to attend both ceremonies?",
-          answer: "No, you're welcome to attend either or both ceremonies. Please RSVP for the celebration(s) you plan to attend."
-        },
-        ...commonFAQs
-      ];
+    if (invitedLocation === 'Both Australia and Canada' || invitedLocation === 'Canada') {
+      return canadaFAQs;
+      // return [
+      //   {
+      //     question: "When and where is the Australian wedding?",
+      //     answer: `Our Australian wedding ceremony will take place on: ${locations.australia.date} at ${locations.australia.venue}, ${locations.australia.address}. The ceremony will begin at ${locations.australia.time}.`,
+      //     location: locations.australia.fullAddress
+      //   },
+      //   {
+      //     question: "When and where is the Canadian wedding?",
+      //     answer: `Our Canadian wedding ceremony will take place on: ${locations.canada.date} at ${locations.canada.venue}, ${locations.canada.address}. The ceremony will begin at ${locations.canada.time}.`,
+      //     location: locations.canada.fullAddress
+      //   },
+      //   {
+      //     question: "Do I need to attend both ceremonies?",
+      //     answer: "No, you're welcome to attend either or both ceremonies. Please RSVP for the celebration(s) you plan to attend."
+      //   },
+      //   {
+      //     question: "Photos",
+      //     answer: "[Some answer]"
+      //   },
+      //   ...commonFAQs
+      // ];
     }
 
     const locationInfo = invitedLocation === 'Canada' ? locations.canada : locations.australia;
@@ -136,6 +159,12 @@ const FAQ = ({ invitedLocation }) => {
           ? "Yes, both self-parking and valet services are available at the Sheraton Toronto Airport Hotel."
           : "Yes, parking is available at the venue. [Additional Australian parking details]"
       },
+      invitedLocation === 'Canada' 
+        ? {}
+        : {
+            question: "Photos",
+            answer: "[Some answer]"
+        },
       ...commonFAQs
     ];
   };
@@ -152,7 +181,7 @@ const FAQ = ({ invitedLocation }) => {
 
   return (
     <div className="faq-container">
-      <h2 className="faq-header">Frequently Asked Questions</h2>
+      <h2 className="title">Frequently Asked Questions</h2>
       <div className="faq-list">
         {generateFAQData().map((item, index) => (
           <FAQItem
