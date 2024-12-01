@@ -19,7 +19,7 @@ const FAQItem = ({ question, answer, isOpen, onClick, location }) => {
       </button>
       
       <div className={`faq-answer ${isOpen ? 'open' : ''}`}>
-        <p>{answer}</p>
+        <div dangerouslySetInnerHTML={{ __html: answer }} />
         {location && isOpen && (
           <div className="map-container">
             <iframe
@@ -54,7 +54,11 @@ const FAQ = ({ invitedLocation, locations }) => {
     const canadaFAQs = [
       {
         question: "Is there a group rate for the Sheraton Parkway Toronto North Hotel & Suites?",
-        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.\nIf interested, please use this link to make your reservation: Book your group rate for Natasha & Nicholas Wedding Reception\nFYI: The wedding party, including parents will be staying at the Sheraton:\nChecking-in: Friday, August 22, 2025\nChecking-out: Sunday, August 24, 2025\nPlease note that the last day to book at this group rate is Wednesday, July 23, 2025"
+        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.<br /><br />If interested, please use this link to make your reservation: Book your group rate for Natasha & Nicholas Wedding Reception<br /><br />FYI: The wedding party, including parents will be staying at the Sheraton:<br />Checking-in: Friday, August 22, 2025<br />Checking-out: Sunday, August 24, 2025<br /><br />Please note that the last day to book at this group rate is Wednesday, July 23, 2025"
+      },
+      {
+        question: "Will there be a ceremony followed by the reception?",
+        answer: "Nick and Tash will be married in a private civil service on Friday, August 22, 2024.<br /><br />We hope you can join us in Toronto for this wedding reception (supper, speeches and dancing) so that we can begin our lives together surrounded by all those who we love."
       },
       {
         question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",

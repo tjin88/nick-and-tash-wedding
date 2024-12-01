@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CountdownTimer from '../utils/CountdownTimer';
 import './Start.css';
 
 function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
@@ -42,7 +43,8 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
       <div className="background-image-mobile"></div>
       <div className="content">
         <p>{formattedGuestNames}, you're invited to</p>
-        <h1>Nicholas and Natasha’s Wedding</h1>
+        <h1>Nicholas and Natasha’s</h1>
+        <h1>Wedding Reception</h1>
         {isAdmin ? (
           <div className="password-container">
             <input
@@ -58,11 +60,26 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
         ) : (
           <button onClick={() => setIsOpened(true)}>Open Invitation</button>
         )}
-        <div className="countdown-container">
+        {showCanada && (
+          <div className="canada-row">
+            <p className="date-cell">August 23, 2025</p>
+            <a 
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.canada.fullAddress)}`}
+              className="location-cell"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {locations.canada.fullAddress}
+            </a>
+            <CountdownTimer targetDate={canadaWeddingDate} />
+          </div>
+        )}
+        {/* <div className="countdown-container">
           <table className="countdown-table">
             <tbody>
               {showCanada && (
                 <tr className="canada-row">
+                  <td className="date-cell">August 23, 2025</td>
                   <a 
                     href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.canada.fullAddress)}`}
                     className="location-cell"
@@ -71,7 +88,6 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
                   >
                     {locations.canada.fullAddress}
                   </a>
-                  <td className="date-cell">August 23, 2025</td>
                   <td className="days-cell">{canadaDaysRemaining} Days To Go</td>
                 </tr>
               )}
@@ -91,7 +107,7 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
               )}
             </tbody>
           </table>
-        </div>
+        </div> */}
       </div>
     </div>
   );

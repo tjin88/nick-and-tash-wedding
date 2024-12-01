@@ -21,7 +21,7 @@ const personSchema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    required: true
+    // required: true
   },
   dietaryRequirements: {
     type: String,

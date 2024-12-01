@@ -166,12 +166,12 @@
 
   .startInvitation h1 {
     font-size: 1.8em;
-    margin: 8px 0;
+    margin: 0 0;
   }
 
   .startInvitation p {
     font-size: 1em;
-    margin: 4px 0;
+    margin: 2px 0;
   }
 
   .canadaStartCountdown,
@@ -180,7 +180,7 @@
   }
 
   .startInvitation button {
-    margin: 16px auto;
+    margin: 0 auto;
     width: 80%;
     max-width: 300px;
     padding: 12px 20px;
