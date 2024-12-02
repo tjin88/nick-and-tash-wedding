@@ -111,6 +111,56 @@ def format_guest_list(guests):
     else:
         return f"{', '.join(guests[:-1])}, and {guests[-1]}"
 
+def generate_calendar_links(event_title, start_datetime, end_datetime, location, description):
+    """
+    Generate Google Calendar and Apple/Outlook Calendar links.
+
+    Args:
+        event_title (str): The title of the event.
+        start_datetime (str): Start datetime in the format "YYYYMMDDTHHMMSSZ".
+        end_datetime (str): End datetime in the format "YYYYMMDDTHHMMSSZ".
+        location (str): The event's location.
+        description (str): Event description.
+
+    Returns:
+        tuple: Google Calendar link, Apple/Outlook .ics content link.
+    """
+    # Google Calendar link
+    base_google = "https://www.google.com/calendar/render?"
+    google_params = {
+        'action': 'TEMPLATE',
+        'text': event_title,
+        'dates': f"{start_datetime}/{end_datetime}",
+        'details': description,
+        'location': location
+    }
+    google_link = base_google + urlencode(google_params)
+
+    # Apple/Outlook Calendar .ics content
+    ics_content = f"""BEGIN:VCALENDAR
+                VERSION:2.0
+                PRODID:-//NickAndTashWedding//NONSGML v1.0//EN
+                BEGIN:VEVENT
+                UID:nick-and-tash-canada-wedding-20250823
+                DTSTAMP:{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}
+                DTSTART:{start_datetime}
+                DTEND:{end_datetime}
+                SUMMARY:{event_title}
+                DESCRIPTION:{description}
+                LOCATION:{location}
+                END:VEVENT
+                END:VCALENDAR
+            """
+    
+    # Encode ICS content to make it URL-safe
+    encoded_ics_content = urlencode({'text/calendar': ics_content})
+    
+    # Encode .ics content as a data URL
+    apple_outlook_link = f"data:text/calendar;charset=utf8,{encoded_ics_content}"
+
+    return google_link, apple_outlook_link
+
+
 def process_and_send_invites(dataframe, email_manager, invite_manager, image_path=None):
     """Process the guest list and send emails"""
     results = []
@@ -134,6 +184,13 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
             # Format guest names for greeting
             greeting = format_guest_list(guests)
             wedding_date = "23 AUGUST 2025"
+            google_link, apple_outlook_link = generate_calendar_links(
+                event_title="Nicholas & Natasha's Wedding",
+                start_datetime="20250823T220000Z",
+                end_datetime="20250824T000000Z",
+                location="Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON",
+                description="Join us to celebrate the wedding of Nicholas and Natasha!"
+            )
             
             # Generate HTML email content
             email_content = f"""
@@ -143,32 +200,37 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                 <style>
                     body {{
                         font-family: Arial, sans-serif;
-                        line-height: 1.6;
                         color: #333333;
                         max-width: 600px;
                         margin: 0 auto;
                         text-align: center;
+                        line-height: 1.6;
                     }}
                     .title {{
-                        font-size: 24px;
-                        margin: 20px 0;
+                        font-size: 28px;
+                        font-weight: bold;
+                        margin-top: 20px;
                     }}
                     .date {{
-                        font-size: 18px;
-                        margin: 15px 0;
+                        font-size: 20px;
+                        color: #555555;
+                        margin: 10px 0;
                     }}
                     .content {{
-                        text-align: left;
                         margin: 20px 0;
                     }}
                     .button {{
                         display: inline-block;
                         padding: 10px 20px;
-                        background-color: #333333;
+                        margin: 10px;
+                        background-color: #3c4c24;
                         color: white;
                         text-decoration: none;
                         border-radius: 5px;
-                        margin: 10px 0;
+                        font-size: 16px;
+                    }}
+                    .button:hover {{
+                        background-color: #566d31;
                     }}
                     .footer {{
                         margin-top: 30px;
@@ -184,25 +246,36 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                     <div class="date">{wedding_date}</div>
                     
                     <div class="content">
-                        Dear {greeting},
-                        <br><br>
-                        We're making it official, and you're cordially invited!
-                        <br><br>
-                        We have a wedding website with all the details—from travel and lodging to the day-of schedule and what to wear. 
+                        Dear {greeting},<br><br>
+                        We're making it official, and you're cordially invited! We have a wedding website with all the 
+                        details—from travel and lodging to the day-of schedule and what to wear. 
                         Take a look to RSVP and find more information. We hope you can join us!
-                        <br><br>
-                        {"You are welcome to bring a plus one to our celebration!<br><br>" if has_plus_one else ""}
                     </div>
 
                     <a href="{invite_link}" class="button">View Invitation</a>
-                    
+                    <a href="{google_link}" class="button">Add to Google Calendar</a>
+                    <a href="{apple_outlook_link}" class="button">Add to Apple/Outlook Calendar</a>
+
                     <div class="footer">
-                        This message was sent on behalf of Nicholas and Natasha.
+                        This message was sent on behalf of Nicholas & Natasha. 
                     </div>
                 </div>
             </body>
             </html>
+
             """
+
+            google_link, apple_outlook_link = generate_calendar_links(
+                event_title="Nicholas & Natasha's Wedding",
+                start_datetime="20241117T140000Z",
+                end_datetime="20241117T180000Z",
+                location="Wedding Venue, City, Country",
+                description="Join us to celebrate the wedding of Nicholas & Natasha!"
+            )
+
+            email_content = email_content.replace(
+                "{{CALENDAR_LINK}}", google_link
+            )
             
             # Send the email
             subject = "Save the Date - Nick & Tash's Wedding Celebration"

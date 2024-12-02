@@ -62,11 +62,11 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
-        answer: "Please email Susie Jin. Invitations are intended for family and friends of Nick and Natasha, including spouses and established partners of family and friends. If we missed your significant other, please email Susie.jin@alumni.uToronto.ca to let us know you have a plus one that we missed😳"
+        answer: "Please email Susie Jin. Invitations are intended for family and friends of Nick and Natasha, including spouses and established partners of family and friends. If we missed your significant other, please email 2tennisbums@gmail.com to let us know you have a plus one that we missed 😳"
       },
       {
         question: "Will there be parking available?",
-        answer: "Yes, LOTS of parking available"
+        answer: "Yes, there will be plenty of parking available. Parking will be free for all guests attending the wedding reception."
       },
       {
         question: "What is the dress code?",
@@ -74,7 +74,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Can I bring my kids?",
-        answer: "Up to you… he he… Kids are welcome. Some kids are fine with the regular 10-course meal with dessert. However, please let us know if we could be helpful by making arrangements for anything like a booster chair (or high-chair) or a kids meal. Email either or both of susie.jin@alumni.utoronto.ca or 2tennisbums@gmail.com."
+        answer: "Kids are welcome. Some kids are fine with the regular 10-course meal with dessert. However, please let us know if we could be helpful by making arrangements for anything like a booster chair (or high-chair) or a kids meal. Please email 2tennisbums@gmail.com with any questions."
       },
       {
         question: "What if I have a dietary requirement?",
@@ -82,11 +82,11 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Wheelchair and accessibility access",
-        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to either or both of susie.jin@alumni.utoronto. ca or 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible (e.g., if you prefer to be seated as close as possible to the dance floor to minimize walking 💃🏻💃🏻😊)"
+        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible (e.g., if you prefer to be seated as close as possible to the dance floor to minimize walking 💃🏻💃🏻😊)"
       },
       {
         question: "Do you have a gift registry?",
-        answer: "Hugs are THE BEST present❣️ However, if you really feel it necessary to give beyond a hug, a small gift can be sent via e-transfer to nnjin22@gmail.com. We will also have a decorated box at the reception to collect cards and well wishes."
+        answer: "Hugs are THE BEST present !! However, if you really feel it necessary to give beyond a hug, a small gift can be sent via e-transfer to nnjin22@gmail.com. We will also have a decorated box at the reception to collect cards and well wishes."
       },
       {
         question: "Where can I find the photos afterward?",
@@ -94,7 +94,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Who should I contact if I have questions about the wedding?",
-        answer: "Please reach out to either or both of: Susie and James Jin. susie.jin@alumni.utoronto.ca or 2tennisbums@gmail.com"
+        answer: "Please reach out to Susie Jin: 2tennisbums@gmail.com."
       },
     ];
 

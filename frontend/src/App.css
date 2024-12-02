@@ -1,11 +1,18 @@
+/* Apply the font family to all elements */
+* {
+  font-family: Poppins, sans-serif;
+}
+
 .title {
   color: #3C4C24;
   font-size: 2.5em;
   text-align: center;
+  font-family: Poppins, sans-serif;
 }
 
 .h1 {
   color: #3C4C24;
+  font-family: Poppins, sans-serif;
   /* font-size: 2em; */
 }
 

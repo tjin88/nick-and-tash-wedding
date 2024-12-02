@@ -7,6 +7,9 @@ import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 import { Server } from 'socket.io';
 import http from 'http';
+import ics from 'ics';
+import { format } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
 
 // Schema Imports
 import { Invite, Event, WEDDING_LOCATIONS, RSVP_STATUSES } from "./schemas/InviteSchema.js";
@@ -382,6 +385,64 @@ app.delete('/api/vendors/:role', async (req, res) => {
       return res.status(404).json({ message: "Vendor not found. Failed to delete vendor." });
     }
     res.status(200).json({ message: "Vendor deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/download-ics/:id', async (req, res) => {
+  try {
+    const invite = await Invite.findById(req.params.id);
+    if (!invite) return res.status(404).json({ message: "Invite not found" });
+
+    const eventObj = {
+      start_datetime: "2025-08-23 22:00:00", // Local time
+      end_datetime: "2025-08-24 00:00:00",   // Local time
+      location: "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON",
+      eventName: "Nicholas & Natasha's Wedding",
+      description: "Join us to celebrate Nicholas and Natasha's Wedding Reception!",
+    };
+
+    // Convert start and end datetime to UTC format for ICS
+    const start = format(new Date(eventObj.start_datetime), "yyyyMMdd'T'HHmmss'Z'");
+    const end = format(new Date(eventObj.end_datetime), "yyyyMMdd'T'HHmmss'Z'");
+    const dtstamp = format(new Date(), "yyyyMMdd'T'HHmmss'Z'"); // current UTC timestamp
+
+    const uid = uuidv4(); // Generate unique UID for the event
+
+    // Define the ICS data
+    const event = {
+      start: [2025, 8, 23, 17, 0],  // Year, Month, Day, Hour, Minute
+      end: [2025, 8, 24, 0, 0],     // Year, Month, Day, Hour, Minute
+      title: eventObj.eventName,
+      description: eventObj.description,
+      location: eventObj.location,
+      url: `https://nick-and-tash-wedding.web.app/invite/${invite._id}`,
+      status: 'CONFIRMED',
+      busyStatus: 'BUSY',
+      transp: 'OPAQUE',
+      alarms: [
+        {
+          action: 'display',
+          trigger: { minutes: -120 }, // 2 hours before the event
+          description: `Reminder: ${eventObj.eventName}`
+        }
+      ],
+      uid: uid,
+      // dtstamp: dtstamp
+    };
+
+    // Generate the ICS file content
+    ics.createEvent(event, (error, value) => {
+      if (error) {
+        return res.status(500).json({ message: "Error generating ICS file", error });
+      }
+
+      // Set headers to download the ICS file
+      res.setHeader('Content-Type', 'text/calendar');
+      res.setHeader('Content-Disposition', 'attachment; filename="nick-and-tash-canada-wedding.ics"');
+      res.send(value);
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

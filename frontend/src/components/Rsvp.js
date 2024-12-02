@@ -210,7 +210,11 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   return (
     <div className="rsvp-table-container">
       <h1 className='title'>RSVP</h1>
-      <p>Please join us in celebrating Nicholas and Natasha’s wedding</p>
+      {
+        hasRSVPd 
+        ? <p>Thank you for RSVP-ing! We look forward to seeing you soon.</p>
+        : <p>Please join us in celebrating Nicholas and Natasha’s wedding.</p>
+      }
       <p>Kindly let us know if you’ll be joining us in celebrating our special day by RSVP-ing before May 1, 2025 — we can’t wait to hear from you!</p>
       {invitedLocation === "Canada" && <p>Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>}
       {invitedLocation === "Australia" && <p>Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}

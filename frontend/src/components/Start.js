@@ -69,7 +69,7 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {locations.canada.fullAddress}
+              <p>{locations.canada.fullAddress}</p>
             </a>
             <CountdownTimer targetDate={canadaWeddingDate} />
           </div>

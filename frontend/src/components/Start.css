@@ -70,17 +70,6 @@
   margin: 5px 0;
 }
 
-.startCountdown {
-  display: flex;
-  justify-content: center;
-  font-size: 1em;
-  margin-top: 20px;
-}
-
-.startCountdown p {
-  margin: 0 10px;
-}
-
 .startInvitation button {
   padding: 10px 20px;
   font-size: 1em;
