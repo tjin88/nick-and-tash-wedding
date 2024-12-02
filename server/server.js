@@ -400,7 +400,7 @@ app.get('/api/download-ics/:id', async (req, res) => {
       end_datetime: "2025-08-24 00:00:00",   // Local time
       location: "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON",
       eventName: "Nicholas & Natasha's Wedding",
-      description: "Join us to celebrate Nicholas and Natasha's Wedding Reception!",
+      description: "Join us to celebrate Nicholas and Natasha's Wedding Reception!\n\nLink to invite: https://nick-and-tash-wedding.web.app/invite/" + invite._id,
     };
 
     // Convert start and end datetime to UTC format for ICS

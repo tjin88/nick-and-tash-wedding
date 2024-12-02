@@ -111,7 +111,7 @@ def format_guest_list(guests):
     else:
         return f"{', '.join(guests[:-1])}, and {guests[-1]}"
 
-def generate_calendar_links(event_title, start_datetime, end_datetime, location, description):
+def generate_calendar_links(event_title, start_datetime, end_datetime, location, description, invite_id):
     """
     Generate Google Calendar and Apple/Outlook Calendar links.
 
@@ -135,28 +135,7 @@ def generate_calendar_links(event_title, start_datetime, end_datetime, location,
         'location': location
     }
     google_link = base_google + urlencode(google_params)
-
-    # Apple/Outlook Calendar .ics content
-    ics_content = f"""BEGIN:VCALENDAR
-                VERSION:2.0
-                PRODID:-//NickAndTashWedding//NONSGML v1.0//EN
-                BEGIN:VEVENT
-                UID:nick-and-tash-canada-wedding-20250823
-                DTSTAMP:{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}
-                DTSTART:{start_datetime}
-                DTEND:{end_datetime}
-                SUMMARY:{event_title}
-                DESCRIPTION:{description}
-                LOCATION:{location}
-                END:VEVENT
-                END:VCALENDAR
-            """
-    
-    # Encode ICS content to make it URL-safe
-    encoded_ics_content = urlencode({'text/calendar': ics_content})
-    
-    # Encode .ics content as a data URL
-    apple_outlook_link = f"data:text/calendar;charset=utf8,{encoded_ics_content}"
+    apple_outlook_link = f"https://nick-and-tash-wedding.onrender.com/api/download-ics/{invite_id}"
 
     return google_link, apple_outlook_link
 
@@ -189,7 +168,8 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                 start_datetime="20250823T220000Z",
                 end_datetime="20250824T000000Z",
                 location="Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON",
-                description="Join us to celebrate the wedding of Nicholas and Natasha!"
+                description=f"Join us to celebrate the wedding of Nicholas and Natasha!\n\nLink to invite: https://nick-and-tash-wedding.onrender.com/api/download-ics/{invite_id}",
+                invite_id=invite_id
             )
             
             # Generate HTML email content
@@ -206,7 +186,13 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                         text-align: center;
                         line-height: 1.6;
                     }}
+                    a.button {{
+                        text-decoration: none;
+                        color: white;
+                    }}
+
                     .title {{
+                        color: #3c4c24;
                         font-size: 28px;
                         font-weight: bold;
                         margin-top: 20px;
@@ -264,18 +250,6 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
             </html>
 
             """
-
-            google_link, apple_outlook_link = generate_calendar_links(
-                event_title="Nicholas & Natasha's Wedding",
-                start_datetime="20241117T140000Z",
-                end_datetime="20241117T180000Z",
-                location="Wedding Venue, City, Country",
-                description="Join us to celebrate the wedding of Nicholas & Natasha!"
-            )
-
-            email_content = email_content.replace(
-                "{{CALENDAR_LINK}}", google_link
-            )
             
             # Send the email
             subject = "Save the Date - Nick & Tash's Wedding Celebration"
