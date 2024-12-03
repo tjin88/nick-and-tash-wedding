@@ -35,11 +35,11 @@ function App({ isAdmin }) {
 
   const locations = {
     canada: {
-      venue: "Sheraton Toronto Airport Hotel & Conference Centre",
-      address: "801 Dixon Road, Toronto, ON",
+      venue: "Sheraton Parkway Toronto North Hotel & Suites",
+      address: "600 Hwy 7, Richmond Hill, ON L4B 1B2",
       date: "August 23, 2025",
       time: "[Canadian Time]",
-      fullAddress: "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON"
+      fullAddress: "Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2"
     },
     australia: {
       venue: "Tiffany’s Maleny",

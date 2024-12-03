@@ -5,7 +5,6 @@ function Menu({ invitedLocation }) {
   
   const renderLocationMenu = (location) => (
     <div className={`${location}-menu-section`}>
-      <h2>{invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}Reception</h2>
       {location === 'Canada' ? null : (
         <div className="menu-course">
           <h3>Appetizers</h3>

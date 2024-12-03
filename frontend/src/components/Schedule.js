@@ -5,7 +5,7 @@ function Schedule({ invitedLocation }) {
 
   const canadianSchedule = [
     {
-      title: "5 PM: Appetizers and Family Group Photos",
+      title: "5 PM: Appetizers, Family and Friends Group Photos",
       // time: "August 23, 2025, 5:00 PM",
       // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
       details: [],

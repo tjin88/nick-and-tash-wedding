@@ -167,7 +167,7 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                 event_title="Nicholas & Natasha's Wedding",
                 start_datetime="20250823T220000Z",
                 end_datetime="20250824T000000Z",
-                location="Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON",
+                location="Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2",
                 description=f"Join us to celebrate the wedding of Nicholas and Natasha!\n\nLink to invite: https://nick-and-tash-wedding.onrender.com/api/download-ics/{invite_id}",
                 invite_id=invite_id
             )
@@ -233,9 +233,10 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                     
                     <div class="content">
                         Dear {greeting},<br><br>
-                        We're making it official, and you're cordially invited! We have a wedding website with all the 
-                        details—from travel and lodging to the day-of schedule and what to wear. 
-                        Take a look to RSVP and find more information. We hope you can join us!
+                        You are cordially invited to share in our celebration! 
+                        We have a wedding reception website with all the details - from travel and lodging 
+                        to the evening-of schedule and what to wear. 
+                        Take look to RSVP and find more information. We hope you can join us!
                     </div>
 
                     <a href="{invite_link}" class="button">View Invitation</a>
@@ -252,7 +253,7 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
             """
             
             # Send the email
-            subject = "Save the Date - Nick & Tash's Wedding Celebration"
+            subject = "Invitation to Nicholas and Natasha’s Toronto Wedding Reception"
             email_sent = email_manager.send_email(
                 to_addresses=emails_list,
                 subject=subject,

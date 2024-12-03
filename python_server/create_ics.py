@@ -80,7 +80,7 @@ def main():
     event_title = "Nicholas & Natasha's Wedding"
     start_datetime = "2025-08-23 22:00:00"  # Format: YYYY-MM-DD HH:MM:SS (local time)
     end_datetime = "2025-08-24 00:00:00"   # Format: YYYY-MM-DD HH:MM:SS (local time)
-    location = "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON"
+    location = "Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2"
     description = "Join us to celebrate the wedding of Nicholas and Natasha!"
     
     # Generate ICS content

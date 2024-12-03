@@ -398,7 +398,7 @@ app.get('/api/download-ics/:id', async (req, res) => {
     const eventObj = {
       start_datetime: "2025-08-23 22:00:00", // Local time
       end_datetime: "2025-08-24 00:00:00",   // Local time
-      location: "Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON",
+      location: "Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2",
       eventName: "Nicholas & Natasha's Wedding",
       description: "Join us to celebrate Nicholas and Natasha's Wedding Reception!\n\nLink to invite: https://nick-and-tash-wedding.web.app/invite/" + invite._id,
     };

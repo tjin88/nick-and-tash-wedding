@@ -54,7 +54,7 @@ const FAQ = ({ invitedLocation, locations }) => {
     const canadaFAQs = [
       {
         question: "Is there a group rate for the Sheraton Parkway Toronto North Hotel & Suites?",
-        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.<br /><br />If interested, please use this link to make your reservation: Book your group rate for Natasha & Nicholas Wedding Reception<br /><br />FYI: The wedding party, including parents will be staying at the Sheraton:<br />Checking-in: Friday, August 22, 2025<br />Checking-out: Sunday, August 24, 2025<br /><br />Please note that the last day to book at this group rate is Wednesday, July 23, 2025"
+        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.<br /><br />If interested, please use this link to make your reservation: <a href='https://www.marriott.com/event-reservations/reservation-link.mi?id=1721334039054&key=GRP&app=resvlink'>Book your group rate for Natasha & Nicholas Wedding Reception</a><br /><br />FYI: The wedding party, including parents will be staying at the Sheraton:<br />Checking-in: Friday, August 22, 2025<br />Checking-out: Sunday, August 24, 2025<br /><br />Please note that the last day to book at this group rate is Wednesday, July 23, 2025"
       },
       {
         question: "Will there be a ceremony followed by the reception?",

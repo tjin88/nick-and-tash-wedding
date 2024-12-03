@@ -216,11 +216,11 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         : <p>Please join us in celebrating Nicholas and Natasha’s wedding.</p>
       }
       <p>Kindly let us know if you’ll be joining us in celebrating our special day by RSVP-ing before May 1, 2025 — we can’t wait to hear from you!</p>
-      {invitedLocation === "Canada" && <p>Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>}
+      {invitedLocation === "Canada" && <p>Location: Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2</p>}
       {invitedLocation === "Australia" && <p>Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
       {invitedLocation === "Both Australia and Canada" && 
         <>
-          <p>Canada Location: Sheraton Toronto Airport Hotel & Conference Centre, 801 Dixon Road, Toronto, ON</p>
+          <p>Canada Location: Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2</p>
           <p>Australia Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>
         </>
       }
