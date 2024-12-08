@@ -9,7 +9,7 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
   const canadaDaysRemaining = Math.floor(Math.abs(canadaWeddingDate - currentDate) / (24*60*60*1000));
   const australiaDaysRemaining = Math.floor(Math.abs(australiaWeddingDate - currentDate) / (24*60*60*1000));
 
-  const guestNames = guests.map(guest => `${guest.firstName} ${guest.lastName}`);
+  const guestNames = guests.map(guest => guest.lastName ? `${guest.firstName} ${guest.lastName}` : guest.firstName);
   const formattedGuestNames = guestNames.length > 1
     ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`.trim()
     : guestNames.join().trim();
@@ -62,7 +62,7 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
         )}
         {showCanada && (
           <div className="canada-row">
-            <p className="date-cell">August 23, 2025</p>
+            <p className="date-cell">August 23, 2025 | 5:00 PM EDT</p>
             <a 
               href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.canada.fullAddress)}`}
               className="location-cell"

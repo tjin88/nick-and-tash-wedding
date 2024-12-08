@@ -395,9 +395,10 @@ app.get('/api/download-ics/:id', async (req, res) => {
     const invite = await Invite.findById(req.params.id);
     if (!invite) return res.status(404).json({ message: "Invite not found" });
 
+    // TODO: This sometimes shows up as 5 - 12, and sometimes 1 - 8 ...
     const eventObj = {
-      start_datetime: "2025-08-23 22:00:00", // Local time
-      end_datetime: "2025-08-24 00:00:00",   // Local time
+      start_datetime: "2025-08-23 22:00:00",
+      end_datetime: "2025-08-24 00:00:00",
       location: "Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2",
       eventName: "Nicholas & Natasha's Wedding",
       description: "Join us to celebrate Nicholas and Natasha's Wedding Reception!\n\nLink to invite: https://nick-and-tash-wedding.web.app/invite/" + invite._id,
@@ -412,8 +413,8 @@ app.get('/api/download-ics/:id', async (req, res) => {
 
     // Define the ICS data
     const event = {
-      start: [2025, 8, 23, 17, 0],  // Year, Month, Day, Hour, Minute
-      end: [2025, 8, 24, 0, 0],     // Year, Month, Day, Hour, Minute
+      start: [2025, 8, 23, 21, 0],  // 5 PM EST = 21:00 UTC
+      end: [2025, 8, 24, 4, 0],     // 12 AM EST = 04:00 UTC next day
       title: eventObj.eventName,
       description: eventObj.description,
       location: eventObj.location,

@@ -5,7 +5,7 @@ import GooseWhite from '../images/goose_no_white.png';
 import GooseTransparent from '../images/goose_white_wheels.png';
 import './Navbar.css';
 
-function Navbar({ setNavOption, setIsOpened, invitedLocation }) {
+function Navbar({ setNavOption, setIsOpened, invitedLocation, isAdmin, hasRSVPd }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClick = (option) => {
@@ -39,10 +39,11 @@ function Navbar({ setNavOption, setIsOpened, invitedLocation }) {
       <img src={GooseWhite} alt="N&N" className="logo" onClick={() => handleClick("start")} />
       {/* <img src={GooseTransparent} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
       <div className="menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        <p>{isMenuOpen ? 'X' : '☰'}</p>
+        <p className='isMenuOpenPTag'>{isMenuOpen ? 'X' : '☰'}</p>
       </div>
       <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
         <li onClick={() => handleClick("rsvp")}><p>Rsvp</p></li>
+        {(hasRSVPd || isAdmin) && <li onClick={() => handleClick("seeAllRSVPs")}><p>See All RSVPs</p></li>}
         <li onClick={() => handleClick("menu")}><p>Menu</p></li>
         <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>
         {invitedLocation !== "Canada" && <li onClick={() => handleClick("registry")}><p>Registry</p></li>}

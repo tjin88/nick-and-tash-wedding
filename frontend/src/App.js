@@ -5,6 +5,7 @@ import Start from './components/Start';
 import Navbar from './components/Navbar';
 // import Welcome from './components/Welcome';
 import Rsvp from './components/Rsvp';
+import SeeAllRSVPs from './components/SeeAllRSVPs';
 import Menu from './components/Menu';
 import Schedule from './components/Schedule';
 import Registry from './components/Registry';
@@ -200,6 +201,7 @@ function App({ isAdmin }) {
       fetchAllInvites();
     } else {
       fetchInviteById();
+      fetchAllInvites();
     }
     fetchPhotos();
     fetchRegistry();
@@ -209,7 +211,7 @@ function App({ isAdmin }) {
   return (
     <div className="App">
       { !isOpened && <Start locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
-      { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation}/> }
+      { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation} hasRSVPd={hasRSVPd} isAdmin={isAdmin}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
       { isOpened && navOption === 'rsvp' && 
         <Rsvp 
@@ -228,6 +230,7 @@ function App({ isAdmin }) {
           locations={locations}
         /> 
       }
+      { isOpened && navOption === 'seeAllRSVPs' && (isAdmin || hasRSVPd) && <SeeAllRSVPs invites={invites}/> }
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }

@@ -65,8 +65,16 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       });
       const data = await response.json();
       if (data._id) {
+        fetchAllInvites();
         fetchInviteById();
-        alert(`RSVP updated successfully for Invite ID: ${data._id}`);
+        const allGuests = givenPlusOne && plusOne.firstName && plusOne.lastName ? [...guests, plusOne] : guests;
+        const allNotAttending = allGuests.every(guest => guest.attendingStatus === "Not Attending");
+        
+        if (allNotAttending) {
+          alert("Thank you for RSVP-ing. We're sorry you can't make it, and look forward to seeing you another time.");
+        } else {
+          alert("Thank you for RSVP-ing. We can't wait to celebrate with you soon!! 😁");
+        }
       } else {
         alert(`Failed to update RSVP - Please ensure all statuses are filled out.`);
       }
@@ -115,12 +123,12 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     switch(invitedLocation) {
       case 'Canada':
         return [
-          <option value="Canada Only" key="Canada Only">Canada</option>,
+          <option value="Canada Only" key="Canada Only">Attending Canada</option>,
           <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
         ];
       case 'Australia':
         return [
-          <option value="Australia Only" key="Australia Only">Australia</option>,
+          <option value="Australia Only" key="Australia Only">Attending Australia</option>,
           <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
         ];
       case 'Both Australia and Canada':
@@ -212,7 +220,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       <h1 className='title'>RSVP</h1>
       {
         hasRSVPd 
-        ? <p>Thank you for RSVP-ing! We look forward to seeing you soon.</p>
+        ? <p>Thank you for RSVP-ing! We look forward to celebrating with you soon.</p>
         : <p>Please join us in celebrating Nicholas and Natasha’s wedding.</p>
       }
       <p>Kindly let us know if you’ll be joining us in celebrating our special day by RSVP-ing before May 1, 2025 — we can’t wait to hear from you!</p>
@@ -304,6 +312,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             )}
           </tbody>
         </table>
+        {hasRSVPd && <p>Change your mind? Please update your RSVP status and resubmit.</p>}
         <button onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
       </div>)}
       {isAdmin && (

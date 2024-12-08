@@ -70,17 +70,19 @@ function Menu({ invitedLocation }) {
   );
 
   return (
-    <div className="menu-container">
-      <h1 className='title'>Menu</h1>
-      {invitedLocation === 'Both Australia and Canada' ? (
-        <>
-          {renderLocationMenu('Canada')}
-          <div className="menu-divider"></div>
-          {renderLocationMenu('Australia')}
-        </>
-      ) : (
-        renderLocationMenu(invitedLocation)
-      )}
+    <div className="menu-wrapper">
+      <div className="menu-container">
+        <h1 className='title'>Menu</h1>
+        {invitedLocation === 'Both Australia and Canada' ? (
+          <>
+            {renderLocationMenu('Canada')}
+            <div className="menu-divider"></div>
+            {renderLocationMenu('Australia')}
+          </>
+        ) : (
+          renderLocationMenu(invitedLocation)
+        )}
+      </div>
     </div>
   );
 }

@@ -54,7 +54,7 @@ const FAQ = ({ invitedLocation, locations }) => {
     const canadaFAQs = [
       {
         question: "Is there a group rate for the Sheraton Parkway Toronto North Hotel & Suites?",
-        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.<br /><br />If interested, please use this link to make your reservation: <a href='https://www.marriott.com/event-reservations/reservation-link.mi?id=1721334039054&key=GRP&app=resvlink'>Book your group rate for Natasha & Nicholas Wedding Reception</a><br /><br />FYI: The wedding party, including parents will be staying at the Sheraton:<br />Checking-in: Friday, August 22, 2025<br />Checking-out: Sunday, August 24, 2025<br /><br />Please note that the last day to book at this group rate is Wednesday, July 23, 2025"
+        answer: "YES :) Our event has a special group rate at the Sheraton Parkway Toronto North Hotel & Suites (at Hwy 7 and Leslie Street) for $209 CAD per night.<br /><br />Room type: Run of the House. Meaning guests will receive a room with either 1 King with sofa bed or 2 Queens. Room types will be assigned at the discretion of the Hotel approximately 1 week prior to arrival. Hotel reserves the right to reassign rooms prior to attendee check-in.<br /><br />If interested, please use this link to make your reservation: <a href='https://www.marriott.com/event-reservations/reservation-link.mi?id=1721334039054&key=GRP&app=resvlink' target=”_blank”>Book your group rate for Natasha & Nicholas Wedding Reception</a><br /><br />FYI: The wedding party, including parents will be staying at the Sheraton:<br />Checking-in: Friday, August 22, 2025<br />Checking-out: Sunday, August 24, 2025<br /><br />Please note that the last day to book at this group rate is Wednesday, July 23, 2025"
       },
       {
         question: "Will there be a ceremony followed by the reception?",
@@ -82,7 +82,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Wheelchair and accessibility access",
-        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible (e.g., if you prefer to be seated as close as possible to the dance floor to minimize walking 💃🏻💃🏻😊)"
+        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible."
       },
       {
         question: "Do you have a gift registry?",
@@ -184,19 +184,21 @@ const FAQ = ({ invitedLocation, locations }) => {
   };
 
   return (
-    <div className="faq-container">
-      <h2 className="title">Frequently Asked Questions</h2>
-      <div className="faq-list">
-        {generateFAQData().map((item, index) => (
-          <FAQItem
-            key={index}
-            question={item.question}
-            answer={item.answer}
-            isOpen={openItems.has(index)}
-            onClick={() => toggleItem(index)}
-            location={item.location}
-          />
-        ))}
+    <div className='faq-wrapper'>
+      <div className="faq-container">
+        <h2 className="title">Frequently Asked Questions</h2>
+        <div className="faq-list">
+          {generateFAQData().map((item, index) => (
+            <FAQItem
+              key={index}
+              question={item.question}
+              answer={item.answer}
+              isOpen={openItems.has(index)}
+              onClick={() => toggleItem(index)}
+              location={item.location}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

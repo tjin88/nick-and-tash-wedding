@@ -1,3 +1,9 @@
+.menu-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fff1f2, #ffe4e6);
+  padding: 2rem;
+}
+
 .menu-container {
     max-width: 800px;
     margin: 0 auto;
@@ -69,9 +75,12 @@
     transition: transform 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
-  
-  /* Media Queries for Responsive Design */
-  @media (max-width: 768px) {
+
+  @media (max-width: 700px) {
+    .menu-wrapper {
+      min-height: calc(100vh - 77px - 4rem);
+    }
+
     .menu-container {
       padding: 1rem;
       margin: 1rem;

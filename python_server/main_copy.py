@@ -162,11 +162,11 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
             
             # Format guest names for greeting
             greeting = format_guest_list(guests)
-            wedding_date = "23 AUGUST 2025"
+            wedding_date = "23 AUGUST 2025 | 5:00 PM EDT"
             google_link, apple_outlook_link = generate_calendar_links(
                 event_title="Nicholas & Natasha's Wedding",
-                start_datetime="20250823T220000Z",
-                end_datetime="20250824T000000Z",
+                start_datetime="20250823T210000Z",  # 5 PM EDT
+                end_datetime="20250824T040000Z",
                 location="Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2",
                 description=f"Join us to celebrate the wedding of Nicholas and Natasha!\n\nLink to invite: https://nick-and-tash-wedding.onrender.com/api/download-ics/{invite_id}",
                 invite_id=invite_id
@@ -236,7 +236,7 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                         You are cordially invited to share in our celebration! 
                         We have a wedding reception website with all the details - from travel and lodging 
                         to the evening-of schedule and what to wear. 
-                        Take look to RSVP and find more information. We hope you can join us!
+                        Take a look to RSVP and find more information. We hope you can join us!
                     </div>
 
                     <a href="{invite_link}" class="button">View Invitation</a>

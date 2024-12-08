@@ -1,3 +1,9 @@
+.faq-wrapper {
+  min-height: calc(100vh - 100px - 4rem);
+  background: linear-gradient(to bottom, #fff1f2, #ffe4e6);
+  padding: 2rem;
+}
+
 .faq-container {
     max-width: 800px;
     margin: 2rem auto;
@@ -113,7 +119,11 @@
     background-color: #357abd;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
+    .faq-wrapper {
+      min-height: calc(100vh - 77px - 4rem);
+    }
+
     .faq-container {
       margin: 1rem auto;
     }
