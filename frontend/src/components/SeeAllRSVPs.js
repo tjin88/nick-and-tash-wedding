@@ -9,17 +9,41 @@ function SeeAllRSVPs({ invites = [] }) {
         setVisible(true);
     }, []);
 
-    const attendingGuests = (invites || []).flatMap((invite, index) => 
-        (invite.guests || [])
-            .filter(guest => 
-                guest.attendingStatus === "Both Australia and Canada" || 
-                guest.attendingStatus === "Canada Only"
-            )
-            .map((guest, i) => ({
-                ...guest,
-                key: `${index}-${i}`
-            }))
-    );
+    // const attendingGuests = (invites || []).flatMap((invite, index) => 
+    //     (invite.guests || [])
+    //         .filter(guest => 
+    //             guest.attendingStatus === "Both Australia and Canada" || 
+    //             guest.attendingStatus === "Canada Only"
+    //         )
+    //         .map((guest, i) => ({
+    //             ...guest,
+    //             key: `${index}-${i}`
+    //         }))
+    // );
+
+    const attendingGuests = (invites || [])
+        .flatMap((invite, index) => 
+            (invite.guests || [])
+                .filter(guest => 
+                    guest.attendingStatus === "Both Australia and Canada" || 
+                    guest.attendingStatus === "Canada Only"
+                )
+                .map((guest, i) => ({
+                    ...guest,
+                    key: `${index}-${i}`
+                }))
+        )
+        .sort((a, b) => {
+            // Handle cases where lastName might be undefined
+            const lastNameA = (a.lastName || '').toLowerCase();
+            const lastNameB = (b.lastName || '').toLowerCase();
+            
+            if (lastNameA === lastNameB) {
+                // If last names are same, sort by first name
+                return (a.firstName || '').toLowerCase().localeCompare((b.firstName || '').toLowerCase());
+            }
+            return lastNameA.localeCompare(lastNameB);
+        });
 
     return (
         <div className="rsvp-container">

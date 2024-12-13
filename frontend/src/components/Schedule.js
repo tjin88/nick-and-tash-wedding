@@ -1,31 +1,23 @@
 import React from 'react';
+import BrideToBe from '../images/Bride_To_Be.jpeg';
 import './Schedule.css';
 
 function Schedule({ invitedLocation }) {
-
   const canadianSchedule = [
     {
       title: "5 PM: Appetizers, Family and Friends Group Photos",
-      // time: "August 23, 2025, 5:00 PM",
-      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
       details: [],
     },
     {
       title: "6 PM: Guests to be Seated",
-      // time: "August 23, 2025, 6:00 PM",
-      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
       details: [],
     },
     {
       title: "6:30 PM: Food is Served",
-      // time: "August 23, 2025, 6:30 PM",
-      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
       details: [],
     },
     {
       title: "Dinner and dancing to follow",
-      // time: "August 23, 2025, 6:30 PM",
-      // location: "Sheraton Parkway Toronto North Hotel & Suites (Hwy 7 and Leslie Street)",
       details: [],
     }
   ];
@@ -62,16 +54,27 @@ function Schedule({ invitedLocation }) {
 
   const renderLocationSchedule = (location) => (
     <div className="schedule-section">
-      <div className="schedule-column col-lg-10">
-        {location !== 'Canada' && <h2 className="schedule-location-title">{invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}Wedding Events</h2>}
+      <div className="schedule-column">
+        {location !== 'Canada' && (
+          <h2 className="schedule-location-title">
+            {invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}
+            Wedding Events
+          </h2>
+        )}
         {(location === 'Canada' ? canadianSchedule : australianSchedule).map((item, index) => (
-          <div key={index} className="schedule-item">
-            <h2>{item.title}</h2>
-            {item.time && item.location && <div className='scheduleHorizontal'>
-              <h3>{item.time}</h3>
-              <h3>|</h3>
-              <h3><em>{item.location}</em></h3>
-            </div>}
+          <div 
+            key={index} 
+            className="schedule-item"
+            style={{"--item-index": index}}
+          >
+            <p>{item.title}</p>
+            {item.time && item.location && (
+              <div className='scheduleHorizontal'>
+                <h3>{item.time}</h3>
+                <h3>|</h3>
+                <h3><em>{item.location}</em></h3>
+              </div>
+            )}
             <ul>
               {item.details.map((detail, i) => (
                 <li key={i}>{detail}</li>
@@ -86,6 +89,13 @@ function Schedule({ invitedLocation }) {
   return (
     <div className="schedule">
       <h1 className="title schedule-title">Schedule</h1>
+      <div className="hero-image-container">
+        <img 
+          src={BrideToBe}
+          alt="Wedding couple" 
+          className="hero-image"
+        />
+      </div>
       {invitedLocation === 'Both Australia and Canada' ? (
         <div className="schedule-container">
           {renderLocationSchedule('Canada')}

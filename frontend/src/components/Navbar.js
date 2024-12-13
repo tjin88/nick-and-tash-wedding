@@ -43,7 +43,7 @@ function Navbar({ setNavOption, setIsOpened, invitedLocation, isAdmin, hasRSVPd 
       </div>
       <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
         <li onClick={() => handleClick("rsvp")}><p>Rsvp</p></li>
-        {(hasRSVPd || isAdmin) && <li onClick={() => handleClick("seeAllRSVPs")}><p>See All RSVPs</p></li>}
+        {(hasRSVPd || isAdmin) && <li onClick={() => handleClick("seeAllRSVPs")}><p>See Who’s Coming</p></li>}
         <li onClick={() => handleClick("menu")}><p>Menu</p></li>
         <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>
         {invitedLocation !== "Canada" && <li onClick={() => handleClick("registry")}><p>Registry</p></li>}

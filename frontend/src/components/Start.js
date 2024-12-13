@@ -9,10 +9,37 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
   const canadaDaysRemaining = Math.floor(Math.abs(canadaWeddingDate - currentDate) / (24*60*60*1000));
   const australiaDaysRemaining = Math.floor(Math.abs(australiaWeddingDate - currentDate) / (24*60*60*1000));
 
-  const guestNames = guests.map(guest => guest.lastName ? `${guest.firstName} ${guest.lastName}` : guest.firstName);
-  const formattedGuestNames = guestNames.length > 1
-    ? `${guestNames.slice(0, -1).join(', ')} and ${guestNames[guestNames.length - 1]}`.trim()
-    : guestNames.join().trim();
+  const formatGuestNames = (guests) => {
+    // Get all unique last names that aren't empty
+    const lastNames = new Set(guests
+      .map(guest => guest.lastName)
+      .filter(lastName => lastName && lastName.trim() !== ''));
+
+    if (lastNames.size === 1) {
+      // All guests have the same last name
+      const sharedLastName = Array.from(lastNames)[0];
+      const firstNames = guests.map(guest => guest.firstName);
+      
+      if (firstNames.length === 1) {
+        return `${firstNames[0]} ${sharedLastName}`;
+      } else {
+        return `${firstNames.slice(0, -1).join(', ')} and ${firstNames[firstNames.length - 1]} ${sharedLastName}`;
+      }
+    } else {
+      // Guests have different last names or some don't have last names
+      const fullNames = guests.map(guest => 
+        guest.lastName ? `${guest.firstName} ${guest.lastName}` : guest.firstName
+      );
+      
+      if (fullNames.length === 1) {
+        return fullNames[0];
+      } else {
+        return `${fullNames.slice(0, -1).join(', ')} and ${fullNames[fullNames.length - 1]}`;
+      }
+    }
+  };
+
+  const formattedGuestNames = formatGuestNames(guests).trim();
 
   const [showCanada, setShowCanada] = useState(false);
   const [showAustralia, setShowAustralia] = useState(false);
