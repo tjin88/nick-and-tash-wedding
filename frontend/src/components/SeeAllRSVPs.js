@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import './SeeAllRSVPs.css';
 
-function SeeAllRSVPs({ invites = [] }) {
+function SeeAllRSVPs({ invites = [], fetchAllInvites }) {
     const [visible, setVisible] = useState(false);
     
     useEffect(() => {
+        fetchAllInvites();
         setVisible(true);
     }, []);
 

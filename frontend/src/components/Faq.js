@@ -27,7 +27,7 @@ const FAQItem = ({ question, answer, isOpen, onClick, location }) => {
               src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(location)}`}
               width="100%"
               height="300"
-              style={{ border: 0 }}
+              style={{ border: 0, display: 'block' }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
