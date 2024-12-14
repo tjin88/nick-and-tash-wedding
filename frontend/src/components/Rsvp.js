@@ -313,7 +313,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
           </tbody>
         </table>
         {hasRSVPd && <p>Change your mind? Please update your RSVP status and resubmit.</p>}
-        <button onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
+        <button className="rsvp-button" onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
       </div>)}
       {isAdmin && (
         <div className='rsvp-table'>
@@ -399,7 +399,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               />
             </div>
           ))}
-          <button onClick={handleAddGuest}>Add Another Guest</button>
+          <button className="rsvp-button" onClick={handleAddGuest}>Add Another Guest</button>
           <div>
             <input 
               type="checkbox"
@@ -409,7 +409,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             />
             <label htmlFor="plusOne">Should this invite include a Plus One?</label>
           </div>
-          <button onClick={handleSubmitNewInvite}>Submit New Invite</button>
+          <button className="rsvp-button" onClick={handleSubmitNewInvite}>Submit New Invite</button>
         </div>
       )}
     </div>

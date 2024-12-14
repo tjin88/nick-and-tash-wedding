@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from "socket.io-client";
 import Start from './components/Start';
@@ -31,8 +31,9 @@ function App({ isAdmin }) {
   const [vendors, setVendors] = useState({});
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const socket = io('https://nick-and-tash-wedding.onrender.com');
+  // const socket = io('https://nick-and-tash-wedding.onrender.com');
   // const socket = io('http://localhost:3003');
+  const socketRef = useRef(null);
 
   const locations = {
     canada: {
@@ -52,35 +53,46 @@ function App({ isAdmin }) {
   };
 
   useEffect(() => {
-    // Handle photo updates --> photoData = {url: '...', location: '...'}
-    socket.on('photo-updated', (photoData) => {
+    // Create socket connection
+    socketRef.current = io('https://nick-and-tash-wedding.onrender.com', {
+      // Optional configuration
+      reconnectionDelay: 1000,
+      reconnection: true,
+      reconnectionAttempts: 10,
+      transports: ['websocket'],
+      agent: false,
+      upgrade: false,
+      rejectUnauthorized: false
+    });
+
+    // Event listeners
+    socketRef.current.on('photo-updated', (photoData) => {
       setPhotos(prevPhotos => [...prevPhotos, photoData]);
     });
   
-    // Handle registry updates
-    socket.on('registry-item-added', (newItem) => {
+    socketRef.current.on('registry-item-added', (newItem) => {
       setRegistry(prevRegistry => ({ ...prevRegistry, [newItem.key]: newItem.isBought }));
     });
     
-    socket.on('registry-updated', (updatedItem) => {
+    socketRef.current.on('registry-updated', (updatedItem) => {
       setRegistry(prev => ({ ...prev, [updatedItem.key]: updatedItem.isBought }));
     });
   
-    socket.on('registry-item-deleted', (key) => {
+    socketRef.current.on('registry-item-deleted', (key) => {
       setRegistry(prev => {
         const { [key]: _, ...newState } = prev;
         return newState;
       });
     });
-  
+
+    // Cleanup function
     return () => {
-      socket.off('photo-updated');
-      socket.off('registry-item-added');
-      socket.off('registry-updated');
-      socket.off('registry-item-deleted');
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
   }, []);
-  
 
   /* 
     TODO: Add security to site by verifying they are:
