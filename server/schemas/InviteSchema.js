@@ -79,7 +79,8 @@ inviteSchema.methods.canRSVPTo = function(location) {
 };
 
 inviteSchema.methods.isValidRSVPStatus = function(status) {
-  if (status === RSVP_STATUS.NOT_ATTENDING || status === RSVP_STATUS.PENDING) return true;
+  if (status === RSVP_STATUS.NOT_ATTENDING) return true;
+  // if (status === RSVP_STATUS.NOT_ATTENDING || status === RSVP_STATUS.PENDING) return true;
   if (this.invitedLocation === LOCATIONS.BOTH) return true;
   if (this.invitedLocation === LOCATIONS.CANADA) {
     return status === RSVP_STATUS.CANADA;
