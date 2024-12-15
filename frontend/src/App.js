@@ -242,7 +242,7 @@ function App({ isAdmin }) {
           locations={locations}
         /> 
       }
-      { isOpened && navOption === 'seeAllRSVPs' && (isAdmin || hasRSVPd) && <SeeAllRSVPs invites={invites} fetchAllInvites={fetchAllInvites}/> }
+      { isOpened && navOption === 'seeAllRSVPs' && <SeeAllRSVPs invites={invites} fetchAllInvites={fetchAllInvites}/> }
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }

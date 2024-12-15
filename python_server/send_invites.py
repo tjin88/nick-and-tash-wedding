@@ -334,7 +334,7 @@ def main():
     invite_manager = WeddingInviteManager()
     
     # Load the CSV file
-    file_path = './csv/Nick & Tash Canadian Wedding - Sample.csv'
+    file_path = './csv/Nick & Tash Canadian Wedding - To Be Sent.csv'
     image_path = './images/nick_and_tash_cropped.jpg'
     
     try:
