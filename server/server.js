@@ -487,7 +487,7 @@ app.get('/api/download-australia-ics/', async (req, res) => {
       start_datetime: "2025-10-11 15:00:00", // 3 PM AEST
       end_datetime: "2025-10-11 23:00:00",   // 11 PM AEST
       location: "Tiffany's Maleny, 409 Mountain View Road, Maleny QLD 4552",
-      eventName: "Nicholas & Natasha's Wedding",
+      eventName: "Nicholas & Natasha's 🇦🇺 Wedding",
       description: "Join us to celebrate Nicholas and Natasha's Wedding!",
     };
 
