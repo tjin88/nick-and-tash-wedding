@@ -481,7 +481,7 @@ app.get('/api/download-ics/:id', async (req, res) => {
 });
 
 // TODO: Re-adjust this for Australia!
-app.get('/api/download-ics/australia', async (req, res) => {
+app.get('/api/download-australia-ics/', async (req, res) => {
   try {
     const eventObj = {
       start_datetime: "2025-10-11 15:00:00", // 3 PM AEST

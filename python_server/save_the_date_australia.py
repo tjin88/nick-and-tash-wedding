@@ -98,7 +98,7 @@ def generate_calendar_links(event_title, start_datetime, end_datetime, location,
         'location': location
     }
     google_link = base_google + urlencode(google_params)
-    apple_outlook_link = f"https://nick-and-tash-wedding.onrender.com/api/download-ics/australia"
+    apple_outlook_link = f"https://nick-and-tash-wedding.onrender.com/api/download-australia-ics/"
 
     return google_link, apple_outlook_link
 
