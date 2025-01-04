@@ -1,4 +1,3 @@
-// TODO: Add socket to update registry in real-time
 import React from 'react';
 import './Registry.css';
 

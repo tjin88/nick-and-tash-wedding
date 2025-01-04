@@ -155,7 +155,6 @@ function App({ isAdmin }) {
     } catch (error) {
       // TODO: Change to setError rather than alert
       console.error('Error fetching photos:', error.message);
-      // alert('Error fetching photos:', error.message);
       // setError(error.message);
     }
     setLoading(false);
@@ -179,7 +178,6 @@ function App({ isAdmin }) {
       } catch (error) {
         // TODO: Change to setError rather than alert
         console.error('Error fetching registry:', error.message);
-        // alert('Error fetching registry:', error.message);
         // setError(error.message);
       }
       setLoading(false);
@@ -202,7 +200,6 @@ function App({ isAdmin }) {
       } catch (error) {
         // TODO: Change to setError rather than alert
         console.error('Error fetching vendors:', error.message);
-        // alert('Error fetching vendors:', error.message);
         // setError(error.message);
       }
       setLoading(false);

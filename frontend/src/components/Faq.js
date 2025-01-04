@@ -58,7 +58,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Will there be a ceremony followed by the reception?",
-        answer: "Nick and Tash will be married in a private civil service on Friday, August 22, 2024.<br /><br />We hope you can join us in Toronto for this wedding reception (supper, speeches and dancing) so that we can begin our lives together surrounded by all those who we love."
+        answer: "Nick and Tash will be married in a private civil service on Friday, August 22, 2025.<br /><br />We hope you can join us in Toronto for this wedding reception (supper, speeches and dancing) so that we can begin our lives together surrounded by all those who we love."
       },
       {
         question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",

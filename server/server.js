@@ -420,6 +420,7 @@ app.delete('/api/vendors/:role', async (req, res) => {
   }
 });
 
+// This is currently for Canada only!
 app.get('/api/download-ics/:id', async (req, res) => {
   try {
     const invite = await Invite.findById(req.params.id);
@@ -472,6 +473,65 @@ app.get('/api/download-ics/:id', async (req, res) => {
       // Set headers to download the ICS file
       res.setHeader('Content-Type', 'text/calendar');
       res.setHeader('Content-Disposition', 'attachment; filename="nick-and-tash-canada-wedding.ics"');
+      res.send(value);
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// TODO: Re-adjust this for Australia!
+app.get('/api/download-ics/australia', async (req, res) => {
+  try {
+    const eventObj = {
+      start_datetime: "2025-10-11 15:00:00", // 3 PM AEST
+      end_datetime: "2025-10-11 23:00:00",   // 11 PM AEST
+      location: "Tiffany's Maleny, 409 Mountain View Road, Maleny QLD 4552",
+      eventName: "Nicholas & Natasha's Wedding",
+      description: "Join us to celebrate Nicholas and Natasha's Wedding!",
+    };
+
+    // Convert start and end datetime to UTC format for ICS
+    // AEST is UTC+10
+    const start = format(new Date(eventObj.start_datetime), "yyyyMMdd'T'HHmmss'Z'");
+    const end = format(new Date(eventObj.end_datetime), "yyyyMMdd'T'HHmmss'Z'");
+    const dtstamp = format(new Date(), "yyyyMMdd'T'HHmmss'Z'"); // current UTC timestamp
+
+    const uid = uuidv4(); // Generate unique UID for the event
+
+    // Define the ICS data
+    // Note: Times need to be in UTC
+    // 3 PM AEST = 05:00 UTC
+    // 11 PM AEST = 13:00 UTC
+    const event = {
+      start: [2025, 10, 11, 5, 0],    // 3 PM AEST = 05:00 UTC
+      end: [2025, 10, 11, 13, 0],     // 11 PM AEST = 13:00 UTC
+      title: eventObj.eventName,
+      description: eventObj.description,
+      location: eventObj.location,
+      status: 'CONFIRMED',
+      busyStatus: 'BUSY',
+      transp: 'OPAQUE',
+      alarms: [
+        {
+          action: 'display',
+          trigger: { minutes: -120 }, // 2 hours before the event
+          description: `Reminder: ${eventObj.eventName}`
+        }
+      ],
+      uid: uid,
+      // dtstamp: dtstamp
+    };
+
+    // Generate the ICS file content
+    ics.createEvent(event, (error, value) => {
+      if (error) {
+        return res.status(500).json({ message: "Error generating ICS file", error });
+      }
+
+      // Set headers to download the ICS file
+      res.setHeader('Content-Type', 'text/calendar');
+      res.setHeader('Content-Disposition', 'attachment; filename="nick-and-tash-australia-wedding.ics"');
       res.send(value);
     });
   } catch (error) {

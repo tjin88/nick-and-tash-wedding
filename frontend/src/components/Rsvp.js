@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import QRCode from 'qrcode.react';
+import RSVPPieChart from './RSVPPieChart';
 import './Rsvp.css';
 
 function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation, locations }) {
@@ -233,6 +234,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         </>
       }
       {getLocationGoogleMaps()}
+      {isAdmin && <RSVPPieChart invites={invites} />}
       {!isAdmin && (<div className='rsvp-table'>
         <table>
           <thead>
@@ -315,6 +317,13 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {hasRSVPd && <p>Change your mind? Please update your RSVP status and resubmit.</p>}
         <button className="rsvp-button" onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
       </div>)}
+      {/* TODO: Make this filterable based on, well, anything. 
+                1. RSVP status
+                2. Dietary Requirements
+                3. Invited To
+                4. Search name
+                5. Given Plus One
+       */}
       {isAdmin && (
         <div className='rsvp-table'>
           <h2>Invites</h2>
