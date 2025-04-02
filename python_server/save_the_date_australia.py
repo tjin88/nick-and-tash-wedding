@@ -49,6 +49,7 @@ class EmailManager:
                     img = MIMEImage(f.read())
                     # TODO: Update the image name to be "cooked_the_goose.jpg" in the HTML content
                     img.add_header('Content-ID', '<save_the_date_photo>')
+                    img.add_header('Content-Disposition', 'inline', filename="nick_and_tash.jpg")
                     msg.attach(img)
             except Exception as e:
                 logging.error(f"Failed to attach image {image_path}: {str(e)}")
@@ -95,14 +96,14 @@ def generate_calendar_links(event_title, start_datetime, end_datetime, location,
         'text': event_title,
         'dates': f"{start_datetime}/{end_datetime}",
         'details': description,
-        'location': location
+        'location': location,
+        'guestsCanInviteOthers': 'false',
+        'guestsCanSeeOtherGuests': 'false'
     }
     google_link = base_google + urlencode(google_params)
     apple_outlook_link = f"https://nick-and-tash-wedding.onrender.com/api/download-australia-ics/"
 
     return google_link, apple_outlook_link
-
-    # return base_google + urlencode(google_params)
 
 def process_and_send_emails(dataframe, email_manager, image_path=None):
     """Process the guest list and send emails"""
@@ -192,7 +193,8 @@ def process_and_send_emails(dataframe, email_manager, image_path=None):
                         We're excited to announce that we're getting married! 
                         Please save the date and join us for our wedding celebration 
                         on October 11, 2025, 3:00 PM AEST at Tiffany's Maleny.<br><br>
-                        Full Address: <a href="https://www.google.com/maps/place/Tiffany's+Maleny/@-26.780165,152.856227,17z/data=!3m1!4b1!4m6!3m5!1s0x6b9387a6d3e36c55:0x2fddd8e805ff0aa4!8m2!3d-26.780165!4d152.856227!16s%2Fg%2F1tj2nmwp">Tiffany's Maleny, 409 Mountain View Road, Maleny QLD 4552</a>
+                        Full Address: <a href="https://www.google.com/maps/place/Tiffany's+Maleny/@-26.780165,152.856227,17z/data=!3m1!4b1!4m6!3m5!1s0x6b9387a6d3e36c55:0x2fddd8e805ff0aa4!8m2!3d-26.780165!4d152.856227!16s%2Fg%2F1tj2nmwp">Tiffany's Maleny, 409 Mountain View Road, Maleny QLD 4552</a><br><br>
+                        Invite with more details to come.
                     </div>
                     
                     <a href="{google_link}" class="button">Add to Google Calendar</a>
@@ -243,7 +245,7 @@ def main():
     email_manager = EmailManager(email_address, email_password)
     
     # Load the CSV file
-    file_path = './csv/Nick & Tash Canadian Wedding - Sample.csv'
+    file_path = './csv/Nick & Tash Wedding Invites - To Be Sent (Australia) (5).csv'
     image_path = './images/save_the_date.jpg'
     
     try:

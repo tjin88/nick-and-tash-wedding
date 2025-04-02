@@ -50,6 +50,7 @@ class EmailManager:
                 with open(image_path, 'rb') as f:
                     img = MIMEImage(f.read())
                     img.add_header('Content-ID', '<wedding_photo>')
+                    img.add_header('Content-Disposition', 'inline', filename="nick_and_tash.jpg")
                     msg.attach(img)
             except Exception as e:
                 logging.error(f"Failed to attach image {image_path}: {str(e)}")
@@ -334,7 +335,7 @@ def main():
     invite_manager = WeddingInviteManager()
     
     # Load the CSV file
-    file_path = './csv/Nick & Tash Canadian Wedding - To Be Sent (3).csv'
+    file_path = './csv/Nick & Tash Wedding Invites - To Be Sent (Canada) (1).csv'
     image_path = './images/nick_and_tash_cropped.jpg'
     
     try:
