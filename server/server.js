@@ -143,6 +143,72 @@ app.get('/api/all-invites', async (req, res) => {
   }
 });
 
+app.get('/api/rsvp-summary', async (req, res) => {
+  try {
+    const allInvites = await Invite.find();
+    
+    const summary = {
+      Yes: [],
+      No: [],
+      "Not Responded": []
+    };
+    
+    allInvites.forEach(invite => {
+      if (!invite.hasRSVPd) {
+        invite.guests.forEach(guest => {
+          const fullName = guest.lastName 
+            ? `${guest.firstName} ${guest.lastName}` 
+            : guest.firstName;
+
+          const guestInfo = {
+            name: fullName,
+            inviteId: invite._id,
+            status: guest.attendingStatus,
+            location: invite.invitedLocation
+          };
+          
+          summary["Not Responded"].push(guestInfo);
+        });
+      } else {
+        invite.guests.forEach(guest => {
+          const fullName = guest.lastName 
+            ? `${guest.firstName} ${guest.lastName}` 
+            : guest.firstName;
+          
+          const guestInfo = {
+            name: fullName,
+            inviteId: invite._id,
+            status: guest.attendingStatus,
+            location: invite.invitedLocation
+          };
+          
+          if (guest.attendingStatus === RSVP_STATUSES.NOT_ATTENDING) {
+            summary.No.push(guestInfo);
+          } else if (
+            guest.attendingStatus === RSVP_STATUSES.CANADA || 
+            guest.attendingStatus === RSVP_STATUSES.AUSTRALIA || 
+            guest.attendingStatus === RSVP_STATUSES.BOTH
+          ) {
+            summary.Yes.push(guestInfo);
+          } else {
+            // Edge case (If some person's status is PENDING but hasRSVPd is true)
+            summary["Not Responded"].push(guestInfo);
+          }
+        });
+      }
+    });
+    
+    // Could sort the lists alphabetically by name if desired?
+    // ['Yes', 'No', 'Not Responded'].forEach(category => {
+    //   summary[category].sort((a, b) => a.name.localeCompare(b.name));
+    // });
+    
+    res.json(summary);
+  } catch (error) {
+    res.status(500).json({ message: "Error generating RSVP summary", error });
+  }
+});
+
 app.get('/api/invites/:id', async (req, res) => {
   try {
     const invite = await Invite.findById(req.params.id);
