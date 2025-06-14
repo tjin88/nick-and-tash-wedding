@@ -21,7 +21,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('./out/log/wedding_invites.log'),
+        logging.FileHandler('./out_sent_invites/log/wedding_invites.log'),
         logging.StreamHandler()
     ]
 )
@@ -352,7 +352,7 @@ def main():
         
         # Save results to CSV
         results_df = pd.DataFrame(results)
-        output_path = f'./out/sent_invites_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+        output_path = f'./out_sent_invites/sent_invites_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
         results_df.to_csv(output_path, index=False)
         logging.info(f"Results saved to {output_path}")
         

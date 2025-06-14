@@ -96,24 +96,41 @@
 }
 
 .schedule .schedule-item {
-  padding: 0 0 20px 20px;
-  margin-top: -2px;
-  border-left: 2px solid #E6C3C1;
   position: relative;
-  opacity: 0;
-  animation: slideRight 0.5s ease-out forwards;
-  animation-delay: calc(var(--item-index) * 0.2s);
+  padding: 0 0 20px 40px; /* 16px (circle) + 10px (gap) + 10px (line thickness/offset) */
+  margin-top: -2px;
 }
 
-@keyframes slideRight {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.schedule .schedule-item::before {
+  /* Vertical line */
+  content: "";
+  position: absolute;
+  left: 17px; /* Center of the circle */
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: #D1001F;
+  z-index: 0;
+}
+
+.schedule .schedule-item::after {
+  /* Circle */
+  content: "";
+  position: absolute;
+  left: 8px; /* (circle width - border) / 2 */
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #D1001F;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.schedule .schedule-item:hover::after {
+  background: #D1001F;
+  transform: scale(1.2);
 }
 
 .schedule .schedule-item h2 {
@@ -126,7 +143,7 @@
 }
 
 .schedule .schedule-item:hover h2 {
-  color: #9d174d; /* rose-900 */
+  color: #D1001F; /* rose-900 */
 }
 
 .schedule .schedule-item h3 {
@@ -141,7 +158,7 @@
 }
 
 .schedule .schedule-item:hover h3 {
-  background: #fbcfe8; /* rose-200 */
+  background: #D1001F; /* rose-200 */
 }
 
 .schedule .schedule-item p {
@@ -162,26 +179,8 @@
   transform: translateX(5px);
 }
 
-.schedule .schedule-item:last-child {
-  padding-bottom: 0;
-}
-
-.schedule .schedule-item::before {
-  content: "";
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50px;
-  left: -9px;
-  top: 0;
-  background: #fff;
-  border: 2px solid #E6C3C1;
-  transition: all 0.3s ease;
-}
-
-.schedule .schedule-item:hover::before {
-  background: #E6C3C1;
-  transform: scale(1.2);
+.schedule .schedule-item:last-child::before {
+  display: none;
 }
 
 .schedule .schedule-item .scheduleHorizontal {
@@ -195,7 +194,7 @@
 .schedule-divider {
   margin: 2rem 8vw;
   height: 2px;
-  background: linear-gradient(to right, transparent, #E6C3C1, transparent);
+  background: linear-gradient(to right, transparent, #D1001F, transparent);
 }
 
 @media (max-width: 700px) {

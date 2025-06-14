@@ -98,6 +98,53 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
     ];
 
+    const australiaFAQs = [
+      {
+        question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
+        answer: "Please email Susie Jin. Invitations are intended for family and friends of Nick and Natasha, including spouses and established partners of family and friends. If we missed your significant other, please email 2tennisbums@gmail.com to let us know you have a plus one that we missed 😳"
+      },
+      {
+        question: "Will there be parking available?",
+        answer: "Yes, there will be plenty of parking available. Parking will be free for all guests attending the wedding reception."
+      },
+      {
+        question: "What is the dress code?",
+        answer: "Our dress code for the wedding will be semi-formal attire. Please refrain from wearing whites & creams."
+      },
+      {
+        question: "Wheelchair and accessibility access",
+        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible."
+      },
+      {
+        question: "Do you have a gift registry?",
+        answer: "Hugs are THE BEST present !! However, if you really feel it necessary to give beyond a hug, a small gift can be sent via e-transfer to nnjin22@gmail.com. We will also have a decorated box at the reception to collect cards and well wishes."
+      },
+      {
+        question: "Is it okay to take pictures with our phones and cameras during the wedding?",
+        answer: "Yes! We would love for you to take photos and share them on our app Joy.<br /><br />However, please refrain from taking photos during the ceremony."
+      },
+      {
+        question: "Is the wedding indoors or outdoors?",
+        answer: "Our wedding ceremony and reception will be held indoors.<br /><br />Our garden party will be held at the same property outdoors."
+      },
+      {
+        question: "What kind of shoes should/shouldn't I wear?",
+        answer: "We have been told that our venue has a strict shoes ON policy. Unfortunately, we are not able to take shoes off on the dance floor. Please wear shoes that you feel comfortable in."
+      },
+      {
+        question: "How will food and drinks be served?",
+        answer: "Following the ceremony we will have canapes served in the garden. Food and drinks during the reception will be served as alternate drop and cake to follow. We are also planning GF & DF cupcake options!"
+      },
+      {
+        question: "What if I have a dietary restriction?",
+        answer: "If you have any dietary requirements please make a note when you RSVP so we are able to accommodate for you."
+      },
+      {
+        question: "Who should I contact if I have questions about the wedding?",
+        answer: "Please reach out to Nick or Natasha: nnjin22@gmail.com."
+      },
+    ];
+
     const commonFAQs = [
       {
         question: "Can I bring a plus one?",
@@ -125,7 +172,10 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
     ];
 
-    if (invitedLocation === 'Both Australia and Canada' || invitedLocation === 'Canada') {
+    if (invitedLocation === 'Canada') { return canadaFAQs; }
+    if (invitedLocation === 'Australia') { return australiaFAQs; }
+
+    if (invitedLocation === 'Both Australia and Canada') {
       return canadaFAQs;
       // return [
       //   {

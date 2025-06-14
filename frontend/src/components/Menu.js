@@ -6,13 +6,24 @@ function Menu({ invitedLocation }) {
   const renderLocationMenu = (location) => (
     <div className={`${location}-menu-section`}>
       {location === 'Canada' ? null : (
-        <div className="menu-course">
-          <h3>Appetizers</h3>
-          <ul>
-            <li>Australian Appetizer 1</li>
-            <li>Australian Appetizer 2</li>
-          </ul>
-        </div>
+        <>
+          <div className="menu-course">
+            <h3>Canapés</h3>
+            <ul>
+              <li>Vietnamese beef rice paper roll</li>
+              <li>Crab and wonton bites</li>
+              <li>Coronation chicken croquettes</li>
+              <li>Braised lamb shoulder slider, coleslaw & fig jam</li>
+            </ul>
+          </div>
+          <div className="menu-course">
+            <h3>Entrée / Buffet Sides</h3>
+            <ul>
+              <li>Tender sous-vide chicken breast, butternut squash velouté, roasted baby onions</li>
+              <li>Mooloolaba prawn, Marie Rose sauce, pickled baby cucumber, compressed tomato & parsley oil</li>
+            </ul>
+          </div>
+        </>
       )}
       <div className="menu-course">
         {location === 'Canada' ? (
@@ -43,10 +54,10 @@ function Menu({ invitedLocation }) {
           </>
         ) : (
           <>
-            <h3>Main Course</h3>
+            <h3>Mains / Buffet Mains</h3>
             <ul>
-              <li>Australian Main 1</li>
-              <li>Australian Main 2</li>
+              <li>250g grain fed rib fillet served with potato fondant, French beans, red wine jus</li>
+              <li>Carraway & fennel Salmon, freekeh, roast beets, lemon & dill labna</li>
             </ul>
           </>
         )}
@@ -62,10 +73,18 @@ function Menu({ invitedLocation }) {
           </ul>
         ) : (
           <ul>
-            <li>Australian Dessert</li>
+            <li>Cake!</li>
           </ul>
         )}
       </div>
+      {location === 'Australia' && <div className="menu-course">
+        <h3>Children's Meals</h3>
+        <ul>
+          <li>Cheeseburger & chips, Vanilla Ice Cream</li>
+          <li>Free range chicken nuggets served with chips</li>
+          <li>Strawberry sundae with strawberry topping & fresh strawberries</li>
+        </ul>
+      </div>}
     </div>
   );
 

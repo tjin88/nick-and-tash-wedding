@@ -101,6 +101,20 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
             <CountdownTimer targetDate={canadaWeddingDate} />
           </div>
         )}
+        {showAustralia && (
+          <div className="australia-row">
+            <p className="date-cell">October 11, 2025 | 3:00 PM AEST</p>
+            <a 
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locations.australia.fullAddress)}`}
+              className="location-cell"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <p>{locations.australia.fullAddress}</p>
+            </a>
+            <CountdownTimer targetDate={australiaWeddingDate} />
+          </div>
+        )}
         {/* <div className="countdown-container">
           <table className="countdown-table">
             <tbody>

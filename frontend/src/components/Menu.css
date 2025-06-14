@@ -17,16 +17,16 @@
   
   .title {
     font-size: 2.5rem;
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
     /* border-bottom: 2px solid gold; */
-    padding-bottom: 1rem;
+    /* padding-bottom: 1rem; */
   }
   
-  .Canada-menu-section,
+  /* .Canada-menu-section,
   .Australia-menu-section {
     margin: 2rem 0;
     padding: 1rem;
-  }
+  } */
   
   .menu-course {
     margin: 2rem 0;
