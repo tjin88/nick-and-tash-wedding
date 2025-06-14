@@ -1,7 +1,10 @@
 .rsvp-table-container {
   text-align: center;
   padding: 2rem 0;
-  background: linear-gradient(to bottom, #fff1f2, #ffe4e6);
+  /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
+  background: 
+    linear-gradient(to bottom, rgba(255,241,242,0.85), rgba(255,228,230,0.85)),
+    url('../images/Tiffany_maleny.png') center center/cover no-repeat;
   min-height: calc(100vh - 100px - 4rem);
   font-family: 'Georgia', serif;
   width: 100%;

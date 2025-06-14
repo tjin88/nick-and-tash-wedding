@@ -1,8 +1,8 @@
 // Adjust mobile to take up full page height and width
 import React, { useState } from 'react';
-import Logo from '../images/logo.png';
-import GooseWhite from '../images/goose_no_white.png';
-import GooseTransparent from '../images/goose_white_wheels.png';
+// import GooseHandDrawn from '../images/logo.png';
+import GooseTransparent from '../images/goose_no_white.png';
+// import GooseWhite from '../images/goose_white_wheels.png';
 import './Navbar.css';
 
 function Navbar({ setNavOption, setIsOpened, invitedLocation, isAdmin, hasRSVPd }) {
@@ -35,18 +35,19 @@ function Navbar({ setNavOption, setIsOpened, invitedLocation, isAdmin, hasRSVPd 
 
   return (
     <nav className="navbar">
-      {/* <img src={Logo} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
-      <img src={GooseWhite} alt="N&N" className="logo" onClick={() => handleClick("start")} />
-      {/* <img src={GooseTransparent} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
+      {/* <img src={GooseHandDrawn} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
+      <img src={GooseTransparent} alt="N&N" className="logo" onClick={() => handleClick("start")} />
+      {/* <img src={GooseWhite} alt="N&N" className="logo" onClick={() => handleClick("start")} /> */}
       <div className="menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <p className='isMenuOpenPTag'>{isMenuOpen ? 'X' : '☰'}</p>
       </div>
       <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
         <li onClick={() => handleClick("rsvp")}><p>Rsvp</p></li>
-        <li onClick={() => handleClick("seeAllRSVPs")}><p>See Who’s Coming</p></li>
+        {invitedLocation !== "Australia" && <li onClick={() => handleClick("seeAllRSVPs")}><p>See Who’s Coming</p></li>}
         <li onClick={() => handleClick("menu")}><p>Menu</p></li>
         <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>
-        {invitedLocation !== "Canada" && <li onClick={() => handleClick("registry")}><p>Registry</p></li>}
+        {/* Decided to remove registry from Canada and Australia */}
+        {/* {invitedLocation !== "Canada" && <li onClick={() => handleClick("registry")}><p>Registry</p></li>} */}
         {invitedLocation !== "Canada" && <li onClick={() => handleClick("photos")}><p>Photos</p></li>}
         <li onClick={() => handleClick("faq")}><p>FAQ</p></li>
         {invitedLocation !== "Canada" && <li onClick={() => handleClick("vendors")}><p>Vendors</p></li>}

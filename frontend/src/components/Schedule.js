@@ -24,6 +24,29 @@ function Schedule({ invitedLocation }) {
 
   const australianSchedule = [
     {
+      title: "2:20 PM: Guests Arrive",
+      details: [],
+    },
+    {
+      title: "3:00 PM: Wedding Ceremony",
+      details: [],
+    },
+    {
+      title: "4:15 PM: Garden Party",
+      details: [],
+    },
+    {
+      title: "5:30 PM: Reception",
+      details: [],
+    },
+    {
+      title: "11 PM: Celebration Concludes",
+      details: [],
+    }
+  ];
+
+  const australianScheduleTwo = [
+    {
       title: "Welcome Drinks",
       time: "October 10, 2025, 6:00 PM",
       location: "Sydney Location",
@@ -52,7 +75,7 @@ function Schedule({ invitedLocation }) {
     }
   ];
 
-  const renderLocationSchedule = (location) => (
+  const renderLocationSchedule = (location, schedule_items) => (
     <div className="schedule-section">
       <div className="schedule-column">
         {location !== 'Canada' && (
@@ -61,7 +84,7 @@ function Schedule({ invitedLocation }) {
             Wedding Events
           </h2>
         )}
-        {(location === 'Canada' ? canadianSchedule : australianSchedule).map((item, index) => (
+        {schedule_items.map((item, index) => (
           <div 
             key={index} 
             className="schedule-item"
@@ -98,12 +121,16 @@ function Schedule({ invitedLocation }) {
       </div>
       {invitedLocation === 'Both Australia and Canada' ? (
         <div className="schedule-container">
-          {renderLocationSchedule('Canada')}
+          {renderLocationSchedule('Canada', canadianSchedule)}
           <div className="schedule-divider"></div>
-          {renderLocationSchedule('Australia')}
+          {renderLocationSchedule('Australia', australianSchedule)}
         </div>
       ) : (
-        renderLocationSchedule(invitedLocation)
+        <div className="schedule-container">
+          {renderLocationSchedule(invitedLocation, invitedLocation === 'Canada' ? canadianSchedule : australianSchedule)}
+          {/* <div className="schedule-divider"></div>
+          { invitedLocation === 'Australia' && renderLocationSchedule('Australia', australianScheduleTwo) } */}
+        </div>
       )}
     </div>
   );
