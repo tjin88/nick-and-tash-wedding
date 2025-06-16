@@ -42,7 +42,7 @@ function Navbar({ setNavOption, setIsOpened, invitedLocation, isAdmin, hasRSVPd 
         <p className='isMenuOpenPTag'>{isMenuOpen ? 'X' : '☰'}</p>
       </div>
       <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-        <li onClick={() => handleClick("rsvp")}><p>Rsvp</p></li>
+        <li onClick={() => handleClick("rsvp")}><p>RSVP</p></li>
         {invitedLocation !== "Australia" && <li onClick={() => handleClick("seeAllRSVPs")}><p>See Who’s Coming</p></li>}
         <li onClick={() => handleClick("menu")}><p>Menu</p></li>
         <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>

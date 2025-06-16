@@ -2,8 +2,8 @@
     width: 100vw;
     padding: 20px 0;
     text-align: center;
-    background-color: #faf4f4;
-    border-radius: 10px;
+    background: #faf0f2;
+    /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
     /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
     font-family: 'Georgia', serif;
     display: flex;
@@ -13,7 +13,7 @@
 
   .subtitle {
     font-size: 1.5em;
-    color: #6d6875;
+    color: black;
     margin-bottom: 16px;
   }
   

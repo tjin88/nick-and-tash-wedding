@@ -8,6 +8,11 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
   const [newInviteLocation, setNewInviteLocation] = useState('Canada');
+  const [transportOption, setTransportOption] = useState('');
+  const [accommodationAddress, setAccommodationAddress] = useState('');
+  const [accommodationLocalName, setAccommodationLocalName] = useState('');
+  const [vehicleAttendees, setVehicleAttendees] = useState('');
+  const [brekkieOption, setBrekkieOption] = useState('');
 
   const handleGuestChange = (index, field, value) => {
     const updatedGuests = [...guests];
@@ -83,6 +88,17 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       console.error('Failed to update RSVP:', error);
       alert('Failed to update RSVP.');
     }
+
+    // Transportation validation
+    if (transportOption === 'partyBus' && !accommodationAddress.trim()) {
+      alert('Please provide your accommodation address for the bus.');
+      return;
+    }
+
+    if (transportOption === 'parkingSpot' && !vehicleAttendees.trim()) {
+      alert('Please provide names for all attendees in your car.');
+      return;
+    }
   };
 
   const handleDeleteInvite = async (id, guests) => {
@@ -125,19 +141,19 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       case 'Canada':
         return [
           <option value="Canada Only" key="Canada Only">Attending Canada</option>,
-          <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
+          <option value="Not Attending" key="Not Attending">Regretfully Won't Attend</option>
         ];
       case 'Australia':
         return [
           <option value="Australia Only" key="Australia Only">Attending Australia</option>,
-          <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
+          <option value="Not Attending" key="Not Attending">Regretfully Won't Attend</option>
         ];
       case 'Both Australia and Canada':
         return [
           <option value="Canada Only" key="Canada Only">Attending Canada only</option>,
           <option value="Australia Only" key="Australia Only">Attending Australia Only</option>,
           <option value="Both Australia and Canada" key="Both Australia and Canada">Attending Both Canada and Australia</option>,
-          <option value="Not Attending" key="Not Attending">Regretfully Won’t Attend</option>
+          <option value="Not Attending" key="Not Attending">Regretfully Won't Attend</option>
         ];
       default:
         return [];
@@ -218,19 +234,22 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
 
   return (
     <div className="rsvp-table-container">
-      <h1 className='title'>RSVP</h1>
+      {/* <h1 className='title'>RSVP</h1> */}
+      <p className='title'>RSVP</p>
       {
         hasRSVPd 
         ? <p>Thank you for RSVP-ing! We look forward to celebrating with you soon.</p>
-        : <p>Please join us in celebrating Nicholas and Natasha’s wedding.</p>
+        : invitedLocation === "Canada"
+            ? <p>Please join us in celebrating Nicholas and Natasha's wedding.</p>
+            : <p>Please join us in celebrating our wedding.</p>
       }
-      <p>Kindly let us know if you’ll be joining us in celebrating our special day by RSVP-ing before May 1, 2025 — we can’t wait to hear from you!</p>
+      <p>Kindly let us know if you'll be joining us in celebrating our special day by RSVP-ing before {invitedLocation === "Canada" ? "May 1, 2025" : "August 8, 2025"} — we can't wait to hear from you!</p>
       {invitedLocation === "Canada" && <p>Location: Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2</p>}
-      {invitedLocation === "Australia" && <p>Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
+      {invitedLocation === "Australia" && <p>Location: Tiffany's Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
       {invitedLocation === "Both Australia and Canada" && 
         <>
           <p>Canada Location: Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2</p>
-          <p>Australia Location: Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552</p>
+          <p>Australia Location: Tiffany's Maleny, 409 Mountain View Road, Maleny Qld 4552</p>
         </>
       }
       {getLocationGoogleMaps()}
@@ -313,7 +332,154 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               </tr>
             )}
           </tbody>
-        </table>
+        </table>        
+        {/* Transportation Options Start */}
+        {invitedLocation !== "Canada" && <p>We are organising a group bus, because there’s only one local taxi driver in Maleny and limited parking at the venue. Please provide your accommodation address, its local name (if applicable), or if you would like to drive and park at the venue yourself. This is an expression of interest and we will have to take into account the number of vehicles limited at the venue. We will reach out separately to those who have expressed an interest in parking at the venue.</p>}
+        {invitedLocation !== "Canada" && <div className="transportation-options">
+          <label><strong className='label-title'>Transportation Options</strong></label>
+          <div className="rsvp-option-row">
+            <div
+              className={`rsvp-option${transportOption === 'partyBus' ? ' selected' : ''}`}
+              onClick={() => setTransportOption('partyBus')}
+              tabIndex={0}
+              role="button"
+              aria-pressed={transportOption === 'partyBus'}
+              style={{marginRight: '0'}}
+            >
+              <input
+                type="radio"
+                id="partyBus"
+                name="transportOption"
+                value="partyBus"
+                checked={transportOption === 'partyBus'}
+                onChange={() => setTransportOption('partyBus')}
+                style={{pointerEvents: 'none'}}
+              />
+              <label htmlFor="partyBus" style={{marginBottom: 0, cursor: 'pointer'}}>
+                I'd like to ride the bus
+              </label>
+            </div>
+            <div
+              className={`rsvp-option${transportOption === 'parkingSpot' ? ' selected' : ''}`}
+              onClick={() => setTransportOption('parkingSpot')}
+              tabIndex={0}
+              role="button"
+              aria-pressed={transportOption === 'parkingSpot'}
+            >
+              <input
+                type="radio"
+                id="parkingSpot"
+                name="transportOption"
+                value="parkingSpot"
+                checked={transportOption === 'parkingSpot'}
+                onChange={() => setTransportOption('parkingSpot')}
+                style={{pointerEvents: 'none'}}
+              />
+              <label htmlFor="parkingSpot" style={{marginBottom: 0, cursor: 'pointer'}}>
+                I'd like a parking spot at the venue
+              </label>
+            </div>
+          </div>
+
+          {/* Party Bus Fields */}
+          <div
+            className="party-bus-fields"
+            aria-hidden={transportOption !== 'partyBus'}
+            style={{ display: transportOption === 'partyBus' ? 'block' : 'block' }}
+          >
+            {transportOption === 'partyBus' && (
+              <>
+                <div>
+                  <label htmlFor="accommodationAddress">Accommodation address<span style={{color: '#B22222'}}>*</span>:</label>
+                  <input
+                    type="text"
+                    id="accommodationAddress"
+                    value={accommodationAddress}
+                    onChange={e => setAccommodationAddress(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="accommodationLocalName">Accommodation local name (if applicable):</label>
+                  <input
+                    type="text"
+                    id="accommodationLocalName"
+                    value={accommodationLocalName}
+                    onChange={e => setAccommodationLocalName(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Parking Spot Fields */}
+          <div
+            className="parking-spot-fields"
+            aria-hidden={transportOption !== 'parkingSpot'}
+            style={{ display: transportOption === 'parkingSpot' ? 'block' : 'block' }}
+          >
+            {transportOption === 'parkingSpot' && (
+              <div>
+                <label htmlFor="vehicleAttendees">Names of all attendees who will be in the vehicle<span style={{color: '#B22222'}}>*</span>:</label>
+                <input
+                  type="text"
+                  id="vehicleAttendees"
+                  value={vehicleAttendees}
+                  onChange={e => setVehicleAttendees(e.target.value)}
+                  placeholder="e.g. John Smith, Jane Doe"
+                />
+              </div>
+            )}
+          </div>
+        </div>}
+        {/* Transportation Options End */}
+        
+        {/* Brekkie RSVP Options Start */}
+        {invitedLocation !== "Canada" && <p>We really appreciate those who are travelling from far away and we want to spend as much time with you as possible! We are going to organise a post wedding brekkie at (location). Please RSVP to this as well so we can let the (location) know who to expect.</p>}
+        {invitedLocation !== "Canada" && <div className="rsvp-option-row">
+          <div
+            className={`rsvp-option${brekkieOption === 'yes' ? ' selected' : ''}`}
+            onClick={() => setBrekkieOption('yes')}
+            tabIndex={0}
+            role="button"
+            aria-pressed={brekkieOption === 'yes'}
+          >
+            <input
+              type="radio"
+              id="brekkieYes"
+              name="brekkieOption"
+              value="yes"
+              checked={brekkieOption === 'yes'}
+              onChange={() => setBrekkieOption('yes')}
+              style={{pointerEvents: 'none'}}
+            />
+            <label htmlFor="brekkieYes" style={{marginBottom: 0, cursor: 'pointer'}}>
+              I'd like to join for morning after wedding brekkie
+            </label>
+          </div>
+          <div
+            className={`rsvp-option${brekkieOption === 'no' ? ' selected' : ''}`}
+            onClick={() => setBrekkieOption('no')}
+            tabIndex={0}
+            role="button"
+            aria-pressed={brekkieOption === 'no'}
+          >
+            <input
+              type="radio"
+              id="brekkieNo"
+              name="brekkieOption"
+              value="no"
+              checked={brekkieOption === 'no'}
+              onChange={() => setBrekkieOption('no')}
+              style={{pointerEvents: 'none'}}
+            />
+            <label htmlFor="brekkieNo" style={{marginBottom: 0, cursor: 'pointer'}}>
+              I think I'm going to be too wasted or have a flight to catch and regretfully can't attend
+            </label>
+          </div>
+        </div>}
+        {/* Brekkie RSVP Options End */}
+
         {hasRSVPd && <p>Change your mind? Please update your RSVP status and resubmit.</p>}
         <button className="rsvp-button" onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
       </div>)}

@@ -37,7 +37,7 @@ function Photos({ photos, setPhotos }) {
   // TODO: Add delete functionality
   return (
     <div className="photo-container">
-      <h1 className='title'>Photos</h1>
+      <p className='title'>Photos</p>
       <div className="upload-section">
         {uploadError && <p className="error">{uploadError}</p>}
         <input type="file" accept="image/*" onChange={handleFileSelect} id="file-upload" style={{ display: 'none' }} />

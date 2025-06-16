@@ -1,6 +1,7 @@
 .schedule {
   min-height: calc(100vh - 100px - 4rem);
-  background: linear-gradient(to bottom, #fff1f2, #ffe4e6);
+  /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
+  background: #faf0f2;
   padding: 2rem;
   opacity: 0;
   animation: fadeIn 0.5s ease-in forwards;
@@ -22,9 +23,13 @@
   text-align: center;
   color: #9d174d; /* rose-900 */
   font-size: 2.5rem;
-  font-weight: bold;
+  /* font-weight: bold; */
   opacity: 0;
   animation: slideDown 0.5s ease-out 0.2s forwards;
+}
+
+.schedule-location-title{
+  font-family: 'Montserrat', Arial, sans-serif;
 }
 
 @keyframes slideDown {
@@ -109,7 +114,7 @@
   top: 0;
   width: 2px;
   height: 100%;
-  background: #D1001F;
+  background: #B22222;
   z-index: 0;
 }
 
@@ -123,13 +128,13 @@
   height: 16px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #D1001F;
+  border: 2px solid #B22222;
   z-index: 1;
   transition: all 0.3s ease;
 }
 
 .schedule .schedule-item:hover::after {
-  background: #D1001F;
+  background: #B22222;
   transform: scale(1.2);
 }
 
@@ -137,13 +142,13 @@
   font-weight: 600;
   text-transform: uppercase;
   font-family: "Poppins", sans-serif;
-  color: #3C4C24;
+  color: #000000;
   margin: 0 0 10px;
   transition: color 0.3s ease;
 }
 
 .schedule .schedule-item:hover h2 {
-  color: #D1001F; /* rose-900 */
+  color: #B22222;
 }
 
 .schedule .schedule-item h3 {
@@ -158,7 +163,7 @@
 }
 
 .schedule .schedule-item:hover h3 {
-  background: #D1001F; /* rose-200 */
+  background: #B22222;
 }
 
 .schedule .schedule-item p {
@@ -194,7 +199,7 @@
 .schedule-divider {
   margin: 2rem 8vw;
   height: 2px;
-  background: linear-gradient(to right, transparent, #D1001F, transparent);
+  background: linear-gradient(to right, transparent, #B22222, transparent);
 }
 
 @media (max-width: 700px) {

@@ -111,7 +111,7 @@ function Schedule({ invitedLocation }) {
 
   return (
     <div className="schedule">
-      <h1 className="title schedule-title">Schedule</h1>
+      <p className="title schedule-title">Schedule</p>
       <div className="hero-image-container">
         <img 
           src={BrideToBe}

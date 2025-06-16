@@ -91,7 +91,7 @@ function Menu({ invitedLocation }) {
   return (
     <div className="menu-wrapper">
       <div className="menu-container">
-        <h1 className='title'>Menu</h1>
+        <p className='title'>Menu</p>
         {invitedLocation === 'Both Australia and Canada' ? (
           <>
             {renderLocationMenu('Canada')}

@@ -99,33 +99,29 @@ const FAQ = ({ invitedLocation, locations }) => {
     ];
 
     const australiaFAQs = [
-      {
-        question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
-        answer: "Please email Susie Jin. Invitations are intended for family and friends of Nick and Natasha, including spouses and established partners of family and friends. If we missed your significant other, please email 2tennisbums@gmail.com to let us know you have a plus one that we missed 😳"
-      },
-      {
-        question: "Will there be parking available?",
-        answer: "Yes, there will be plenty of parking available. Parking will be free for all guests attending the wedding reception."
-      },
+      // {
+      //   question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
+      //   answer: "Please email Nick & Natasha. Invitations are intended for family and friends, including spouses and established partners of family and friends. If we missed your significant other, please email nnjin22@gmail.com to let us know you have a plus one that we missed 😳"
+      // },
       {
         question: "What is the dress code?",
         answer: "Our dress code for the wedding will be semi-formal attire. Please refrain from wearing whites & creams."
       },
       {
-        question: "Wheelchair and accessibility access",
-        answer: "The hotel is equipped for accessibility. If you choose to let us know (via email to 2tennisbums@gmail.com), we will do what we can to make your night with us as comfortable and enjoyable as possible."
+        question: "Do you have a gift registry?",
+        answer: "Your presence is enough of a present to us! But for those of you who are stubborn, we will have a wishing well."
       },
       {
-        question: "Do you have a gift registry?",
-        answer: "Hugs are THE BEST present !! However, if you really feel it necessary to give beyond a hug, a small gift can be sent via e-transfer to nnjin22@gmail.com. We will also have a decorated box at the reception to collect cards and well wishes."
+        question: "Will there be parking available?",
+        answer: "Tiffany’s Maleny has very limited car parks. We are organising a group bus that will include pickup and drop off to your accommodation. If you would prefer to drive yourself and park at the venue, please make an expression of interest on the RSVP page."
       },
       {
         question: "Is it okay to take pictures with our phones and cameras during the wedding?",
-        answer: "Yes! We would love for you to take photos and share them on our app Joy.<br /><br />However, please refrain from taking photos during the ceremony."
+        answer: "Yes! We would love for you to take photos and share them on our website.<br /><br />However, please refrain from taking photos during the ceremony."
       },
       {
         question: "Is the wedding indoors or outdoors?",
-        answer: "Our wedding ceremony and reception will be held indoors.<br /><br />Our garden party will be held at the same property outdoors."
+        answer: "Our wedding ceremony and reception will be held indoors.<br /><br />Our garden party will be held at the same property outdoors. If rain should occur, the entire wedding will be held indoors."
       },
       {
         question: "What kind of shoes should/shouldn't I wear?",
@@ -141,7 +137,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Who should I contact if I have questions about the wedding?",
-        answer: "Please reach out to Nick or Natasha: nnjin22@gmail.com."
+        answer: "Please reach out to Nick or Tash: nnjin22@gmail.com."
       },
     ];
 
@@ -236,7 +232,7 @@ const FAQ = ({ invitedLocation, locations }) => {
   return (
     <div className='faq-wrapper'>
       <div className="faq-container">
-        <h2 className="title">Frequently Asked Questions</h2>
+        <p className="title" style={{ fontSize: '5em' }}>Frequently Asked Questions</p>
         <div className="faq-list">
           {generateFAQData().map((item, index) => (
             <FAQItem

@@ -1,6 +1,7 @@
 .faq-wrapper {
   min-height: calc(100vh - 100px - 4rem);
-  background: linear-gradient(to bottom, #fff1f2, #ffe4e6);
+  /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
+  background: #faf0f2;
   padding: 2rem;
 }
 
@@ -24,6 +25,7 @@
     border: 1px solid #e5e5e5;
     border-radius: 8px;
     overflow: hidden;
+    margin-top: 2rem;
   }
   
   .faq-item {

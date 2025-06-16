@@ -70,8 +70,8 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
       <div className="background-image-mobile"></div>
       <div className="content">
         <p>{formattedGuestNames}, you're invited to</p>
-        <h1>Nicholas and Natasha’s</h1>
-        <h1>Wedding Reception</h1>
+        <p className='title_beautifully_delicious_script'>Nicholas and Natasha’s</p>
+        <p className='title_beautifully_delicious_script'>Wedding{invitedLocation === 'Canada' ? " Reception" : ""}</p>
         {isAdmin ? (
           <div className="password-container">
             <input

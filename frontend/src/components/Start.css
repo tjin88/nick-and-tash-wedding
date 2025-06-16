@@ -73,7 +73,7 @@
 .startInvitation button {
   padding: 10px 20px;
   font-size: 1em;
-  background-color: #6d6875;
+  background-color: #B22222;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -83,7 +83,7 @@
 }
 
 .startInvitation button:hover {
-  background-color: #E6C3C1;
+  background-color: #eb3752;
 }
 
 .countdown-container {
@@ -121,6 +121,13 @@
   min-width: 120px;
 } */
 
+.title_beautifully_delicious_script {
+  font-family: 'Beautifully Delicious Script', cursive;
+  font-size: 6rem !important;
+  padding: 0;
+  margin: -1rem 0 -1rem !important;
+}
+
 @media screen and (max-width: 768px) {
   .background-image {
     opacity: 0;
@@ -156,6 +163,11 @@
   .startInvitation h1 {
     font-size: 1.8em;
     margin: 0 0;
+  }
+
+  .title_beautifully_delicious_script {
+    font-size: 4rem !important;
+    margin: 0 !important;
   }
 
   .startInvitation p {
@@ -200,6 +212,11 @@
 @media screen and (max-width: 380px) {
   .startInvitation h1 {
     font-size: 1.5em;
+  }
+
+  .title_beautifully_delicious_script {
+    font-size: 4rem !important;
+    margin: -0.5rem 0 -0.5rem !important;
   }
   
   .startInvitation p {

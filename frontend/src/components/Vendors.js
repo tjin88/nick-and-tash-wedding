@@ -44,8 +44,8 @@ function Vendors({ initialVendors, isAdmin }) {
 
   return (
     <div className='vendors'>
-      <h1 className='title'>Vendors</h1>
-      <p className='subtitle'>Huge thank you to our lovely vendors! We couldn't have done it without you :)</p>
+      <p className='title'>Vendors</p>
+      <p className='subtitle'>Huge thank you to our lovely vendors, we couldn’t have done it without you!</p>
       {isAdmin && <button onClick={handleAddVendor} className='add-vendor'>Add new Vendor</button>}
       <ul>
         {Object.entries(vendors).map(([role, name]) => (

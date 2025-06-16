@@ -3,12 +3,12 @@
   padding: 2rem 0;
   /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
   background: 
-    linear-gradient(to bottom, rgba(255,241,242,0.85), rgba(255,228,230,0.85)),
+    linear-gradient(to bottom, rgba(255, 241, 242, 0.85), rgba(255, 241, 242, 0.40)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.80), rgba(255, 255, 255, 0.30)),
     url('../images/Tiffany_maleny.png') center center/cover no-repeat;
   min-height: calc(100vh - 100px - 4rem);
   font-family: 'Georgia', serif;
   width: 100%;
-  border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ input[type="text"], input[type="text"]:focus {
 .rsvp-button {
   margin-top: 10px;
   padding: 10px 15px;
-  background-color: #3C4C24;
+  background-color: #B22222;
   color: white;
   border: none;
   border-radius: 4px;
@@ -70,7 +70,7 @@ input[type="text"], input[type="text"]:focus {
 }
 
 .rsvp-button:hover {
-  background-color: #6d6875;
+  background-color: #c23636;
 }
 
 .admin-add-invite * {
@@ -106,7 +106,8 @@ input[type="text"], input[type="text"]:focus {
 
 .rsvp-table th {
   background-color: #E6C3C1;
-  color: #3C4C24;
+  color: #000000;
+  font-family: 'Montserrat', Arial, sans-serif;
 }
 
 .rsvp-table td {
@@ -122,7 +123,7 @@ input[type="text"], input[type="text"]:focus {
 .link-and-qr-code a {
   display: block;
   margin-bottom: 10px;
-  color: #3C4C24;
+  color: #000000;
   text-decoration: none;
 }
 
@@ -165,9 +166,36 @@ input[type="text"], input[type="text"]:focus {
   display: flex;
 }
 
+.font_open_sans {
+  font-family: 'Open Sans', Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+.font_montserrat {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+.font_beautifully_delicious_script {
+  font-family: 'Beautifully Delicious Script', cursive;
+  font-size: 4rem;
+  padding: 0;
+  margin: 0;
+}
+
+.transportation-options {
+  min-height: 253px;
+}
+
 @media (max-width: 700px) {
   .rsvp-table-container {
     min-height: calc(100vh - 77px - 4rem);
+    background: 
+      linear-gradient(to bottom, rgba(255, 241, 242, 0.85), rgba(255, 241, 242, 0.40)),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.80), rgba(255, 255, 255, 0.30)),
+      url('../images/Tiffany_maleny_slim.jpeg') center center/cover no-repeat;
   }
 
   .plusOneInput input[type="text"] {
@@ -189,4 +217,69 @@ input[type="text"], input[type="text"]:focus {
   .admin-add-invite {
     padding: 0 5%;
   }
+
+  .rsvp-option-row {
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 100%;
+    width: 100%;
+  }
+  .rsvp-option {
+    min-width: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+  }
+
+  .transportation-options {
+    min-height: 379px;
+  }
+}
+
+.rsvp-option-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1rem auto 1.5rem auto;
+  max-width: 900px;
+  width: 100%;
+}
+.rsvp-option {
+  flex: 1;
+  min-width: 320px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  background: #fff6f6;
+  border: 2px solid #e6c3c1;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(230,195,193,0.08);
+  font-size: 1.1rem;
+  justify-content: center;
+}
+.rsvp-option.selected {
+  border-color: #b22222;
+  box-shadow: 0 4px 16px rgba(178,34,34,0.10);
+  background: #fff0f0;
+}
+.rsvp-option input[type="radio"] {
+  margin-right: 0.7em;
+  accent-color: #b22222;
+}
+
+/* Remove old brekkie/transportation option classes */
+.brekkie-options-row, .brekkie-option, .transportation-options-row, .transportation-option {
+  all: unset;
+}
+
+.party-bus-fields > div + div {
+  margin-top: 10px;
+}
+
+.label-title {
+  font-family: 'Montserrat', Arial, sans-serif;
 }

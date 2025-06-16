@@ -2,7 +2,8 @@
   position: relative;
   text-align: center;
   padding: 20px;
-  background-color: #faf4f4;
+  background: #faf0f2;
+  /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
   font-family: 'Georgia', serif;
 }
 
@@ -11,7 +12,7 @@
   text-align: center;
   margin-bottom: 20px;
 }
-
+/* 
 .upload-button {
   padding: 10px 20px;
   font-size: 16px;
@@ -25,9 +26,9 @@
 
 .upload-button:hover {
   background-color: #9e7077;
-}
+} */
 
-.upload-options {
+/* .upload-options {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -41,16 +42,20 @@
   width: calc(100% - 20px);
   max-width: 200px;
   z-index: 10;
-}
+} */
 
 .upload-option {
   margin: 5px 0;
-  background-color: #E6C3C1;
+  background-color: #B22222;
   color: white;
   padding: 10px;
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.upload-option:hover {
+  background-color: #c23636;
 }
 
 .mobile {

@@ -5,7 +5,10 @@
   position: sticky;
   top: 0;
   /* background-color: #edc7c7; */
-  background-color: #E6C3C1;
+  /* background-color: #E6C3C1; */
+  background-color: white;
+  /* background-color: #eeeeee; */
+  /* background-color: #fff1f2; */
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 0 20px;
   z-index: 1000;
@@ -15,7 +18,7 @@
   width: auto;
   height: 100px;
   font-size: 20px;
-  color: #3C4C24;
+  color: #000000;
 }
 
 .menu-icon {
@@ -41,13 +44,15 @@
 
 .nav-links p {
   margin: 0;
-  color: #3C4C24;
+  /* color: #B22222; */
+  color: black;
+  font-family: 'Montserrat', Arial, sans-serif;
   font-size: 16px;
   font-weight: bold;
 }
 
 .nav-links p:hover {
-  color: #566d31;
+  color: #c23636;
 }
 
 /* Media Settings for Mobile */
@@ -69,7 +74,8 @@
     position: absolute;
     top: 75px;
     left: 0;
-    background-color: #E6C3C1;
+    background-color: #fff1f2;
+    /* background-color: white; */
     box-shadow: 0 4px 5px rgba(0,0,0,0.2);
   }
 

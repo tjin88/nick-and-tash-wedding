@@ -229,7 +229,7 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                     }}
 
                     .title {{
-                        color: #3c4c24;
+                        color: #000000;
                         font-size: 28px;
                         font-weight: bold;
                         margin-top: 20px;
@@ -246,7 +246,7 @@ def process_and_send_invites(dataframe, email_manager, invite_manager, image_pat
                         display: inline-block;
                         padding: 10px 20px;
                         margin: 10px;
-                        background-color: #3c4c24;
+                        background-color: #000000;
                         color: white;
                         text-decoration: none;
                         border-radius: 5px;

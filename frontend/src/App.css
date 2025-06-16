@@ -1,17 +1,28 @@
-/* Apply the font family to all elements */
 * {
-  font-family: Poppins, sans-serif;
+  /* font-family: Poppins, sans-serif; */
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+@font-face {
+  font-family: 'Beautifully Delicious Script';
+  src: url('./fonts/BDScript-Regular.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .title {
-  color: #3C4C24;
-  font-size: 2.5em;
+  color: #B22222;
+  /* font-size: 2.5em; */
+  font-size: 7em;
+  padding: 0;
+  margin: 0;
+  font-family: 'Beautifully Delicious Script', cursive;
   text-align: center;
-  font-family: Poppins, sans-serif;
+  /* font-family: Poppins, sans-serif; */
 }
 
 .h1 {
-  color: #3C4C24;
+  color: #000000;
   font-family: Poppins, sans-serif;
   /* font-size: 2em; */
 }
