@@ -333,23 +333,62 @@ app.get('/api/photos', async (req, res) => {
   }
 });
 
-app.post('/api/upload-photo', upload.single('file'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded." });
+app.post('/api/upload-photos', upload.array('files', 30), async (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ message: "No files uploaded." });
   }
   try {
-    const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${req.file.buffer.toString('base64')}`, {
-      folder: "demo",
-      upload_preset: 'ml_default'
+    const now = new Date();
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+    const month = monthNames[now.getMonth()];
+    const day = now.getDate();
+    const year = now.getFullYear();
+    
+    // Convert to 12-hour format
+    let hour = now.getHours();
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // 0 should be 12
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const second = String(now.getSeconds()).padStart(2, '0');
+    
+    const userId = req.body.userId || 'user';
+    
+    const uploadPromises = req.files.map(async (file, index) => {
+      // Create unique ID: wedding_Month_Day_Year_H-MM-SS-AM/PM_user_index
+      const uniqueId = `wedding_${month}_${day}_${year}_${hour}-${minute}-${second}${ampm}_${userId}_${index + 1}`;
+      
+      const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${file.buffer.toString('base64')}`, {
+        folder: "demo",
+        upload_preset: 'ml_default',
+        public_id: uniqueId
+      });
+      
+      const photo = new Photo({ 
+        url: result.url, 
+        location: req.body.location || '',
+        // uploadedBy: userId,
+        uploadedAt: new Date()
+      });
+      
+      await photo.save();
+      return photo;
     });
-    const photo = new Photo({ url: result.url, location: req.body.location  });
 
-    await photo.save();
-    res.status(201).json(photo);
-    io.emit('photo-updated', { url: photo.url, location: photo.location });
+    const savedPhotos = await Promise.all(uploadPromises);
+    
+    savedPhotos.forEach(photo => {
+      io.emit('photo-updated', { url: photo.url, location: photo.location });
+    });
+
+    res.status(201).json({ 
+      message: `Successfully uploaded ${savedPhotos.length} photos`,
+      photos: savedPhotos 
+    });
   } catch (error) {
     console.error("Upload Error:", error);
-    res.status(500).json({ message: "Failed to upload image", error });
+    res.status(500).json({ message: "Failed to upload images", error: error.message });
   }
 });
 

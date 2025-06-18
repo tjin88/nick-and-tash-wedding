@@ -3,19 +3,8 @@
   /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
   background: #faf0f2;
   padding: 2rem;
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  /* opacity: 0; */
+  /* animation: fadeIn 0.5s ease-in forwards; */
 }
 
 .schedule-title {
@@ -24,57 +13,48 @@
   color: #9d174d; /* rose-900 */
   font-size: 2.5rem;
   /* font-weight: bold; */
-  opacity: 0;
-  animation: slideDown 0.5s ease-out 0.2s forwards;
+  /* opacity: 0; */
+  /* animation: slideDown 0.5s ease-out 0.2s forwards; */
 }
 
 .schedule-location-title{
   font-family: 'Montserrat', Arial, sans-serif;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.schedule-flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .hero-image-container {
-  margin: 0 auto 2rem;
+  flex: 1 1 0;
+  width: 50%;
+  max-width: none;
+  margin: 0;
   border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  opacity: 0;
-  animation: scaleIn 0.5s ease-out 0.4s forwards;
-  max-width: 600px; /* Default max-width for desktop */
-  width: 90%; /* Default width for mobile */
+
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.schedule-container {
+  flex: 1 1 0;
+  width: 50%;
+  min-width: 0;
 }
 
 .hero-image {
   width: 100%;
-  height: auto; /* Let height be determined by aspect ratio */
-  max-height: 400px; /* Maximum height on any screen */
-  object-fit: contain; /* Show full image without cropping */
-  transition: transform 0.3s ease;
-}
-
-.hero-image:hover {
-  transform: scale(1.02);
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  display: block; /* Remove inline gap */
+  border-radius: inherit; /* Match container's border radius */
+  margin: 0; /* Remove default margin */
 }
 
 /* Mobile-specific adjustments */
@@ -90,9 +70,9 @@
   }
 }
 
-@media (min-width: 991px) {
+@media (min-width: 900px) {
   .schedule .schedule-column {
-    margin: 0 8vw;
+    /* margin: 0 8vw; */
     background: white;
     padding: 2rem;
     border-radius: 0.5rem;
@@ -130,7 +110,7 @@
   background: #fff;
   border: 2px solid #B22222;
   z-index: 1;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
 }
 
 .schedule .schedule-item:hover::after {
@@ -144,7 +124,7 @@
   font-family: "Poppins", sans-serif;
   color: #000000;
   margin: 0 0 10px;
-  transition: color 0.3s ease;
+  /* transition: color 0.3s ease; */
 }
 
 .schedule .schedule-item:hover h2 {
@@ -159,7 +139,7 @@
   font-weight: 600;
   margin: 0 0 10px;
   border-radius: 0.25rem;
-  transition: background-color 0.3s ease;
+  /* transition: background-color 0.3s ease; */
 }
 
 .schedule .schedule-item:hover h3 {
@@ -177,7 +157,7 @@
 
 .schedule .schedule-item ul li {
   padding-bottom: 10px;
-  transition: transform 0.3s ease;
+  /* transition: transform 0.3s ease; */
 }
 
 .schedule .schedule-item ul li:hover {
@@ -213,5 +193,20 @@
   
   .schedule-title {
     font-size: 2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .schedule-flex-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .hero-image-container {
+    max-width: 100%;
+    width: 100%;
+  }
+  .schedule-container {
+    width: 100%;
   }
 }

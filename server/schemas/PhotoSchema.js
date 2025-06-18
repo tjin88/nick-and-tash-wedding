@@ -15,7 +15,11 @@ const photoSchema = new mongoose.Schema({
     enum: [WEDDING_LOCATIONS.CANADA, WEDDING_LOCATIONS.AUSTRALIA, WEDDING_LOCATIONS.BOTH],
     default: WEDDING_LOCATIONS.BOTH,
     required: true
-  }
+  },
+  // uploadedBy: {
+  //   type: String,
+  //   required: true
+  // }
 });
 
 export default mongoose.model('Photo', photoSchema);

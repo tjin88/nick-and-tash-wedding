@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import './Photos.css';
 
-function Photos({ photos, setPhotos }) {
+function Photos({ photos, setPhotos, fetchPhoto, username }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadError, setUploadError] = useState('');
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);

@@ -112,26 +112,28 @@ function Schedule({ invitedLocation }) {
   return (
     <div className="schedule">
       <p className="title schedule-title">Schedule</p>
-      <div className="hero-image-container">
-        <img 
-          src={BrideToBe}
-          alt="Wedding couple" 
-          className="hero-image"
-        />
+      <div className="schedule-flex-container">
+        <div className="hero-image-container">
+          <img 
+            src={BrideToBe}
+            alt="Wedding couple" 
+            className="hero-image"
+          />
+        </div>
+        {invitedLocation === 'Both Australia and Canada' ? (
+          <div className="schedule-container">
+            {renderLocationSchedule('Canada', canadianSchedule)}
+            <div className="schedule-divider"></div>
+            {renderLocationSchedule('Australia', australianSchedule)}
+          </div>
+        ) : (
+          <div className="schedule-container">
+            {renderLocationSchedule(invitedLocation, invitedLocation === 'Canada' ? canadianSchedule : australianSchedule)}
+            {/* <div className="schedule-divider"></div>
+            { invitedLocation === 'Australia' && renderLocationSchedule('Australia', australianScheduleTwo) } */}
+          </div>
+        )}
       </div>
-      {invitedLocation === 'Both Australia and Canada' ? (
-        <div className="schedule-container">
-          {renderLocationSchedule('Canada', canadianSchedule)}
-          <div className="schedule-divider"></div>
-          {renderLocationSchedule('Australia', australianSchedule)}
-        </div>
-      ) : (
-        <div className="schedule-container">
-          {renderLocationSchedule(invitedLocation, invitedLocation === 'Canada' ? canadianSchedule : australianSchedule)}
-          {/* <div className="schedule-divider"></div>
-          { invitedLocation === 'Australia' && renderLocationSchedule('Australia', australianScheduleTwo) } */}
-        </div>
-      )}
     </div>
   );
 }
