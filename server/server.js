@@ -353,11 +353,11 @@ app.post('/api/upload-photos', upload.array('files', 30), async (req, res) => {
     const minute = String(now.getMinutes()).padStart(2, '0');
     const second = String(now.getSeconds()).padStart(2, '0');
     
-    const userId = req.body.userId || 'user';
+    const username = req.body.username || 'user';
     
     const uploadPromises = req.files.map(async (file, index) => {
       // Create unique ID: wedding_Month_Day_Year_H-MM-SS-AM/PM_user_index
-      const uniqueId = `wedding_${month}_${day}_${year}_${hour}-${minute}-${second}${ampm}_${userId}_${index + 1}`;
+      const uniqueId = `wedding_${month}_${day}_${year}_${hour}-${minute}-${second}${ampm}_${username}_${index + 1}`;
       
       const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${file.buffer.toString('base64')}`, {
         folder: "demo",
@@ -368,7 +368,7 @@ app.post('/api/upload-photos', upload.array('files', 30), async (req, res) => {
       const photo = new Photo({ 
         url: result.url, 
         location: req.body.location || '',
-        // uploadedBy: userId,
+        // uploadedBy: username,
         uploadedAt: new Date()
       });
       
