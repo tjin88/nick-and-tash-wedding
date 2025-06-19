@@ -338,8 +338,9 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
     return res.status(400).json({ message: "No files uploaded." });
   }
   if (req.files.length > 200) {
-    return res.status(400).json({ message: "You can only upload up to 200 photos at a time." });
+    return res.status(400).json({ message: "You can only upload up to 200 files at a time." });
   }
+  
   try {
     const now = new Date();
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -358,40 +359,86 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
     
     const username = req.body.username || 'user';
     
+    // Helper function to determine file type and MIME type
+    const getFileInfo = (file) => {
+      const mimeType = file.mimetype;
+      const isVideo = mimeType.startsWith('video/');
+      const isImage = mimeType.startsWith('image/');
+      
+      if (!isVideo && !isImage) {
+        throw new Error(`Unsupported file type: ${mimeType}`);
+      }
+      
+      return {
+        isVideo,
+        isImage,
+        mimeType,
+        dataUrl: `data:${mimeType};base64,${file.buffer.toString('base64')}`
+      };
+    };
+    
     const uploadPromises = req.files.map(async (file, index) => {
-      // Create unique ID: nnjin_wedding_Month_Day_Year_H-MM-SS-AM/PM_user_index
-      const uniqueId = `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
-      
-      const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${file.buffer.toString('base64')}`, {
-        folder: "demo",
-        upload_preset: 'ml_default',
-        public_id: uniqueId
-      });
-      
-      const photo = new Photo({ 
-        url: result.url, 
-        location: req.body.location || '',
-        // uploadedBy: username,
-        uploadedAt: new Date()
-      });
-      
-      await photo.save();
-      return photo;
+      try {
+        // Get file information
+        const fileInfo = getFileInfo(file);
+        
+        // Create unique ID
+        const uniqueId = `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
+        
+        // Configure upload options based on file type
+        const uploadOptions = {
+          folder: "demo",
+          upload_preset: 'ml_default',
+          public_id: uniqueId
+        };
+        
+        // Add resource_type for videos
+        if (fileInfo.isVideo) {
+          uploadOptions.resource_type = 'video';
+        }
+        
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(fileInfo.dataUrl, uploadOptions);
+        
+        // Save to database (you might want to create a separate model for videos)
+        const mediaItem = new Photo({ 
+          url: result.url, 
+          location: req.body.location || '',
+          mediaType: fileInfo.isVideo ? 'video' : 'image', // Add this field to your schema
+          uploadedAt: new Date()
+        });
+        
+        await mediaItem.save();
+        return mediaItem;
+        
+      } catch (fileError) {
+        console.error(`Error processing file ${index + 1}:`, fileError);
+        throw new Error(`Failed to process file ${index + 1}: ${fileError.message}`);
+      }
     });
 
-    const savedPhotos = await Promise.all(uploadPromises);
+    const savedMedia = await Promise.all(uploadPromises);
     
-    savedPhotos.forEach(photo => {
-      io.emit('photo-updated', { url: photo.url, location: photo.location });
+    // Emit updates for real-time functionality
+    savedMedia.forEach(item => {
+      io.emit('photo-updated', { 
+        url: item.url, 
+        location: item.location,
+        mediaType: item.mediaType 
+      });
     });
 
     res.status(201).json({ 
-      message: `Successfully uploaded ${savedPhotos.length} photos`,
-      photos: savedPhotos 
+      message: `Successfully uploaded ${savedMedia.length} files`,
+      media: savedMedia 
     });
+    
   } catch (error) {
     console.error("Upload Error:", error);
-    res.status(500).json({ message: "Failed to upload images", error: error.message });
+    res.status(500).json({ 
+      message: "Failed to upload files", 
+      error: error.message 
+    });
   }
 });
 

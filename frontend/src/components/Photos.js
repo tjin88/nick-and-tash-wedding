@@ -64,7 +64,7 @@ function Photos({ photos, setPhotos, fetchPhoto, username }) {
         {isUploading && <p className="uploading">Uploading photos...</p>}
         <input 
           type="file" 
-          accept="image/*" 
+          accept="image/*,video/*" 
           multiple 
           onChange={handleFileSelect} 
           id="file-upload" 
