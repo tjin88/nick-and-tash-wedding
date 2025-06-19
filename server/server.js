@@ -333,9 +333,12 @@ app.get('/api/photos', async (req, res) => {
   }
 });
 
-app.post('/api/upload-photos', upload.array('files', 30), async (req, res) => {
+app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: "No files uploaded." });
+  }
+  if (req.files.length > 200) {
+    return res.status(400).json({ message: "You can only upload up to 200 photos at a time." });
   }
   try {
     const now = new Date();
@@ -356,8 +359,8 @@ app.post('/api/upload-photos', upload.array('files', 30), async (req, res) => {
     const username = req.body.username || 'user';
     
     const uploadPromises = req.files.map(async (file, index) => {
-      // Create unique ID: wedding_Month_Day_Year_H-MM-SS-AM/PM_user_index
-      const uniqueId = `wedding_${month}_${day}_${year}_${hour}-${minute}-${second}${ampm}_${username}_${index + 1}`;
+      // Create unique ID: nnjin_wedding_Month_Day_Year_H-MM-SS-AM/PM_user_index
+      const uniqueId = `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
       
       const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${file.buffer.toString('base64')}`, {
         folder: "demo",
