@@ -19,6 +19,7 @@
 
 .schedule-location-title{
   font-family: 'Montserrat', Arial, sans-serif;
+  margin-top: 0;
 }
 
 .schedule-flex-container {
@@ -84,6 +85,10 @@
   position: relative;
   padding: 0 0 20px 40px; /* 16px (circle) + 10px (gap) + 10px (line thickness/offset) */
   margin-top: -2px;
+}
+
+.schedule .schedule-item:last-child {
+  padding-bottom: 0;
 }
 
 .schedule .schedule-item::before {

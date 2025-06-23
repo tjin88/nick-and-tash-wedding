@@ -61,7 +61,7 @@ const FAQ = ({ invitedLocation, locations }) => {
         answer: "Nick and Tash will be married in a private civil service on Friday, August 22, 2025.<br /><br />We hope you can join us in Toronto for this wedding reception (supper, speeches and dancing) so that we can begin our lives together surrounded by all those who we love."
       },
       {
-        question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
+        question: "I would like to bring a 'plus one'. How do I RSVP for my 'plus one'?",
         answer: "Please email Susie Jin. Invitations are intended for family and friends of Nick and Natasha, including spouses and established partners of family and friends. If we missed your significant other, please email 2tennisbums@gmail.com to let us know you have a plus one that we missed 😳"
       },
       {
@@ -78,7 +78,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "What if I have a dietary requirement?",
-        answer: "The menu is a traditional 10-course with dessert Chinese wedding reception meal. Please take a look at the “menu” tab. If you have any dietary requirements, please make a note when you RSVP so that we are able to accommodate for you."
+        answer: "The menu is a traditional 10-course with dessert Chinese wedding reception meal. Please take a look at the 'menu' tab. If you have any dietary requirements, please make a note when you RSVP so that we are able to accommodate for you."
       },
       {
         question: "Wheelchair and accessibility access",
@@ -100,7 +100,7 @@ const FAQ = ({ invitedLocation, locations }) => {
 
     const australiaFAQs = [
       // {
-      //   question: "I would like to bring a “plus one”. How do I RSVP for my “plus one”?",
+      //   question: "I would like to bring a 'plus one'. How do I RSVP for my 'plus one'?",
       //   answer: "Please email Nick & Natasha. Invitations are intended for family and friends, including spouses and established partners of family and friends. If we missed your significant other, please email nnjin22@gmail.com to let us know you have a plus one that we missed 😳"
       // },
       {
@@ -113,7 +113,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Will there be parking available?",
-        answer: "Tiffany’s Maleny has very limited car parks. We are organising a group bus that will include pickup and drop off to your accommodation. If you would prefer to drive yourself and park at the venue, please make an expression of interest on the RSVP page."
+        answer: "Tiffany's Maleny has very limited car parks. We are organising a group bus that will include pickup and drop off to your accommodation. If you would prefer to drive yourself and park at the venue, please make an expression of interest on the RSVP page."
       },
       {
         question: "Is it okay to take pictures with our phones and cameras during the wedding?",
@@ -232,7 +232,7 @@ const FAQ = ({ invitedLocation, locations }) => {
   return (
     <div className='faq-wrapper'>
       <div className="faq-container">
-        <p className="title" style={{ fontSize: '5em' }}>Frequently Asked Questions</p>
+        <p className="faq-title">Frequently Asked Questions</p>
         <div className="faq-list">
           {generateFAQData().map((item, index) => (
             <FAQItem

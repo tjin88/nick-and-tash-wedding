@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Beautifully Delicious Script';
+  src: url('../fonts/BDScript-Regular.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .faq-wrapper {
   min-height: calc(100vh - 100px - 4rem);
   /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
@@ -19,6 +26,17 @@
     margin-bottom: 2rem;
     font-weight: normal;
     letter-spacing: 1px;
+  }
+  
+  .faq-title {
+    color: #B22222;
+    padding: 0;
+    margin: 0;
+    font-family: 'Beautifully Delicious Script', cursive;
+    text-align: center;
+    /* font-size: 7em; */
+    font-size: clamp(2.2em, 10vw, 7em);
+    white-space: nowrap;
   }
   
   .faq-list {
