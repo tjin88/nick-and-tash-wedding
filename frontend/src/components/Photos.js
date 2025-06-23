@@ -76,13 +76,22 @@ function Photos({ photos, setPhotos, fetchPhoto, username }) {
         </label>
       </div>
       <div className="photo-gallery">
-        {photos.map((photo, index) => (
-          <img key={index} src={photo} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(photo)} />
-        ))}
+        {photos.map((photo, index) => {
+          const isVideo = /\.(mp4|webm|ogg)$/i.test(photo);
+          return isVideo ? (
+            <video key={index} src={photo} className="photo-item" controls onClick={() => setSelectedPhoto(photo)} />
+          ) : (
+            <img key={index} src={photo} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(photo)} />
+          );
+        })}
       </div>
       {selectedPhoto && (
         <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
-          <img src={selectedPhoto} alt="Enlarged view" className="modal-content"/>
+          {/\.(mp4|webm|ogg)$/i.test(selectedPhoto) ? (
+            <video src={selectedPhoto} className="modal-content" controls autoPlay />
+          ) : (
+            <img src={selectedPhoto} alt="Enlarged view" className="modal-content"/>
+          )}
           <span className="close-modal" onClick={() => setSelectedPhoto(null)}>&times;</span>
         </div>
       )}
