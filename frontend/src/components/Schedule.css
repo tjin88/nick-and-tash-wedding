@@ -39,45 +39,67 @@
   max-width: none;
   margin: 0;
   border-radius: 0.5rem;
-
+  display: flex;
+  align-items: stretch;
 }
 
 .schedule-container {
   flex: 1 1 0;
   width: 50%;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero-image {
   width: 100%;
   height: auto;
-  max-height: 400px;
-  object-fit: contain;
+  object-fit: cover;
   display: block; /* Remove inline gap */
   border-radius: inherit; /* Match container's border radius */
   margin: 0; /* Remove default margin */
+}
+
+/* Desktop and tablet white box styling */
+@media (min-width: 701px) {
+  .schedule .schedule-column {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure both containers have the same height */
+  .hero-image-container,
+  .schedule-container {
+    height: 400px;
+  }
 }
 
 /* Mobile-specific adjustments */
 @media (max-width: 700px) {
   .hero-image-container {
     width: 100%; /* Full width on mobile */
-    margin: 0 0 2rem;
+    margin: 0 0 1.5rem;
   }
   
   .hero-image {
     object-fit: cover; /* Cover on mobile for better presentation */
-    height: 300px;
+    height: 400px;
   }
-}
-
-@media (min-width: 900px) {
+  
+  /* Add white box styling for mobile */
   .schedule .schedule-column {
-    /* margin: 0 8vw; */
     background: white;
     padding: 2rem;
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin: 0;
   }
 }
 
@@ -190,10 +212,6 @@
 @media (max-width: 700px) {
   .schedule {
     min-height: calc(100vh - 77px - 4rem);
-  }
-  
-  .hero-image {
-    height: 300px;
   }
   
   .schedule-title {

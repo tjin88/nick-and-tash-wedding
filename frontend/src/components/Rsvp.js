@@ -332,7 +332,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               </tr>
             )}
           </tbody>
-        </table>        
+        </table>
         {/* Transportation Options Start */}
         {invitedLocation !== "Canada" && <p>We are organising a group bus, because there’s only one local taxi driver in Maleny and limited parking at the venue. Please provide your accommodation address, its local name (if applicable), or if you would like to drive and park at the venue yourself. This is an expression of interest and we will have to take into account the number of vehicles limited at the venue. We will reach out separately to those who have expressed an interest in parking at the venue.</p>}
         {invitedLocation !== "Canada" && <div className="transportation-options">
@@ -435,47 +435,49 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {/* Transportation Options End */}
         
         {/* Brekkie RSVP Options Start */}
-        {invitedLocation !== "Canada" && <p>We really appreciate those who are travelling from far away and we want to spend as much time with you as possible! We are going to organise a post wedding brekkie at (location). Please RSVP to this as well so we can let the (location) know who to expect.</p>}
-        {invitedLocation !== "Canada" && <div className="rsvp-option-row">
-          <div
-            className={`rsvp-option${brekkieOption === 'yes' ? ' selected' : ''}`}
-            onClick={() => setBrekkieOption('yes')}
-            tabIndex={0}
-            role="button"
-            aria-pressed={brekkieOption === 'yes'}
-          >
-            <input
-              type="radio"
-              id="brekkieYes"
-              name="brekkieOption"
-              value="yes"
-              checked={brekkieOption === 'yes'}
-              onChange={() => setBrekkieOption('yes')}
-              style={{pointerEvents: 'none'}}
-            />
-            <label htmlFor="brekkieYes" style={{marginBottom: 0, cursor: 'pointer'}}>
-              I'd like to join for morning after wedding brekkie
-            </label>
-          </div>
-          <div
-            className={`rsvp-option${brekkieOption === 'no' ? ' selected' : ''}`}
-            onClick={() => setBrekkieOption('no')}
-            tabIndex={0}
-            role="button"
-            aria-pressed={brekkieOption === 'no'}
-          >
-            <input
-              type="radio"
-              id="brekkieNo"
-              name="brekkieOption"
-              value="no"
-              checked={brekkieOption === 'no'}
-              onChange={() => setBrekkieOption('no')}
-              style={{pointerEvents: 'none'}}
-            />
-            <label htmlFor="brekkieNo" style={{marginBottom: 0, cursor: 'pointer'}}>
-              I think I'm going to be too wasted or have a flight to catch and regretfully can't attend
-            </label>
+        {invitedLocation !== "Canada" && <div className="brekkie-rsvp-options">
+          <p>We really appreciate those who are travelling from far away and we want to spend as much time with you as possible! We are going to organise a post wedding brekkie at (location). Please RSVP to this as well so we can let the (location) know who to expect.</p>
+          <div className="rsvp-option-row">
+            <div
+              className={`rsvp-option${brekkieOption === 'yes' ? ' selected' : ''}`}
+              onClick={() => setBrekkieOption('yes')}
+              tabIndex={0}
+              role="button"
+              aria-pressed={brekkieOption === 'yes'}
+            >
+              <input
+                type="radio"
+                id="brekkieYes"
+                name="brekkieOption"
+                value="yes"
+                checked={brekkieOption === 'yes'}
+                onChange={() => setBrekkieOption('yes')}
+                style={{pointerEvents: 'none'}}
+              />
+              <label htmlFor="brekkieYes" style={{marginBottom: 0, cursor: 'pointer'}}>
+              I will be attending for morning after wedding brekkie
+              </label>
+            </div>
+            <div
+              className={`rsvp-option${brekkieOption === 'no' ? ' selected' : ''}`}
+              onClick={() => setBrekkieOption('no')}
+              tabIndex={0}
+              role="button"
+              aria-pressed={brekkieOption === 'no'}
+            >
+              <input
+                type="radio"
+                id="brekkieNo"
+                name="brekkieOption"
+                value="no"
+                checked={brekkieOption === 'no'}
+                onChange={() => setBrekkieOption('no')}
+                style={{pointerEvents: 'none'}}
+              />
+              <label htmlFor="brekkieNo" style={{marginBottom: 0, cursor: 'pointer'}}>
+                I regretfully won’t attend
+              </label>
+            </div>
           </div>
         </div>}
         {/* Brekkie RSVP Options End */}
