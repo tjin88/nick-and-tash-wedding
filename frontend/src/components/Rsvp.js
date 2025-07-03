@@ -234,8 +234,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
 
   return (
     <div className="rsvp-table-container">
-      {/* <h1 className='title'>RSVP</h1> */}
-      <p className='title'>RSVP</p>
+      <div className='title'>RSVP</div>
       {
         hasRSVPd 
         ? <p>Thank you for RSVP-ing! We look forward to celebrating with you soon.</p>
@@ -260,11 +259,11 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             <tr>
               <th>Guests</th>
               {/* {givenPlusOne && <th>Name</th>} */}
-              <th>Dietary Requirements</th>
               <th className='horizontal'>
                 Status
                 {/* {guests.length > 1 && <button onClick={fillAllRSVP} className='rsvpAllButton'>Prefill same as first</button>} */}
               </th>
+              <th>Dietary Requirements</th>
             </tr>
           </thead>
           <tbody>
@@ -272,14 +271,6 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               <tr key={index}>
                 {/* {givenPlusOne && <td>Invited</td>} */}
                 <td>{guest.firstName} {guest.lastName}</td>
-                <td>
-                  <input
-                    type="text"
-                    placeholder="Any dietary requirements?"
-                    value={guest.dietaryRequirements}
-                    onChange={(e) => handleGuestChange(index, 'dietaryRequirements', e.target.value)}
-                  />
-                </td>
                 <td>
                   <select
                     value={guest.attendingStatus || ''}
@@ -289,6 +280,14 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     <option value="" key="" disabled>Select one</option>
                     {getAvailableOptions()}
                   </select>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="Any dietary requirements?"
+                    value={guest.dietaryRequirements}
+                    onChange={(e) => handleGuestChange(index, 'dietaryRequirements', e.target.value)}
+                  />
                 </td>
               </tr>
             ))}
@@ -333,10 +332,15 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             )}
           </tbody>
         </table>
+        {/* Scroll hint for mobile users */}
+        <div className="mobile-scroll-hint">
+          <p><span style={{color: '#B22222'}}>*</span> Please scroll sideways on table above to add any dietary requirements</p>
+        </div>
+        {/* TODO: IF the width of the screen is 730px or less, then add a note saying something like "Please scroll sideways to add any dietary requirements" */}
         {/* Transportation Options Start */}
-        {invitedLocation !== "Canada" && <p>We are organising a group bus, because there’s only one local taxi driver in Maleny and limited parking at the venue. Please provide your accommodation address, its local name (if applicable), or if you would like to drive and park at the venue yourself. This is an expression of interest and we will have to take into account the number of vehicles limited at the venue. We will reach out separately to those who have expressed an interest in parking at the venue.</p>}
         {invitedLocation !== "Canada" && <div className="transportation-options">
-          <label><strong className='label-title'>Transportation Options</strong></label>
+          <label><strong className='label-title'>Bus Options</strong></label>
+          <p>We are organising a group bus, because there's only one local taxi driver in Maleny and limited parking at the venue. Please provide your accommodation address, its local name (if applicable), or if you would like to drive and park at the venue yourself. This is an expression of interest and we will have to take into account the number of vehicles limited at the venue. We will reach out separately to those who have expressed an interest in parking at the venue.</p>
           <div className="rsvp-option-row">
             <div
               className={`rsvp-option${transportOption === 'partyBus' ? ' selected' : ''}`}
@@ -436,7 +440,8 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         
         {/* Brekkie RSVP Options Start */}
         {invitedLocation !== "Canada" && <div className="brekkie-rsvp-options">
-          <p>We really appreciate those who are travelling from far away and we want to spend as much time with you as possible! We are going to organise a post wedding brekkie at (location). Please RSVP to this as well so we can let the (location) know who to expect.</p>
+          <label><strong className='label-title'>Sunday Morning Breakfast Option</strong></label>
+          <p>We want to spend as much time with you as possible; we are going to organise a post wedding brekkie at Maple 3 Cafe @ 9am. Please RSVP to this as well so we can let the Maple 3 Cafe know who to expect.</p>
           <div className="rsvp-option-row">
             <div
               className={`rsvp-option${brekkieOption === 'yes' ? ' selected' : ''}`}
@@ -475,7 +480,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 style={{pointerEvents: 'none'}}
               />
               <label htmlFor="brekkieNo" style={{marginBottom: 0, cursor: 'pointer'}}>
-                I regretfully won’t attend
+                I regretfully won't attend
               </label>
             </div>
           </div>
