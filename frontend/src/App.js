@@ -44,11 +44,11 @@ function App({ isAdmin }) {
       fullAddress: "Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2"
     },
     australia: {
-      venue: "Tiffany’s Maleny",
+      venue: "Tiffany's Maleny",
       address: "409 Mountain View Road, Maleny Qld 4552",
       date: "October 11, 2025",
       time: "[Australian Time]",
-      fullAddress: "Tiffany’s Maleny, 409 Mountain View Road, Maleny Qld 4552"
+      fullAddress: "Tiffany's Maleny, 409 Mountain View Road, Maleny Qld 4552"
     }
   };
 
@@ -216,6 +216,13 @@ function App({ isAdmin }) {
     fetchRegistry();
     fetchVendors();
   }, [inviteId, isAdmin]);
+
+  useEffect(() => {
+    // Auto-navigate Canada-only invites from RSVP to Schedule
+    if (navOption === 'rsvp' && invitedLocation === "Canada") {
+      setNavOption('schedule');
+    }
+  }, [navOption, invitedLocation]);
   
   return (
     <div className="App">

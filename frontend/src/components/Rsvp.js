@@ -339,8 +339,10 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {/* TODO: IF the width of the screen is 730px or less, then add a note saying something like "Please scroll sideways to add any dietary requirements" */}
         {/* Transportation Options Start */}
         {invitedLocation !== "Canada" && <div className="transportation-options">
-          <label><strong className='label-title'>Bus Options</strong></label>
-          <p>We are organising a group bus, because there's only one local taxi driver in Maleny and limited parking at the venue. Please provide your accommodation address, its local name (if applicable), or if you would like to drive and park at the venue yourself. This is an expression of interest and we will have to take into account the number of vehicles limited at the venue. We will reach out separately to those who have expressed an interest in parking at the venue.</p>
+          <div className="transportation-options-background">
+            <label><strong className='label-title'>Transportation Options</strong></label>
+            <p>We are organising a group bus. There will be one pick up time (to be determined) and one drop off time, leaving the venue ~11pm.<br/><br/>Tiffany's Maleny has told us there is limited street parking for those who will be driving and that the one and only local taxi driver in Maleny takes his last run at 6pm.</p>
+          </div>
           <div className="rsvp-option-row">
             <div
               className={`rsvp-option${transportOption === 'partyBus' ? ' selected' : ''}`}
@@ -360,7 +362,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 style={{pointerEvents: 'none'}}
               />
               <label htmlFor="partyBus" style={{marginBottom: 0, cursor: 'pointer'}}>
-                I'd like to ride the bus
+                {guests.length > 1 ? "We'd" : "I'd"} like to ride the bus
               </label>
             </div>
             <div
@@ -380,115 +382,99 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 style={{pointerEvents: 'none'}}
               />
               <label htmlFor="parkingSpot" style={{marginBottom: 0, cursor: 'pointer'}}>
-                I'd like a parking spot at the venue
+              {guests.length > 1 ? "We" : "I"} will arrange {guests.length > 1 ? "our" : "my"} own transportation
               </label>
             </div>
           </div>
 
           {/* Party Bus Fields */}
           <div
-            className="party-bus-fields"
+            className={`party-bus-fields ${transportOption === 'partyBus' ? 'show' : ''}`}
             aria-hidden={transportOption !== 'partyBus'}
-            style={{ display: transportOption === 'partyBus' ? 'block' : 'block' }}
           >
-            {transportOption === 'partyBus' && (
-              <>
-                <div>
-                  <label htmlFor="accommodationAddress">Accommodation address<span style={{color: '#B22222'}}>*</span>:</label>
-                  <input
-                    type="text"
-                    id="accommodationAddress"
-                    value={accommodationAddress}
-                    onChange={e => setAccommodationAddress(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="accommodationLocalName">Accommodation local name (if applicable):</label>
-                  <input
-                    type="text"
-                    id="accommodationLocalName"
-                    value={accommodationLocalName}
-                    onChange={e => setAccommodationLocalName(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
+            <div>
+              <label htmlFor="accommodationAddress">Accommodation address<span style={{color: '#B22222'}}>*</span>:</label>
+              <input
+                className="input-pink-background"
+                type="text"
+                id="accommodationAddress"
+                value={accommodationAddress}
+                placeholder="e.g. 369 Anywhere Street, Maleny Qld 4552"
+                onChange={e => setAccommodationAddress(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="accommodationLocalName">Accommodation local name (if applicable):</label>
+              <input
+                className="input-pink-background"
+                type="text"
+                id="accommodationLocalName"
+                value={accommodationLocalName}
+                placeholder="e.g. Nick's Bottom"
+                onChange={e => setAccommodationLocalName(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Parking Spot Fields */}
           <div
-            className="parking-spot-fields"
+            className={`parking-spot-fields ${transportOption === 'parkingSpot' ? 'show' : ''}`}
             aria-hidden={transportOption !== 'parkingSpot'}
-            style={{ display: transportOption === 'parkingSpot' ? 'block' : 'block' }}
           >
-            {transportOption === 'parkingSpot' && (
-              <div>
-                <label htmlFor="vehicleAttendees">Names of all attendees who will be in the vehicle<span style={{color: '#B22222'}}>*</span>:</label>
-                <input
-                  type="text"
-                  id="vehicleAttendees"
-                  value={vehicleAttendees}
-                  onChange={e => setVehicleAttendees(e.target.value)}
-                  placeholder="e.g. John Smith, Jane Doe"
-                />
-              </div>
-            )}
+            <div>
+              <label htmlFor="vehicleAttendees">Names of all attendees who will be in the vehicle<span style={{color: '#B22222'}}>*</span>:</label>
+              <input
+                className="input-pink-background"
+                type="text"
+                id="vehicleAttendees"
+                value={vehicleAttendees}
+                onChange={e => setVehicleAttendees(e.target.value)}
+                placeholder="e.g. John Smith, Jane Doe"
+              />
+            </div>
           </div>
         </div>}
         {/* Transportation Options End */}
         
         {/* Brekkie RSVP Options Start */}
         {invitedLocation !== "Canada" && <div className="brekkie-rsvp-options">
-          <label><strong className='label-title'>Sunday Morning Breakfast Option</strong></label>
-          <p>We want to spend as much time with you as possible; we are going to organise a post wedding brekkie at Maple 3 Cafe @ 9am. Please RSVP to this as well so we can let the Maple 3 Cafe know who to expect.</p>
-          <div className="rsvp-option-row">
-            <div
-              className={`rsvp-option${brekkieOption === 'yes' ? ' selected' : ''}`}
-              onClick={() => setBrekkieOption('yes')}
-              tabIndex={0}
-              role="button"
-              aria-pressed={brekkieOption === 'yes'}
-            >
-              <input
-                type="radio"
-                id="brekkieYes"
-                name="brekkieOption"
-                value="yes"
-                checked={brekkieOption === 'yes'}
-                onChange={() => setBrekkieOption('yes')}
-                style={{pointerEvents: 'none'}}
-              />
-              <label htmlFor="brekkieYes" style={{marginBottom: 0, cursor: 'pointer'}}>
-              I will be attending for morning after wedding brekkie
+          <div className="brekkie-rsvp-options-background">
+            <label><strong className='label-title'>Sunday Morning Breakfast Option</strong></label>
+            <p>We want to spend as much time with you as possible; we are going to organise a post wedding brekkie at Maple 3 Cafe @ 9am.</p>
+            <div className="brekkie-dropdown-container">
+              <label htmlFor="brekkieAttendees" className="brekkie-dropdown-label">
+                Number of guests attending morning breakfast<span style={{color: '#B22222'}}>*</span>:
               </label>
-            </div>
-            <div
-              className={`rsvp-option${brekkieOption === 'no' ? ' selected' : ''}`}
-              onClick={() => setBrekkieOption('no')}
-              tabIndex={0}
-              role="button"
-              aria-pressed={brekkieOption === 'no'}
-            >
-              <input
-                type="radio"
-                id="brekkieNo"
-                name="brekkieOption"
-                value="no"
-                checked={brekkieOption === 'no'}
-                onChange={() => setBrekkieOption('no')}
-                style={{pointerEvents: 'none'}}
-              />
-              <label htmlFor="brekkieNo" style={{marginBottom: 0, cursor: 'pointer'}}>
-                I regretfully won't attend
-              </label>
+              <select
+                id="brekkieAttendees"
+                value={brekkieOption}
+                onChange={(e) => setBrekkieOption(e.target.value)}
+                className={`brekkie-dropdown ${brekkieOption ? 'selected' : ''}`}
+              >
+                <option value="" disabled>Select number of attendees</option>
+                {Array.from({ length: guests.length + 1 }, (_, i) => (
+                  <option key={i} value={i.toString()}>
+                    {i === 0 ? 'None' : 
+                    i === 1 ? '1 guest' : 
+                    `${i} guests`}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>}
         {/* Brekkie RSVP Options End */}
 
-        {hasRSVPd && <p>Change your mind? Please update your RSVP status and resubmit.</p>}
-        <button className="rsvp-button" onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
+        {hasRSVPd && 
+        <div className="change-your-mind-container">
+          <div className="change-your-mind-background">
+            <p>Change your mind? Please update your RSVP status and resubmit.</p>
+          </div>
+        </div>}
+        <div className="rsvp-button-container">
+          <button className="rsvp-button" onClick={handleRSVPUpdate}>{hasRSVPd ? "Resubmit" : "Submit"}</button>
+        </div>
       </div>)}
       {/* TODO: Make this filterable based on, well, anything. 
                 1. RSVP status

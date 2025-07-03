@@ -3,9 +3,17 @@
   padding: 2rem 0;
   /* background: linear-gradient(to bottom, #fff1f2, #ffe4e6); */
   background: 
-    linear-gradient(to bottom, rgba(255, 241, 242, 0.85), rgba(255, 241, 242, 0.40)),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.80), rgba(255, 255, 255, 0.30)),
-    url('../images/Tiffany_maleny.png') center center/cover no-repeat;
+    linear-gradient(to bottom, 
+      rgba(255, 241, 242, 1) 0%, 
+      rgba(255, 241, 242, 0.9) 25%, 
+      rgba(220, 225, 240, 0.8) 35%, 
+      /* rgba(180, 195, 225, 0.85) 55%,  */
+      rgba(140, 165, 210, 0.9) 50%, 
+      /* rgba(110, 142, 195, 1) 70%,  */
+      transparent 100%
+    ),
+    url('../images/Tiffany_maleny.png') center bottom/contain no-repeat;
+  background-color: rgba(110, 142, 195, 1);
   min-height: calc(100vh - 100px - 4rem);
   font-family: 'Open Sans', Arial, sans-serif;
   width: 100%;
@@ -14,11 +22,12 @@
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  /* transition: all 1s ease-in-out; */
 }
 
-/* .rsvp-table-container p {
+.rsvp-table-container p {
   padding: 0 10vw;
-} */
+}
 .rsvp-table-container table {
   border-collapse: collapse;
   margin: 10px 0;
@@ -60,7 +69,7 @@ input[type="text"], input[type="text"]:focus {
   box-sizing: border-box;
   font-family: 'Open Sans', Arial, sans-serif;
   background: rgba(255,246,246,0.5);
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
   box-shadow: 0 2px 8px rgba(230,195,193,0.05);
 }
 
@@ -162,7 +171,7 @@ input[type="text"], input[type="text"]:focus {
   font-size: 0.95rem;
   font-family: 'Open Sans', Arial, sans-serif;
   background: rgba(255,246,246,0.5);
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
   box-shadow: 0 2px 8px rgba(230,195,193,0.05);
   color: #2c2c2c;
 }
@@ -177,7 +186,7 @@ input[type="text"], input[type="text"]:focus {
   font-family: 'Open Sans', Arial, sans-serif;
   background: rgba(255,246,246,0.5);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
   box-shadow: 0 2px 8px rgba(230,195,193,0.05);
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b22222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -287,12 +296,19 @@ input[type="text"], input[type="text"]:focus {
 }
 
 .transportation-options {
-  min-height: 482px;  /* 482px is the required height of the transportation options section. Do NOT change this. */
+  /* min-height: 482px; /* 482px is the required height of the transportation options section. Do NOT change this. */
   width: 80vw;
   margin-left: -10vw;
   margin-right: -10vw;
   padding: 0 10vw;
   box-sizing: border-box;
+  transition: all 0.8s ease;
+}
+
+.transportation-options-background {
+  padding: 1rem 0 1px;
+  background: rgba(255, 246, 246, 0.5);
+  border-radius: 12px;
 }
 
 .brekkie-rsvp-options {
@@ -304,20 +320,57 @@ input[type="text"], input[type="text"]:focus {
   box-sizing: border-box;
 }
 
+.brekkie-rsvp-options-background {
+  padding-top: 1rem;
+  background: rgba(255, 246, 246, 0.5);
+  border-radius: 12px;
+}
+
 .parking-spot-fields {
   margin: 0;
   width: 100%;
   box-sizing: border-box;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.8s ease, opacity 0.8s ease, margin 0.8s ease;
+}
+
+.parking-spot-fields.show {
+  max-height: 200px;
+  opacity: 1;
+  margin: 1rem 0;
+  transition: max-height 0.8s ease 0.2s, opacity 0.8s ease 0.2s, margin 0.8s ease 0.2s;
+}
+
+.parking-spot-fields > div {
+  transition: all 0.6s ease;
 }
 
 .party-bus-fields {
   margin: 0;
   width: 100%;
   box-sizing: border-box;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.8s ease, opacity 0.8s ease, margin 0.8s ease;
+}
+
+.party-bus-fields.show {
+  max-height: 500px;
+  opacity: 1;
+  margin: 1rem 0;
+  transition: max-height 0.8s ease 0.2s, opacity 0.8s ease 0.2s, margin 0.8s ease 0.2s;
+}
+
+.party-bus-fields > div {
+  transition: all 0.6s ease;
 }
 
 .party-bus-fields > div + div {
   margin-top: 10px;
+  transition: all 0.6s ease;
 }
 
 .label-title {
@@ -328,10 +381,10 @@ input[type="text"], input[type="text"]:focus {
   .rsvp-table-container {
     min-height: auto;
     padding: 1rem 0;
-    background: 
+    /* background: 
       linear-gradient(to bottom, rgba(255, 241, 242, 0.85), rgba(255, 241, 242, 0.40)),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.80), rgba(255, 255, 255, 0.30)),
-      url('../images/Tiffany_maleny_slim.jpeg') center center/cover no-repeat;
+      url('../images/Tiffany_maleny_slim.jpeg') center center/cover no-repeat; */
   }
 
   .rsvp-table-container p {
@@ -389,7 +442,7 @@ input[type="text"], input[type="text"]:focus {
   }
 
   .transportation-options {
-    min-height: 541px;  /* 541px is the required height of the transportation options section. Do NOT change this. */
+    /* min-height: 541px; /* 541px is the required height of the transportation options section. Do NOT change this. */
     width: 90vw;
     margin-left: -5vw;
     margin-right: -5vw;
@@ -427,6 +480,31 @@ input[type="text"], input[type="text"]:focus {
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
     display: block;
+  }
+
+  .brekkie-dropdown-container {
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .brekkie-dropdown-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    white-space: normal;
+  }
+
+  .brekkie-dropdown {
+    width: 100%;
+    min-width: 0;
+    padding: 0.7rem 0.6rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    padding-right: 2rem;
+    background-size: 0.7rem;
+    min-height: 2.5rem;
   }
 
   .parking-spot-fields, .party-bus-fields {
@@ -489,6 +567,13 @@ input[type="text"], input[type="text"]:focus {
   .rsvp-table table {
     margin-bottom: 1rem;
   }
+
+  .rsvp-button-container {
+    display: flex;
+    justify-content: center;
+    width: 80vw;
+    padding: 0 5vw;
+  }
 }
 
 .rsvp-option-row {
@@ -510,7 +595,7 @@ input[type="text"], input[type="text"]:focus {
   border-radius: 8px;
   padding: 1rem 1.5rem;
   cursor: pointer;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
   box-shadow: 0 2px 8px rgba(230,195,193,0.08);
   font-size: 1.1rem;
   justify-content: center;
@@ -544,7 +629,7 @@ input[type="text"], input[type="text"]:focus {
 }
 
 .rsvp-table tbody tr {
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
 }
 
 .rsvp-table tbody tr:hover {
@@ -562,7 +647,7 @@ input[type="text"], input[type="text"]:focus {
   display: none;
   text-align: center;
   margin: 1rem 0;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 5vw;
   background: rgba(230, 195, 193, 0.1);
   border: 1px solid rgba(230, 195, 193, 0.3);
   border-radius: 8px;
@@ -580,26 +665,11 @@ input[type="text"], input[type="text"]:focus {
 @media (max-width: 730px) {
   .mobile-scroll-hint {
     display: block;
+    width: 70vw;
   }
 }
 
 @media (max-width: 900px) {
-  .rsvp-table-container {
-    min-height: auto;
-    padding: 1rem 0;
-    background: 
-      linear-gradient(to bottom, rgba(255, 241, 242, 0.85), rgba(255, 241, 242, 0.40)),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.80), rgba(255, 255, 255, 0.30)),
-      url('../images/Tiffany_maleny_slim.jpeg') center center/cover no-repeat;
-  }
-
-  .rsvp-table-container p {
-    padding: 0 5vw;
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-  }
-
   .plusOneInput input[type="text"] {
     width: 48%;
     display: inline-block;
@@ -646,97 +716,104 @@ input[type="text"], input[type="text"]:focus {
     font-size: 0.9rem;
     line-height: 1.3;
   }
+}
 
-  .transportation-options p {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    margin: 0.5rem 0;
-  }
+.brekkie-dropdown-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  /* background: rgba(255, 246, 246, 0.3); */
+  /* background: #fff6f6; */
+  /* border: 2px solid #e6c3c1; */
+  border-radius: 8px;
+  /* border: 1px solid rgba(230, 195, 193, 0.2); */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-  .transportation-options label {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
+.brekkie-dropdown-label {
+  display: block;
+  margin-bottom: 0;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 1rem;
+  color: #2c2c2c;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
-  .brekkie-rsvp-options {
-    width: 90vw;
-    margin-left: -5vw;
-    margin-right: -5vw;
-    padding: 0 5vw;
-    box-sizing: border-box;
-  }
+.brekkie-dropdown {
+  width: auto;
+  /* min-width: 200px; */
+  padding: 1rem 1rem;
+  border: 2px solid #e6c3c1 !important;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-family: 'Open Sans', Arial, sans-serif;
+  /* background: rgba(255,246,246,0.5); */
+  background: #fff6f6 !important;
+  cursor: pointer;
+  transition: all 0.6s ease;
+  box-shadow: 0 2px 8px rgba(230,195,193,0.05);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b22222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 1rem center !important;
+  background-size: 1rem !important;
+  padding-right: 2.5rem !important;
+  color: #2c2c2c !important;
+  min-height: 3rem !important;
+}
 
-  .brekkie-rsvp-options p {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    margin: 0.5rem 0;
-  }
+.brekkie-dropdown:focus {
+  outline: none;
+  border-color: #b22222 !important;
+  box-shadow: 0 0 0 4px rgba(178,34,34,0.08), 0 4px 12px rgba(230,195,193,0.15);
+  background-color: #fff !important;
+  transform: translateY(-1px);
+}
 
-  .brekkie-rsvp-options label {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
+.brekkie-dropdown.selected {
+  border-color: #b22222 !important;
+  box-shadow: 0 2px 8px rgba(178,34,34,0.12);
+}
 
-  .parking-spot-fields, .party-bus-fields {
-    margin: 0.5rem 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
+.brekkie-dropdown.selected:focus {
+  outline: none;
+  border-color: #b22222 !important;
+  box-shadow: 0 0 0 4px rgba(178,34,34,0.08), 0 4px 12px rgba(230,195,193,0.15);
+  background-color: #fff !important;
+  transform: translateY(-1px);
+}
 
-  .parking-spot-fields label, .party-bus-fields label {
-    font-size: 0.85rem;
-    margin-bottom: 0.3rem;
-    display: block;
-  }
+.brekkie-dropdown option {
+  padding: 0.5rem;
+  font-family: 'Open Sans', Arial, sans-serif;
+}
 
-  .parking-spot-fields input, .party-bus-fields input {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.85rem;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-  }
+.input-pink-background {
+  background: #fff6f6 !important;
+  border: 2px solid #e6c3c1 !important;
+  border-radius: 12px;
+}
 
-  .party-bus-fields > div + div {
-    margin-top: 0.5rem;
-  }
+.input-pink-background:focus {
+  outline: none;
+  border-color: #b22222 !important;
+  box-shadow: 0 0 0 4px rgba(178,34,34,0.08), 0 4px 12px rgba(230,195,193,0.15);
+  background-color: #fff !important;
+  transform: translateY(-1px);
+}
 
-  .rsvp-table {
-    width: 98vw;
-    margin: 0.75rem auto;
-  }
+.change-your-mind-container {
+  width: 80vw;
+  margin-left: -10vw;
+  margin-right: -10vw;
+  padding: 0 10vw;
+  box-sizing: border-box;
+}
 
-  .rsvp-table th, .rsvp-table td {
-    padding: 0.8rem 0.5rem;
-  }
-
-  .rsvp-table th {
-    font-size: 0.75rem;
-    letter-spacing: 0.3px;
-  }
-
-  .rsvp-table td {
-    font-size: 0.9rem;
-  }
-
-  .rsvp-table input[type="text"], .rsvp-table select {
-    padding: 0.7rem 0.6rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-  }
-
-  .rsvp-table input[type="text"]::placeholder {
-    font-size: 0.8rem;
-  }
-
-  .rsvp-table select {
-    padding-right: 2rem;
-    background-size: 0.7rem;
-    min-height: 2.5rem;
-  }
-
-  .rsvp-table table {
-    margin-bottom: 1rem;
-  }
+.change-your-mind-background {
+  background: rgba(255, 246, 246, 0.5);
+  border-radius: 12px;
+  padding: 0.5rem 0;
 }
