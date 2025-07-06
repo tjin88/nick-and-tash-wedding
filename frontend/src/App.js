@@ -95,6 +95,12 @@ function App({ isAdmin, isPlaceholderGuest }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (invitedLocation) {
+      fetchPhotos();
+    }
+  }, [invitedLocation]);
+
   /* 
     TODO: Add security to site by verifying they are:
       1. Admin
@@ -147,6 +153,12 @@ function App({ isAdmin, isPlaceholderGuest }) {
   // };
 
   const fetchPhotos = async () => {
+    // Don't fetch if invitedLocation is not available
+    if (!invitedLocation) {
+      console.log('Skipping photo fetch - no invitedLocation available');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos?location=${encodeURIComponent(invitedLocation)}`);
