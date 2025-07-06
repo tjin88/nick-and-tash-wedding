@@ -257,6 +257,12 @@ app.put('/api/invites/:id', async (req, res) => {
     if (numGuestsMorningBreakfast !== undefined) {
       updateData.numGuestsMorningBreakfast = numGuestsMorningBreakfast;
     }
+    if (guestAccommodationAddress !== undefined) {
+      updateData.guestAccommodationAddress = guestAccommodationAddress;
+    }
+    if (guestAccommodationLocalName !== undefined) {
+      updateData.guestAccommodationLocalName = guestAccommodationLocalName;
+    }
 
     const updatedInvite = await Invite.findByIdAndUpdate(
       id,
