@@ -80,10 +80,31 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   };
 
   const handleRSVPUpdate = async () => {
-    // Transportation validation - moved to the beginning
-    if (transportOption === 'partyBus' && !accommodationAddress.trim()) {
-      alert('Please provide your accommodation address for the bus.');
-      return;
+    // Validation for non-Canada locations
+    if (invitedLocation !== "Canada") {
+      // Transportation option is required
+      if (!transportOption.trim()) {
+        alert('Please select a transportation option (bus or own transportation).');
+        return;
+      }
+
+      // Party bus specific validations
+      if (transportOption === 'partyBus') {
+        if (!accommodationAddress.trim()) {
+          alert('Please provide your accommodation address for the bus.');
+          return;
+        }
+        if (partyBusRiders === -1) {
+          alert('Please specify the number of guests taking the bus.');
+          return;
+        }
+      }
+
+      // Breakfast option is required
+      if (brekkieOption === -1) {
+        alert('Please specify the number of guests attending morning breakfast.');
+        return;
+      }
     }
 
     try {
@@ -101,7 +122,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
 
       // Add the new fields for Australia/Both locations
       if (invitedLocation === "Australia" || invitedLocation === "Both Australia and Canada") {
-        requestBody.numGuestsOnBus = parseInt(partyBusRiders) || -1;
+        requestBody.numGuestsOnBus = transportOption === "parkingSpot" ? 0 : (parseInt(partyBusRiders) || -1);
         requestBody.numGuestsMorningBreakfast = parseInt(brekkieOption) || -1;
         requestBody.guestAccommodationAddress = accommodationAddress || '';
         requestBody.guestAccommodationLocalName = accommodationLocalName || '';
