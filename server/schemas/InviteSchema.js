@@ -67,6 +67,14 @@ const inviteSchema = new mongoose.Schema({
       message: 'numGuestsMorningBreakfast must be a whole number'
     }
   },
+  guestAccommodationAddress: {
+    type: String,
+    default: ''
+  },
+  guestAccommodationLocalName: {
+    type: String,
+    default: ''
+  },
   // rsvpDeadline: {
   //   canada: {
   //     type: Date,

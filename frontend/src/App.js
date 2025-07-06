@@ -27,6 +27,11 @@ function App({ isAdmin, isPlaceholderGuest }) {
   const [selectedLocation, setSelectedLocation] = useState(null);
   // const [events, setEvents] = useState({}); // TODO: Currently not in use
 
+  const [numGuestsOnBus, setNumGuestsOnBus] = useState(-1);
+  const [numGuestsMorningBreakfast, setNumGuestsMorningBreakfast] = useState(-1);
+  const [guestAccommodationAddress, setGuestAccommodationAddress] = useState('');
+  const [guestAccommodationLocalName, setGuestAccommodationLocalName] = useState('');
+
   const { inviteId } = useParams();
   const [registry, setRegistry] = useState({});
   const [vendors, setVendors] = useState({});
@@ -131,6 +136,10 @@ function App({ isAdmin, isPlaceholderGuest }) {
       setHasRSVPd(data.hasRSVPd);
       setGivenPlusOne(data.givenPlusOne);
       setInvitedLocation(data.invitedLocation);
+      setNumGuestsOnBus(data.numGuestsOnBus);
+      setNumGuestsMorningBreakfast(data.numGuestsMorningBreakfast);
+      setGuestAccommodationAddress(data.guestAccommodationAddress);
+      setGuestAccommodationLocalName(data.guestAccommodationLocalName);
       fetchPhotos();
       if (data.invitedLocation !== "Australia") { fetchAllInvites(); }
     } catch (error) {
@@ -265,6 +274,10 @@ function App({ isAdmin, isPlaceholderGuest }) {
           selectedLocation={selectedLocation}
           setSelectedLocation={setSelectedLocation}
           locations={locations}
+          numGuestsOnBus={numGuestsOnBus}
+          numGuestsMorningBreakfast={numGuestsMorningBreakfast}
+          guestAccommodationAddress={guestAccommodationAddress}
+          guestAccommodationLocalName={guestAccommodationLocalName}
         /> 
       }
       { isOpened && navOption === 'seeAllRSVPs' && <SeeAllRSVPs invites={invites} fetchAllInvites={fetchAllInvites}/> }

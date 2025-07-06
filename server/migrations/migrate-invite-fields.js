@@ -18,7 +18,9 @@ async function migrateInviteFields() {
     const invitesToUpdate = await Invite.find({
       $or: [
         { numGuestsOnBus: { $exists: false } },
-        { numGuestsMorningBreakfast: { $exists: false } }
+        { numGuestsMorningBreakfast: { $exists: false } },
+        { guestAccommodationAddress: { $exists: false } },
+        { guestAccommodationLocalName: { $exists: false } }
       ]
     });
     
@@ -34,13 +36,17 @@ async function migrateInviteFields() {
       {
         $or: [
           { numGuestsOnBus: { $exists: false } },
-          { numGuestsMorningBreakfast: { $exists: false } }
+          { numGuestsMorningBreakfast: { $exists: false } },
+          { guestAccommodationAddress: { $exists: false } },
+          { guestAccommodationLocalName: { $exists: false } }
         ]
       },
       {
         $set: {
-          numGuestsOnBus: -1,           // -1 means "not responded yet"
-          numGuestsMorningBreakfast: -1  // -1 means "not responded yet"
+          numGuestsOnBus: -1,               // -1 means "not responded yet"
+          numGuestsMorningBreakfast: -1,    // -1 means "not responded yet"
+          guestAccommodationAddress: '',    // "" means "not responded yet"
+          guestAccommodationLocalName: ''   // "" means "not responded yet"
         }
       }
     );
@@ -62,7 +68,9 @@ async function migrateInviteFields() {
     // Verify the migration
     const verifyCount = await Invite.countDocuments({
       numGuestsOnBus: { $exists: true },
-      numGuestsMorningBreakfast: { $exists: true }
+      numGuestsMorningBreakfast: { $exists: true },
+      guestAccommodationAddress: { $exists: true },
+      guestAccommodationLocalName: { $exists: true }
     });
     
     const totalCount = await Invite.countDocuments();

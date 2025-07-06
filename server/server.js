@@ -221,7 +221,7 @@ app.get('/api/invites/:id', async (req, res) => {
 
 app.put('/api/invites/:id', async (req, res) => {
   const { id } = req.params;
-  const { guests, invitedLocation, numGuestsOnBus, numGuestsMorningBreakfast } = req.body;
+  const { guests, invitedLocation, numGuestsOnBus, numGuestsMorningBreakfast, guestAccommodationAddress, guestAccommodationLocalName } = req.body;
 
   try {
     // Validate RSVP status for each guest

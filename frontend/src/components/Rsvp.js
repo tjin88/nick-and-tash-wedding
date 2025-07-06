@@ -3,7 +3,7 @@ import QRCode from 'qrcode.react';
 import RSVPPieChart from './RSVPPieChart';
 import './Rsvp.css';
 
-function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation, locations, numGuestsOnBus, numGuestsMorningBreakfast }) {
+function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation, locations, numGuestsOnBus, numGuestsMorningBreakfast, guestAccommodationAddress, guestAccommodationLocalName }) {
   const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '', attendingStatus: ''});
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
@@ -31,7 +31,13 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     if (numGuestsMorningBreakfast !== undefined) {
       setBrekkieOption(numGuestsMorningBreakfast);
     }
-  }, [numGuestsOnBus, numGuestsMorningBreakfast]);
+    if (guestAccommodationAddress !== undefined) {
+      setAccommodationAddress(guestAccommodationAddress);
+    }
+    if (guestAccommodationLocalName !== undefined) {
+      setAccommodationLocalName(guestAccommodationLocalName);
+    }
+  }, [numGuestsOnBus, numGuestsMorningBreakfast, guestAccommodationAddress, guestAccommodationLocalName]);
 
   const handleGuestChange = (index, field, value) => {
     const updatedGuests = [...guests];
@@ -97,6 +103,8 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       if (invitedLocation === "Australia" || invitedLocation === "Both Australia and Canada") {
         requestBody.numGuestsOnBus = parseInt(partyBusRiders) || -1;
         requestBody.numGuestsMorningBreakfast = parseInt(brekkieOption) || -1;
+        requestBody.guestAccommodationAddress = accommodationAddress || '';
+        requestBody.guestAccommodationLocalName = accommodationLocalName || '';
       }
 
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
