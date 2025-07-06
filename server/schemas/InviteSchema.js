@@ -49,6 +49,24 @@ const inviteSchema = new mongoose.Schema({
     enum: Object.values(LOCATIONS),
     default: LOCATIONS.CANADA
   },
+  numGuestsOnBus: {
+    type: Number,
+    min: -1,
+    default: -1,
+    validate: {
+      validator: Number.isInteger,
+      message: 'numGuestsOnBus must be a whole number'
+    }
+  },
+  numGuestsMorningBreakfast: {
+    type: Number,
+    min: -1,
+    default: -1,
+    validate: {
+      validator: Number.isInteger,
+      message: 'numGuestsMorningBreakfast must be a whole number'
+    }
+  },
   // rsvpDeadline: {
   //   canada: {
   //     type: Date,

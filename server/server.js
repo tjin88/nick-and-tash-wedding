@@ -221,7 +221,7 @@ app.get('/api/invites/:id', async (req, res) => {
 
 app.put('/api/invites/:id', async (req, res) => {
   const { id } = req.params;
-  const { guests, invitedLocation } = req.body;
+  const { guests, invitedLocation, numGuestsOnBus, numGuestsMorningBreakfast } = req.body;
 
   try {
     // Validate RSVP status for each guest
@@ -241,47 +241,26 @@ app.put('/api/invites/:id', async (req, res) => {
 
     const shouldResetPlusOne = guests.length > invite.guests.length;
 
-    const updatedInvite = await Invite.findByIdAndUpdate(
-      id,
-      { 
-        $set: { 
-          guests,
-          hasRSVPd: true,
-          rsvpSubmittedAt: new Date(),
-          invitedLocation,
-          givenPlusOne: shouldResetPlusOne ? false : invite.givenPlusOne
-        }
-      },
-      { new: true }
-    );
+    // Prepare update object
+    const updateData = {
+      guests,
+      hasRSVPd: true,
+      rsvpSubmittedAt: new Date(),
+      invitedLocation,
+      givenPlusOne: shouldResetPlusOne ? false : invite.givenPlusOne
+    };
 
-    res.json(updatedInvite);
-  } catch (error) {
-    res.status(400).json({ message: "Failed to update invite", error });
-  }
-});
-
-app.put('/api/invites/update-invite/:id', async (req, res) => {
-  const { id } = req.params;
-  const { guests, invitedLocation, givenPlusOne } = req.body;
-
-  try {
-    const invite = await Invite.findById(id);
-    if (!invite) {
-      return res.status(404).json({ message: "Invite not found" });
+    // Only update bus and breakfast fields if they are provided in the request
+    if (numGuestsOnBus !== undefined) {
+      updateData.numGuestsOnBus = numGuestsOnBus;
+    }
+    if (numGuestsMorningBreakfast !== undefined) {
+      updateData.numGuestsMorningBreakfast = numGuestsMorningBreakfast;
     }
 
     const updatedInvite = await Invite.findByIdAndUpdate(
       id,
-      { 
-        $set: { 
-          guests,
-          hasRSVPd: invite.hasRSVPd,
-          rsvpSubmittedAt: new Date(),
-          invitedLocation,
-          givenPlusOne: givenPlusOne ? givenPlusOne : invite.givenPlusOne
-        }
-      },
+      { $set: updateData },
       { new: true }
     );
 
@@ -290,6 +269,36 @@ app.put('/api/invites/update-invite/:id', async (req, res) => {
     res.status(400).json({ message: "Failed to update invite", error });
   }
 });
+
+// app.put('/api/invites/update-invite/:id', async (req, res) => {
+//   const { id } = req.params;
+//   const { guests, invitedLocation, givenPlusOne } = req.body;
+
+//   try {
+//     const invite = await Invite.findById(id);
+//     if (!invite) {
+//       return res.status(404).json({ message: "Invite not found" });
+//     }
+
+//     const updatedInvite = await Invite.findByIdAndUpdate(
+//       id,
+//       { 
+//         $set: { 
+//           guests,
+//           hasRSVPd: invite.hasRSVPd,
+//           rsvpSubmittedAt: new Date(),
+//           invitedLocation,
+//           givenPlusOne: givenPlusOne ? givenPlusOne : invite.givenPlusOne
+//         }
+//       },
+//       { new: true }
+//     );
+
+//     res.json(updatedInvite);
+//   } catch (error) {
+//     res.status(400).json({ message: "Failed to update invite", error });
+//   }
+// });
 
 app.post('/api/invites', async (req, res) => {
   // const { guests, givenPlusOne, invitedLocation, rsvpDeadline } = req.body;

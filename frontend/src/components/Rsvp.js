@@ -1,19 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode.react';
 import RSVPPieChart from './RSVPPieChart';
 import './Rsvp.css';
 
-function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation, locations }) {
+function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, guests, setGuests, hasRSVPd, givenPlusOne, invitedLocation, locations, numGuestsOnBus, numGuestsMorningBreakfast }) {
   const [plusOne, setPlusOne] = useState({ firstName: '', lastName: '', dietaryRequirements: '', attendingStatus: ''});
   const [newGuests, setNewGuests] = useState([{ firstName: '', lastName: '', dietaryRequirements: '' }]);
   const [isNewGuestGivenPlusOne, setIsNewGuestGivenPlusOne] = useState(false);
   const [newInviteLocation, setNewInviteLocation] = useState('Canada');
+  
+  // Australia Only
   const [transportOption, setTransportOption] = useState('');
   const [accommodationAddress, setAccommodationAddress] = useState('');
   const [accommodationLocalName, setAccommodationLocalName] = useState('');
   // const [vehicleAttendees, setVehicleAttendees] = useState('');
-  const [brekkieOption, setBrekkieOption] = useState('');
-  const [partyBusRiders, setPartyBusRiders] = useState('');
+  const [brekkieOption, setBrekkieOption] = useState(-1);
+  const [partyBusRiders, setPartyBusRiders] = useState(-1);
+
+  // Initialize state values from props when component loads
+  useEffect(() => {
+    if (numGuestsOnBus !== undefined) {
+      setPartyBusRiders(numGuestsOnBus);
+      // Set transport option based on the bus riders count
+      if (numGuestsOnBus > 0) {
+        setTransportOption('partyBus');
+      } else if (numGuestsOnBus === 0) {
+        setTransportOption('parkingSpot');
+      }
+    }
+    if (numGuestsMorningBreakfast !== undefined) {
+      setBrekkieOption(numGuestsMorningBreakfast);
+    }
+  }, [numGuestsOnBus, numGuestsMorningBreakfast]);
 
   const handleGuestChange = (index, field, value) => {
     const updatedGuests = [...guests];
@@ -56,19 +74,36 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   };
 
   const handleRSVPUpdate = async () => {
+    // Transportation validation - moved to the beginning
+    if (transportOption === 'partyBus' && !accommodationAddress.trim()) {
+      alert('Please provide your accommodation address for the bus.');
+      return;
+    }
+
     try {
-      let body;
+      let guestsList;
       if (givenPlusOne && plusOne.firstName && plusOne.lastName) {
-        body = [...guests, plusOne];
+        guestsList = [...guests, plusOne];
       } else {
-        body = guests;
+        guestsList = guests;
+      }
+
+      // Prepare the request body with the new fields
+      const requestBody = {
+        guests: guestsList
+      };
+
+      // Add the new fields for Australia/Both locations
+      if (invitedLocation === "Australia" || invitedLocation === "Both Australia and Canada") {
+        requestBody.numGuestsOnBus = parseInt(partyBusRiders) || -1;
+        requestBody.numGuestsMorningBreakfast = parseInt(brekkieOption) || -1;
       }
 
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/invites/${encodeURIComponent(inviteId)}`, {
       // const response = await fetch(`http://localhost:3003/api/invites/${encodeURIComponent(inviteId)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guests: body })
+        body: JSON.stringify(requestBody)
       });
       const data = await response.json();
       if (data._id) {
@@ -89,17 +124,6 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       console.error('Failed to update RSVP:', error);
       alert('Failed to update RSVP.');
     }
-
-    // Transportation validation
-    if (transportOption === 'partyBus' && !accommodationAddress.trim()) {
-      alert('Please provide your accommodation address for the bus.');
-      return;
-    }
-
-    // if (transportOption === 'parkingSpot' && !vehicleAttendees.trim()) {
-    //   alert('Please provide names for all attendees in your car.');
-    //   return;
-    // }
   };
 
   const handleDeleteInvite = async (id, guests) => {
@@ -129,13 +153,13 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     }
   };
 
-  const fillAllRSVP = () => {
-    const firstGuestStatus = guests[0].attendingStatus;
-    const updatedGuests = guests.map(guest => ({ ...guest, attendingStatus: firstGuestStatus }));
-    const updatedPlusOne = { ...plusOne, attendingStatus: firstGuestStatus };
-    setGuests(updatedGuests);
-    setPlusOne(updatedPlusOne);
-  };
+  // const fillAllRSVP = () => {
+  //   const firstGuestStatus = guests[0].attendingStatus;
+  //   const updatedGuests = guests.map(guest => ({ ...guest, attendingStatus: firstGuestStatus }));
+  //   const updatedPlusOne = { ...plusOne, attendingStatus: firstGuestStatus };
+  //   setGuests(updatedGuests);
+  //   setPlusOne(updatedPlusOne);
+  // };
 
   const getAvailableOptions = () => {
     switch(invitedLocation) {
@@ -338,7 +362,6 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
           <p><span style={{color: '#B22222'}}>*</span> Please scroll sideways on table above to add any dietary requirements</p>
           {/* <p><span style={{color: '#B22222'}}>*</span> Please complete the table if you would like to bring a plus one</p> */}
         </div>
-        {/* TODO: IF the width of the screen is 730px or less, then add a note saying something like "Please scroll sideways to add any dietary requirements" */}
         {/* Transportation Options Start */}
         {invitedLocation !== "Canada" && <div className="transportation-options">
           <div className="transportation-options-background">
@@ -361,8 +384,8 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                   </label>
                   <select
                     id="partyBusRiders"
-                    value={partyBusRiders}
-                    onChange={(e) => setPartyBusRiders(e.target.value)}
+                    value={partyBusRiders === -1 ? '' : partyBusRiders}
+                    onChange={(e) => setPartyBusRiders(parseInt(e.target.value))}
                     className="party-bus-riders-dropdown"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -474,9 +497,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               </label>
               <select
                 id="brekkieAttendees"
-                value={brekkieOption}
-                onChange={(e) => setBrekkieOption(e.target.value)}
-                className={`brekkie-dropdown ${brekkieOption ? 'selected' : ''}`}
+                value={brekkieOption === -1 ? '' : brekkieOption}
+                onChange={(e) => setBrekkieOption(parseInt(e.target.value))}
+                className={`brekkie-dropdown ${brekkieOption !== -1 ? 'selected' : ''}`}
               >
                 <option value="" disabled># of guests</option>
                 {Array.from({ length: guests.length + (givenPlusOne ? 1 : 0) + 1 }, (_, i) => (
