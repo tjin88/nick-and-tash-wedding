@@ -80,8 +80,9 @@ function Menu({ invitedLocation }) {
       {location === 'Australia' && <div className="menu-course">
         <h3>Children's Meals</h3>
         <ul>
-          <li>Cheeseburger & chips, Vanilla Ice Cream</li>
+          <li>Cheeseburger & chips</li>
           <li>Free range chicken nuggets served with chips</li>
+          <li>Vanilla Ice Cream</li>
           <li>Strawberry sundae with strawberry topping & fresh strawberries</li>
         </ul>
       </div>}

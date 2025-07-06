@@ -11,6 +11,7 @@ function ValidateInvite() {
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isPlaceholderGuest, setIsPlaceholderGuest] = useState("");
 
   useEffect(() => {
     const checkValidity = async () => {
@@ -30,6 +31,14 @@ function ValidateInvite() {
       setIsValid(true);
       setIsAdmin(true);
       setLoading(false);
+    } else if (inviteId === 'canada-guest') {
+      setIsValid(true);
+      setIsPlaceholderGuest("Canada");
+      setLoading(false);
+    } else if (inviteId === 'australia-guest') {
+      setIsValid(true);
+      setIsPlaceholderGuest("Australia");
+      setLoading(false);
     } else {
       checkValidity();
     }
@@ -39,7 +48,7 @@ function ValidateInvite() {
     return <p>Loading...</p>;
   }
 
-  return isValid ? <App isAdmin={isAdmin}/> : <Navigate to="/invalid-invite" replace />;
+  return isValid ? <App isAdmin={isAdmin} isPlaceholderGuest={isPlaceholderGuest} /> : <Navigate to="/invalid-invite" replace />;
 }
 
 function InvalidInvite() {

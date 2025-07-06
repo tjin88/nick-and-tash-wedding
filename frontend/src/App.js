@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from "socket.io-client";
 import Start from './components/Start';
+import GuestStart from './components/GuestStart';
 import Navbar from './components/Navbar';
 // import Welcome from './components/Welcome';
 import Rsvp from './components/Rsvp';
@@ -14,7 +15,7 @@ import FAQ from './components/Faq';
 import Vendors from './components/Vendors';
 import './App.css';
 
-function App({ isAdmin }) {
+function App({ isAdmin, isPlaceholderGuest }) {
   const [isOpened, setIsOpened] = useState(false);
   const [givenPlusOne, setGivenPlusOne] = useState(true);
   const [navOption, setNavOption] = useState('rsvp');
@@ -107,6 +108,7 @@ function App({ isAdmin }) {
       if (!response.ok) throw new Error('Failed to fetch invites');
       const data = await response.json();
       setInvites(data);
+      fetchPhotos();
     } catch (error) {
       console.error('Error fetching invites:', error.message);
     }
@@ -123,6 +125,8 @@ function App({ isAdmin }) {
       setHasRSVPd(data.hasRSVPd);
       setGivenPlusOne(data.givenPlusOne);
       setInvitedLocation(data.invitedLocation);
+      fetchPhotos();
+      if (data.invitedLocation !== "Australia") { fetchAllInvites(); }
     } catch (error) {
       console.error('Error fetching invite by ID:', error);
     }
@@ -145,7 +149,7 @@ function App({ isAdmin }) {
   const fetchPhotos = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/photos');
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos?location=${encodeURIComponent(invitedLocation)}`);
       // const response = await fetch('http://localhost:3003/api/photos');
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -208,11 +212,15 @@ function App({ isAdmin }) {
     if (isAdmin) {
       setInvitedLocation("Both Australia and Canada");
       fetchAllInvites();
+    } else if (isPlaceholderGuest === "Canada") {
+      setInvitedLocation("Canada");
+      fetchAllInvites();
+    } else if (isPlaceholderGuest === "Australia") {
+      setInvitedLocation("Australia");
+      fetchAllInvites();
     } else {
       fetchInviteById();
-      fetchAllInvites();
     }
-    fetchPhotos();
     fetchRegistry();
     fetchVendors();
   }, [inviteId, isAdmin]);
@@ -226,8 +234,9 @@ function App({ isAdmin }) {
   
   return (
     <div className="App">
-      { !isOpened && <Start locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
-      { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation} hasRSVPd={hasRSVPd} isAdmin={isAdmin}/> }
+      { !isOpened && isPlaceholderGuest && <GuestStart setNavOption={setNavOption} locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
+      { !isOpened && !isPlaceholderGuest && <Start setNavOption={setNavOption} locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
+      { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation} hasRSVPd={hasRSVPd} isAdmin={isAdmin} isPlaceholderGuest={isPlaceholderGuest}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}
       { isOpened && navOption === 'rsvp' && 
         <Rsvp 
@@ -250,7 +259,7 @@ function App({ isAdmin }) {
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
-      { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos} username={guests[0].firstName + "_" + guests[0].lastName}/> }
+      { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos} username={guests[0].firstName + "_" + guests[0].lastName} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'faq' && <FAQ locations={locations} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>

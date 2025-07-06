@@ -113,7 +113,7 @@ const FAQ = ({ invitedLocation, locations }) => {
       },
       {
         question: "Will there be parking available?",
-        answer: "Tiffany's Maleny has very limited car parks. We are organising a group bus that will include pickup and drop off to your accommodation. If you would prefer to drive yourself and park at the venue, please make an expression of interest on the RSVP page."
+        answer: "Tiffany's Maleny has limited street parking. We are organising a group bus that will include pickup and drop off to your accommodation. Please let us know your transportation preference on the RSVP page. We will update everyone with pickup times closer to the wedding date.<br/><br/>If you have any specific transportation requests, please message us directly. "
       },
       {
         question: "Is it okay to take pictures with our phones and cameras during the wedding?",

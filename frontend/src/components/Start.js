@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CountdownTimer from '../utils/CountdownTimer';
 import './Start.css';
 
-function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
+function Start({ setNavOption, locations, isAdmin, setIsOpened, guests, invitedLocation }) {
   const currentDate = new Date();
   const canadaWeddingDate = new Date('August 23, 2025 00:00:00');
   const australiaWeddingDate = new Date('October 11, 2025 00:00:00');
@@ -53,6 +53,7 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
   const handlePasswordCheck = () => {
     if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
       setIsOpened(true);
+      setNavOption('rsvp');
     } else {
       window.location.href = "/invalid-invite";
     }
@@ -85,7 +86,7 @@ function Start({ locations, isAdmin, setIsOpened, guests, invitedLocation }) {
             <button onClick={handlePasswordCheck}>Open Invitation</button>
           </div>
         ) : (
-          <button onClick={() => setIsOpened(true)}>Open Invitation</button>
+          <button onClick={() => {setIsOpened(true); setNavOption('rsvp');}}>Open Invitation</button>
         )}
         {showCanada && (
           <div className="canada-row">

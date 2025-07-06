@@ -3,6 +3,10 @@ Building a website for my brother's wedding :)
 Valid URL format:
 https://nick-and-tash-wedding.web.app/invite/<MongoDB_ID>
 
+For testing purposes:
+https://nick-and-tash-wedding.web.app/invite/canada-guest
+https://nick-and-tash-wedding.web.app/invite/australia-guest
+
 Tech Stack:
 - Frontend: React
 - Backend: NodeJS

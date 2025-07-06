@@ -326,7 +326,7 @@ app.get('/api/photos', async (req, res) => {
   try {
     const location = req.query.location;
     const query = location ? { location } : {};
-    const photos = await Photo.find(query);
+    const photos = location === "Both Australia and Canada" ? await Photo.find() : await Photo.find(query);
     res.json(photos);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -11,8 +11,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   const [transportOption, setTransportOption] = useState('');
   const [accommodationAddress, setAccommodationAddress] = useState('');
   const [accommodationLocalName, setAccommodationLocalName] = useState('');
-  const [vehicleAttendees, setVehicleAttendees] = useState('');
+  // const [vehicleAttendees, setVehicleAttendees] = useState('');
   const [brekkieOption, setBrekkieOption] = useState('');
+  const [partyBusRiders, setPartyBusRiders] = useState('');
 
   const handleGuestChange = (index, field, value) => {
     const updatedGuests = [...guests];
@@ -95,10 +96,10 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
       return;
     }
 
-    if (transportOption === 'parkingSpot' && !vehicleAttendees.trim()) {
-      alert('Please provide names for all attendees in your car.');
-      return;
-    }
+    // if (transportOption === 'parkingSpot' && !vehicleAttendees.trim()) {
+    //   alert('Please provide names for all attendees in your car.');
+    //   return;
+    // }
   };
 
   const handleDeleteInvite = async (id, guests) => {
@@ -242,7 +243,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
             ? <p>Please join us in celebrating Nicholas and Natasha's wedding.</p>
             : <p>Please join us in celebrating our wedding.</p>
       }
-      <p>Kindly let us know if you'll be joining us in celebrating our special day by RSVP-ing before {invitedLocation === "Canada" ? "May 1, 2025" : "August 8, 2025"} — we can't wait to hear from you!</p>
+      <p>Kindly let us know if you'll be joining us in celebrating our special day by RSVP-ing before <strong>{invitedLocation === "Canada" ? "May 1, 2025" : "August 8, 2025"}</strong> — we can't wait to hear from you!</p>
       {invitedLocation === "Canada" && <p>Location: Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2</p>}
       {invitedLocation === "Australia" && <p>Location: Tiffany's Maleny, 409 Mountain View Road, Maleny Qld 4552</p>}
       {invitedLocation === "Both Australia and Canada" && 
@@ -297,25 +298,17 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 <td className="plusOneInput">
                   <input 
                     type="text" 
-                    placeholder="First Name" 
+                    placeholder="+1 First Name" 
                     className="half-width" 
                     value={plusOne.firstName}
                     onChange={(e) => handlePlusOneChange('firstName', e.target.value)} 
                   />
                   <input 
                     type="text" 
-                    placeholder="Last Name" 
+                    placeholder="+1 Last Name" 
                     className="half-width"
                     value={plusOne.lastName}
                     onChange={(e) => handlePlusOneChange('lastName', e.target.value)} 
-                  />
-                </td>
-                <td>
-                  <input 
-                    type="text" 
-                    placeholder="Any dietary requirements?"
-                    value={plusOne.dietaryRequirements}
-                    onChange={(e) => handlePlusOneChange('dietaryRequirements', e.target.value)} 
                   />
                 </td>
                 <td>
@@ -328,6 +321,14 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     {getAvailableOptions()}
                   </select>
                 </td>
+                <td>
+                  <input 
+                    type="text" 
+                    placeholder="Any dietary requirements?"
+                    value={plusOne.dietaryRequirements}
+                    onChange={(e) => handlePlusOneChange('dietaryRequirements', e.target.value)} 
+                  />
+                </td>
               </tr>
             )}
           </tbody>
@@ -335,13 +336,14 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {/* Scroll hint for mobile users */}
         <div className="mobile-scroll-hint">
           <p><span style={{color: '#B22222'}}>*</span> Please scroll sideways on table above to add any dietary requirements</p>
+          {/* <p><span style={{color: '#B22222'}}>*</span> Please complete the table if you would like to bring a plus one</p> */}
         </div>
         {/* TODO: IF the width of the screen is 730px or less, then add a note saying something like "Please scroll sideways to add any dietary requirements" */}
         {/* Transportation Options Start */}
         {invitedLocation !== "Canada" && <div className="transportation-options">
           <div className="transportation-options-background">
             <label><strong className='label-title'>Transportation Options</strong></label>
-            <p>We are organising a group bus. There will be one pick up time (to be determined) and one drop off time, leaving the venue ~11pm.<br/><br/>Tiffany's Maleny has told us there is limited street parking for those who will be driving and that the one and only local taxi driver in Maleny takes his last run at 6pm.</p>
+            <p>We are organising a group bus. There will be one pick up time (to be determined) and one drop off time, leaving the venue ~11pm.<br/><br/>Tiffany's Maleny has told us there is limited street parking for those who will be driving and that the one and only local taxi driver in Maleny takes his last run at 6pm.<br/><br/>Please message us directly if you prefer one-way transportation or any other transportation requests</p>
           </div>
           <div className="rsvp-option-row">
             <div
@@ -352,18 +354,42 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
               aria-pressed={transportOption === 'partyBus'}
               style={{marginRight: '0'}}
             >
-              <input
-                type="radio"
-                id="partyBus"
-                name="transportOption"
-                value="partyBus"
-                checked={transportOption === 'partyBus'}
-                onChange={() => setTransportOption('partyBus')}
-                style={{pointerEvents: 'none'}}
-              />
-              <label htmlFor="partyBus" style={{marginBottom: 0, cursor: 'pointer'}}>
-                {guests.length > 1 ? "We'd" : "I'd"} like to ride the bus
-              </label>
+              {transportOption === 'partyBus' ? (
+                <div style={{display: 'flex', alignItems: 'center', gap: '1rem', width: '100%'}}>
+                  <label htmlFor="partyBusRiders" style={{marginBottom: 0, cursor: 'pointer', whiteSpace: 'nowrap'}}>
+                    Number of guests taking the bus:
+                  </label>
+                  <select
+                    id="partyBusRiders"
+                    value={partyBusRiders}
+                    onChange={(e) => setPartyBusRiders(e.target.value)}
+                    className="party-bus-riders-dropdown"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <option value="" disabled># of guests</option>
+                    {Array.from({ length: guests.length + (givenPlusOne ? 1 : 0) }, (_, i) => (
+                      <option key={i + 1} value={(i + 1).toString()}>
+                        {i + 1 === 1 ? '1 guest' : `${i + 1} guests`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="radio"
+                    id="partyBus"
+                    name="transportOption"
+                    value="partyBus"
+                    checked={transportOption === 'partyBus'}
+                    onChange={() => setTransportOption('partyBus')}
+                    style={{pointerEvents: 'none'}}
+                  />
+                  <label htmlFor="partyBus" style={{marginBottom: 0, cursor: 'pointer'}}>
+                    {guests.length > 1 ? "We'd" : "I'd"} like to ride the bus
+                  </label>
+                </>
+              )}
             </div>
             <div
               className={`rsvp-option${transportOption === 'parkingSpot' ? ' selected' : ''}`}
@@ -418,7 +444,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
           </div>
 
           {/* Parking Spot Fields */}
-          <div
+          {/* <div
             className={`parking-spot-fields ${transportOption === 'parkingSpot' ? 'show' : ''}`}
             aria-hidden={transportOption !== 'parkingSpot'}
           >
@@ -433,7 +459,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 placeholder="e.g. John Smith, Jane Doe"
               />
             </div>
-          </div>
+          </div> */}
         </div>}
         {/* Transportation Options End */}
         
@@ -441,7 +467,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {invitedLocation !== "Canada" && <div className="brekkie-rsvp-options">
           <div className="brekkie-rsvp-options-background">
             <label><strong className='label-title'>Sunday Morning Breakfast Option</strong></label>
-            <p>We want to spend as much time with you as possible; we are going to organise a post wedding brekkie at Maple 3 Cafe @ 9am.</p>
+            <p>We want to spend as much time with you as possible; we are hosting a post wedding brekkie at Maple 3 Cafe @ 9am.</p>
             <div className="brekkie-dropdown-container">
               <label htmlFor="brekkieAttendees" className="brekkie-dropdown-label">
                 Number of guests attending morning breakfast<span style={{color: '#B22222'}}>*</span>:
@@ -452,8 +478,8 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                 onChange={(e) => setBrekkieOption(e.target.value)}
                 className={`brekkie-dropdown ${brekkieOption ? 'selected' : ''}`}
               >
-                <option value="" disabled>Select number of attendees</option>
-                {Array.from({ length: guests.length + 1 }, (_, i) => (
+                <option value="" disabled># of guests</option>
+                {Array.from({ length: guests.length + (givenPlusOne ? 1 : 0) + 1 }, (_, i) => (
                   <option key={i} value={i.toString()}>
                     {i === 0 ? 'None' : 
                     i === 1 ? '1 guest' : 

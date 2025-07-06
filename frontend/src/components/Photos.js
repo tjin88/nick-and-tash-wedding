@@ -1,12 +1,16 @@
 // TODO: Currently this is implemented to show ALL photos, not just Canada or just Australia **
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Photos.css';
 
-function Photos({ photos, setPhotos, fetchPhoto, username }) {
+function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadError, setUploadError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  useEffect(() => {
+    fetchPhotos();
+  }, []);
 
   const handleFileSelect = async (event) => {
     const files = event.target.files;
@@ -15,7 +19,7 @@ function Photos({ photos, setPhotos, fetchPhoto, username }) {
       setUploadError('');
       
       const formData = new FormData();
-      formData.append('location', "Both Australia and Canada");
+      formData.append('location', invitedLocation || "Both Australia and Canada");
       
       // Add all selected files
       for (let i = 0; i < files.length; i++) {
@@ -59,6 +63,7 @@ function Photos({ photos, setPhotos, fetchPhoto, username }) {
   return (
     <div className="photo-container">
       <p className='title'>Photos</p>
+      <p style={{paddingBottom: '16px'}}>Please upload your photos from the wedding day to share with us!</p>
       <div className="upload-section">
         {uploadError && <p className="error">{uploadError}</p>}
         {isUploading && <p className="uploading">Uploading photos...</p>}
