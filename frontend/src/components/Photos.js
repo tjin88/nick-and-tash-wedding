@@ -66,7 +66,7 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
       <p style={{paddingBottom: '16px'}}>Please upload your photos from the wedding day to share with us!</p>
       <div className="upload-section">
         {uploadError && <p className="error">{uploadError}</p>}
-        {isUploading && <p className="uploading">Uploading photos...</p>}
+        {isUploading && <p className="uploading">Uploading ...</p>}
         <input 
           type="file" 
           accept="image/*,video/*" 
@@ -77,7 +77,7 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
           disabled={isUploading}
         />
         <label htmlFor="file-upload" className={`upload-option ${isUploading ? 'disabled' : ''}`}>
-          {isUploading ? 'Uploading...' : 'Upload Photos'}
+          {isUploading ? 'Uploading ...' : 'Upload Photos / Videos'}
         </label>
       </div>
       <div className="photo-gallery">

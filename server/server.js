@@ -340,9 +340,22 @@ app.delete('/api/invites/:id', async (req, res) => {
 app.get('/api/photos', async (req, res) => {
   try {
     const location = req.query.location;
-    const query = location ? { location } : {};
-    const photos = location === "Both Australia and Canada" ? await Photo.find() : await Photo.find(query);
-    res.json(photos);
+    
+    if (!location) {
+      const photos = await Photo.find();
+      res.json(photos);
+    } else if (location === "Both Australia and Canada") {
+      const photos = await Photo.find();
+      res.json(photos);
+    } else {
+      const photos = await Photo.find({
+        $or: [
+          { location: location },
+          { location: "Both Australia and Canada" }
+        ]
+      });
+      res.json(photos);
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

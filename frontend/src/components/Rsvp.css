@@ -717,6 +717,7 @@ input[type="text"], input[type="text"]:focus {
 
   .change-your-mind-container {
     padding: 0;
+    width: 100vw !important;
   }
 }
 
