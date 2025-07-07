@@ -43,8 +43,8 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
 
         const result = await response.json();
         
-        // Extract URLs from the response and add to photos
-        const newPhotoUrls = result.photos.map(photo => photo.url);
+        // Extract URLs from the response - updated to use 'media' instead of 'photos'
+        const newPhotoUrls = result.media.map(mediaItem => mediaItem.url);
         setPhotos([...photos, ...newPhotoUrls]);
         
         // Clear the file input

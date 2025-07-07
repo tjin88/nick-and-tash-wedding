@@ -73,7 +73,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
 
     // Event listeners
     socketRef.current.on('photo-updated', (photoData) => {
-      setPhotos(prevPhotos => [...prevPhotos, photoData]);
+      setPhotos(prevPhotos => [...prevPhotos, photoData.url]);
     });
   
     socketRef.current.on('registry-item-added', (newItem) => {

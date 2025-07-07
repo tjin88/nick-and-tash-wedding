@@ -428,12 +428,13 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
         // Upload to Cloudinary
         const result = await cloudinary.uploader.upload(fileInfo.dataUrl, uploadOptions);
         
-        // Save to database (you might want to create a separate model for videos)
+        // Save to database
         const mediaItem = new Photo({ 
           url: result.url, 
           location: req.body.location || '',
-          mediaType: fileInfo.isVideo ? 'video' : 'image', // Add this field to your schema
-          uploadedAt: new Date()
+          mediaType: fileInfo.isVideo ? 'video' : fileInfo.isImage ? 'image' : 'unknown',
+          uploadedAt: new Date(),
+          uploadedBy: req.body.username || 'Guest',
         });
         
         await mediaItem.save();

@@ -16,10 +16,16 @@ const photoSchema = new mongoose.Schema({
     default: WEDDING_LOCATIONS.CANADA,
     required: true
   },
-  // uploadedBy: {
-  //   type: String,
-  //   required: true
-  // }
+  uploadedBy: {
+    type: String,
+    required: true,
+    default: "Guest"
+  },
+  mediaType: {
+    type: String,
+    enum: ["image", "video"],
+    required: true
+  }
 });
 
 export default mongoose.model('Photo', photoSchema);
