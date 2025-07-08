@@ -82,21 +82,25 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
   const handleRSVPUpdate = async () => {
     // Validation for non-Canada locations
     if (invitedLocation !== "Canada") {
-      // Transportation option is required
-      if (!transportOption.trim()) {
-        alert('Please select a transportation option (bus or own transportation).');
-        return;
-      }
+      const allGuestsNotAttending = guests.every(guest => guest.attendingStatus === "Not Attending") &&
+      (!givenPlusOne || !plusOne.firstName || plusOne.attendingStatus === "Not Attending");
 
-      // Party bus specific validations
-      if (transportOption === 'partyBus') {
-        if (!accommodationAddress.trim()) {
-          alert('Please provide your accommodation address for the bus.');
+      if (!allGuestsNotAttending) {
+        if (!transportOption.trim()) {
+          alert('Please select a transportation option (bus or own transportation).');
           return;
         }
-        if (partyBusRiders === -1) {
-          alert('Please specify the number of guests taking the bus.');
-          return;
+
+        // Party bus specific validations
+        if (transportOption === 'partyBus') {
+          if (!accommodationAddress.trim()) {
+            alert('Please provide your accommodation address for the bus.');
+            return;
+          }
+          if (partyBusRiders === -1) {
+            alert('Please specify the number of guests taking the bus.');
+            return;
+          }
         }
       }
 
@@ -294,7 +298,9 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         ? <p>Thank you for RSVP-ing! We look forward to celebrating with you soon.</p>
         : invitedLocation === "Canada"
             ? <p>Please join us in celebrating Nicholas and Natasha's wedding.</p>
-            : <p>Please join us in celebrating our wedding.</p>
+            : <>
+            <p>Please join us in celebrating our wedding.<br/>October 11, 2025 | 3:00 PM</p>
+            </>
       }
       <p>Kindly let us know if you'll be joining us in celebrating our special day by RSVP-ing before <strong>{invitedLocation === "Canada" ? "May 1, 2025" : "August 8, 2025"}</strong> — we can't wait to hear from you!</p>
       {invitedLocation === "Canada" && <p>Location: Sheraton Parkway Toronto North Hotel & Suites, 600 Hwy 7, Richmond Hill, ON L4B 1B2</p>}
@@ -438,7 +444,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
                     style={{pointerEvents: 'none'}}
                   />
                   <label htmlFor="partyBus" style={{marginBottom: 0, cursor: 'pointer'}}>
-                    {guests.length > 1 ? "We'd" : "I'd"} like to ride the bus
+                    {guests.length > 1 ? "We'd" : "I'd"} like to ride the bus (pick-up and drop-off)
                   </label>
                 </>
               )}
@@ -519,7 +525,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {invitedLocation !== "Canada" && <div className="brekkie-rsvp-options">
           <div className="brekkie-rsvp-options-background">
             <label><strong className='label-title'>Sunday Morning Breakfast Option</strong></label>
-            <p>We want to spend as much time with you as possible; we are hosting a post wedding brekkie at Maple 3 Cafe @ 9am.</p>
+            <p>We want to spend as much time with you as possible; we are hosting a post wedding brekkie at <a href="https://www.google.com/maps/place/Maple+3+Cafe/@-26.780165,152.856227,17z/data=!3m1!4b1!4m6!3m5!1s0x6b9387a6d3e36c55:0x2fddd8e805ff0aa4!8m2!3d-26.780165!4d152.856227!16s%2Fg%2F1tj2nmwp">Maple 3 Cafe</a> @ 9am.</p>
             <div className="brekkie-dropdown-container">
               <label htmlFor="brekkieAttendees" className="brekkie-dropdown-label">
                 Number of guests attending morning breakfast<span style={{color: '#B22222'}}>*</span>:

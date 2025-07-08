@@ -79,10 +79,13 @@ function Schedule({ invitedLocation }) {
     <div className="schedule-section">
       <div className="schedule-column">
         {location !== 'Canada' && (
-          <h2 className="schedule-location-title">
-            {invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}
-            Wedding Events
-          </h2>
+          <>
+            <h2 className="schedule-location-title">
+              {invitedLocation === 'Both Australia and Canada' ? `${location} ` : ''}
+              Wedding Events
+            </h2>
+            <p className="schedule-location-title-subtext">October 11, 2025</p>
+          </>
         )}
         {schedule_items.map((item, index) => (
           <div 
