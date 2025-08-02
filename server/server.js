@@ -610,7 +610,7 @@ app.get('/api/download-ics/:id', async (req, res) => {
     const invite = await Invite.findById(req.params.id);
     if (!invite) return res.status(404).json({ message: "Invite not found" });
 
-    // TODO: This sometimes shows up as 5 - 12, and sometimes 1 - 8 ...
+    const uid = uuidv4();
     const eventObj = {
       start_datetime: "2025-08-23 22:00:00",
       end_datetime: "2025-08-24 00:00:00",
@@ -618,13 +618,6 @@ app.get('/api/download-ics/:id', async (req, res) => {
       eventName: "Nicholas & Natasha's Wedding",
       description: "Join us to celebrate Nicholas and Natasha's Wedding Reception!\n\nLink to invite: https://nick-and-tash-wedding.web.app/invite/" + invite._id,
     };
-
-    // Convert start and end datetime to UTC format for ICS
-    const start = format(new Date(eventObj.start_datetime), "yyyyMMdd'T'HHmmss'Z'");
-    const end = format(new Date(eventObj.end_datetime), "yyyyMMdd'T'HHmmss'Z'");
-    const dtstamp = format(new Date(), "yyyyMMdd'T'HHmmss'Z'"); // current UTC timestamp
-
-    const uid = uuidv4(); // Generate unique UID for the event
 
     // Define the ICS data
     const event = {
@@ -664,9 +657,9 @@ app.get('/api/download-ics/:id', async (req, res) => {
   }
 });
 
-// TODO: Re-adjust this for Australia!
 app.get('/api/download-australia-ics/', async (req, res) => {
   try {
+    const uid = uuidv4();
     const eventObj = {
       start_datetime: "2025-10-11 15:00:00", // 3 PM AEST
       end_datetime: "2025-10-11 23:00:00",   // 11 PM AEST
@@ -675,18 +668,7 @@ app.get('/api/download-australia-ics/', async (req, res) => {
       description: "Join us to celebrate Nicholas and Natasha's Wedding!",
     };
 
-    // Convert start and end datetime to UTC format for ICS
-    // AEST is UTC+10
-    const start = format(new Date(eventObj.start_datetime), "yyyyMMdd'T'HHmmss'Z'");
-    const end = format(new Date(eventObj.end_datetime), "yyyyMMdd'T'HHmmss'Z'");
-    const dtstamp = format(new Date(), "yyyyMMdd'T'HHmmss'Z'"); // current UTC timestamp
-
-    const uid = uuidv4(); // Generate unique UID for the event
-
-    // Define the ICS data
-    // Note: Times need to be in UTC
-    // 3 PM AEST = 05:00 UTC
-    // 11 PM AEST = 13:00 UTC
+    // *Times need to be in UTC*
     const event = {
       start: [2025, 10, 11, 5, 0],    // 3 PM AEST = 05:00 UTC
       end: [2025, 10, 11, 13, 0],     // 11 PM AEST = 13:00 UTC
@@ -722,6 +704,144 @@ app.get('/api/download-australia-ics/', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// ############################### CSV Export Route ################################
+app.get('/api/export-rsvp-csv/:location', async (req, res) => {
+  try {
+    const { location } = req.params;
+    let query = {};
+
+    // Build query based on location parameter
+    switch (location.toLowerCase()) {
+      case 'australia':
+        query = {
+          $or: [
+            { invitedLocation: WEDDING_LOCATIONS.AUSTRALIA },
+            { invitedLocation: WEDDING_LOCATIONS.BOTH }
+          ]
+        };
+        break;
+      case 'canada':
+        query = {
+          $or: [
+            { invitedLocation: WEDDING_LOCATIONS.CANADA },
+            { invitedLocation: WEDDING_LOCATIONS.BOTH }
+          ]
+        };
+        break;
+      case 'all':
+        // No query filter - get all invites
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid location parameter. Use 'all', 'australia', or 'canada'" });
+    }
+
+    const invites = await Invite.find(query);
+    
+    if (!invites || invites.length === 0) {
+      return res.status(404).json({ message: "No invites found for the specified location" });
+    }
+
+    // Generate CSV content based on location
+    let csvContent;
+    if (location.toLowerCase() === 'canada') {
+      // Canada CSV - exclude Australia-specific fields
+      csvContent = 'Invite ID,First Name,Last Name,Dietary Requirements,Attending Status,Invited Location,Has RSVPd,RSVP Submitted At\n';
+      
+      invites.forEach(invite => {
+        invite.guests.forEach(guest => {
+          const row = [
+            invite._id,
+            `"${guest.firstName || ''}"`,
+            `"${guest.lastName || ''}"`,
+            `"${guest.dietaryRequirements || ''}"`,
+            `"${guest.attendingStatus || ''}"`,
+            `"${invite.invitedLocation || ''}"`,
+            invite.hasRSVPd ? 'Yes' : 'No',
+            invite.rsvpSubmittedAt ? invite.rsvpSubmittedAt.toISOString() : ''
+          ].join(',');
+          
+          csvContent += row + '\n';
+        });
+      });
+    } else {
+      // Australia/All CSV - include all fields plus summary totals
+      csvContent = 'Invite ID,First Name,Last Name,Dietary Requirements,Attending Status,Invited Location,Has RSVPd,RSVP Submitted At,Num Guests On Bus,Num Guests Morning Breakfast,Guest Accommodation Address,Guest Accommodation Local Name,Total Num Guests on Bus,Total Num Guests Breakfast\n';
+      
+      // Calculate totals for Australia invites
+      let totalBusGuests = 0;
+      let totalBreakfastGuests = 0;
+      
+      // First pass: calculate totals
+      invites.forEach(invite => {
+        if (invite.invitedLocation === WEDDING_LOCATIONS.AUSTRALIA || invite.invitedLocation === WEDDING_LOCATIONS.BOTH) {
+          if (invite.numGuestsOnBus !== undefined && invite.numGuestsOnBus > 0) {
+            totalBusGuests += invite.numGuestsOnBus;
+          }
+          if (invite.numGuestsMorningBreakfast !== undefined && invite.numGuestsMorningBreakfast > 0) {
+            totalBreakfastGuests += invite.numGuestsMorningBreakfast;
+          }
+        }
+      });
+      
+      // Second pass: generate CSV rows
+      invites.forEach(invite => {
+        invite.guests.forEach(guest => {
+          const row = [
+            invite._id,
+            `"${guest.firstName || ''}"`,
+            `"${guest.lastName || ''}"`,
+            `"${guest.dietaryRequirements || ''}"`,
+            `"${guest.attendingStatus || ''}"`,
+            `"${invite.invitedLocation || ''}"`,
+            invite.hasRSVPd ? 'Yes' : 'No',
+            invite.rsvpSubmittedAt ? invite.rsvpSubmittedAt.toISOString() : '',
+            invite.numGuestsOnBus !== undefined ? invite.numGuestsOnBus : '',
+            invite.numGuestsMorningBreakfast !== undefined ? invite.numGuestsMorningBreakfast : '',
+            `"${invite.guestAccommodationAddress || ''}"`,
+            `"${invite.guestAccommodationLocalName || ''}"`,
+            '', // Empty for individual rows
+            ''  // Empty for individual rows
+          ].join(',');
+          
+          csvContent += row + '\n';
+        });
+      });
+      
+      // Add summary row with totals
+      const summaryRow = [
+        'TOTALS',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        totalBusGuests,
+        totalBreakfastGuests
+      ].join(',');
+      
+      csvContent += summaryRow + '\n';
+    }
+
+    // Set headers for CSV download
+    const filename = `rsvp-data-${location.toLowerCase()}-${new Date().toISOString().split('T')[0]}.csv`;
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(csvContent);
+
+  } catch (error) {
+    console.error("CSV Export Error:", error);
+    res.status(500).json({ message: "Error generating CSV file", error: error.message });
+  }
+});
+
+// start here
 
 const server = http.createServer(app);
 const io = new Server(server, {

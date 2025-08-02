@@ -290,12 +290,17 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
     );
   };
 
+  const allGuests = givenPlusOne && plusOne.firstName && plusOne.lastName ? [...guests, plusOne] : guests;
+  const allNotAttending = allGuests.every(guest => guest.attendingStatus === "Not Attending");
+
   return (
     <div className="rsvp-table-container">
       <div className='title'>RSVP</div>
       {
         hasRSVPd 
-        ? <p>Thank you for RSVP-ing! We look forward to celebrating with you soon.</p>
+        ? allNotAttending
+          ? <p>Thank you for RSVP-ing. We're sorry you can't make it, and look forward to seeing you another time.</p>
+          : <p>Thank you for RSVP-ing! We look forward to celebrating with you {invitedLocation === "Canada" ? "soon" : "on October 11, 2025"}.</p>
         : invitedLocation === "Canada"
             ? <p>Please join us in celebrating Nicholas and Natasha's wedding.</p>
             : <>
@@ -312,6 +317,25 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         </>
       }
       {getLocationGoogleMaps()}
+      {isAdmin && (
+        <div className="csv-download-section">
+          <h3>Download RSVP Data</h3>
+          <div className="download-buttons">
+            <button 
+              className="download-button canada"
+              onClick={() => window.open('https://nick-and-tash-wedding.onrender.com/api/export-rsvp-csv/canada', '_blank')}
+            >
+              Download Canada RSVP data
+            </button>
+            <button 
+              className="download-button australia"
+              onClick={() => window.open('https://nick-and-tash-wedding.onrender.com/api/export-rsvp-csv/australia', '_blank')}
+            >
+              Download Australia RSVP data
+            </button>
+          </div>
+        </div>
+      )}
       {isAdmin && <RSVPPieChart invites={invites} />}
       {!isAdmin && (<div className='rsvp-table'>
         <table>
@@ -525,7 +549,7 @@ function Rsvp({ isAdmin, invites, fetchAllInvites, fetchInviteById, inviteId, gu
         {invitedLocation !== "Canada" && <div className="brekkie-rsvp-options">
           <div className="brekkie-rsvp-options-background">
             <label><strong className='label-title'>Sunday Morning Breakfast Option</strong></label>
-            <p>We want to spend as much time with you as possible; we are hosting a post wedding brekkie at <a href="https://www.google.com/maps/place/Maple+3+Cafe/@-26.780165,152.856227,17z/data=!3m1!4b1!4m6!3m5!1s0x6b9387a6d3e36c55:0x2fddd8e805ff0aa4!8m2!3d-26.780165!4d152.856227!16s%2Fg%2F1tj2nmwp">Maple 3 Cafe</a> @ 9am.</p>
+            <p>We want to spend as much time with you as possible; we are hosting a post wedding brekkie at <a href="https://www.google.com/maps/place/Maple+3+Cafe/@-26.7589715,152.8499576,17z/data=!4m6!3m5!1s0x6b938714f4afffad:0x1462fa0cd6ed5f16!8m2!3d-26.75855!4d152.852672!16s%2Fg%2F1vj5_cvt?entry=ttu&g_ep=EgoyMDI1MDcwNi4wIKXMDSoASAFQAw%3D%3D">Maple 3 Cafe</a> @ 9am.</p>
             <div className="brekkie-dropdown-container">
               <label htmlFor="brekkieAttendees" className="brekkie-dropdown-label">
                 Number of guests attending morning breakfast<span style={{color: '#B22222'}}>*</span>:

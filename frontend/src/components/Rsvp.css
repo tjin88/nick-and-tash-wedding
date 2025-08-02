@@ -860,3 +860,83 @@ input[type="text"], input[type="text"]:focus {
   padding: 0.5rem;
   font-family: 'Open Sans', Arial, sans-serif;
 }
+
+/* CSV Download Section Styles */
+.csv-download-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.csv-download-section h3 {
+  margin: 0 0 1rem 0;
+  color: #B22222;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.download-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  min-width: 180px;
+}
+
+.download-button.canada {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.download-button.canada:hover {
+  background: linear-gradient(135deg, #ff5252, #d32f2f);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+}
+
+.download-button.australia {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: white;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.download-button.australia:hover {
+  background: linear-gradient(135deg, #43a047, #2e7d32);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* Mobile responsive styles for download buttons */
+@media (max-width: 600px) {
+  .download-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .download-button {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .csv-download-section {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
