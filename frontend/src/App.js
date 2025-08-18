@@ -13,6 +13,7 @@ import Registry from './components/Registry';
 import Photos from './components/Photos';
 import FAQ from './components/Faq';
 import Vendors from './components/Vendors';
+import DateAndVenue from './components/DateAndVenue';
 import './App.css';
 
 function App({ isAdmin, isPlaceholderGuest }) {
@@ -249,7 +250,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
   useEffect(() => {
     // Auto-navigate Canada-only invites from RSVP to Schedule
     if (navOption === 'rsvp' && invitedLocation === "Canada") {
-      setNavOption('schedule');
+      setNavOption('date/venue');
     }
   }, [navOption, invitedLocation]);
   
@@ -280,6 +281,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
           guestAccommodationLocalName={guestAccommodationLocalName}
         /> 
       }
+      { isOpened && navOption === 'date/venue' && <DateAndVenue /> }
       { isOpened && navOption === 'seeAllRSVPs' && <SeeAllRSVPs invites={invites} fetchAllInvites={fetchAllInvites}/> }
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }

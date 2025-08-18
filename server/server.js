@@ -10,6 +10,7 @@ import http from 'http';
 import ics from 'ics';
 import { format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
+import pLimit from 'p-limit';
 
 // Schema Imports
 import { Invite, Event, WEDDING_LOCATIONS, RSVP_STATUSES } from "./schemas/InviteSchema.js";
@@ -20,6 +21,8 @@ import Vendors from "./schemas/VendorsSchema.js";
 // Environment Variables
 dotenv.config();
 const PORT = process.env.PORT || 3003;
+
+const limit = pLimit(5);
 
 // ############################### NODE JS SERVER SETUP ###############################
 const app = express();
@@ -381,72 +384,77 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
     let hour = now.getHours();
     const ampm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
-    hour = hour ? hour : 12; // 0 should be 12
+    hour = hour ? hour : 12;
     const minute = String(now.getMinutes()).padStart(2, '0');
     const second = String(now.getSeconds()).padStart(2, '0');
     
     const username = req.body.username || 'user';
     
-    // Helper function to determine file type and MIME type
-    const getFileInfo = (file) => {
-      const mimeType = file.mimetype;
-      const isVideo = mimeType.startsWith('video/');
-      const isImage = mimeType.startsWith('image/');
-      
-      if (!isVideo && !isImage) {
-        throw new Error(`Unsupported file type: ${mimeType}`);
-      }
-      
-      return {
-        isVideo,
-        isImage,
-        mimeType,
-        dataUrl: `data:${mimeType};base64,${file.buffer.toString('base64')}`
-      };
-    };
+    // Array to collect media items for bulk insert
+    const mediaItems = [];
+    const uploadErrors = [];
     
-    const uploadPromises = req.files.map(async (file, index) => {
+    // Optimized file processing function
+    const processFile = async (file, index) => {
       try {
-        // Get file information
-        const fileInfo = getFileInfo(file);
+        const mimeType = file.mimetype;
+        const isVideo = mimeType.startsWith('video/');
+        const isImage = mimeType.startsWith('image/');
         
-        // Create unique ID
+        if (!isVideo && !isImage) {
+          throw new Error(`Unsupported file type: ${mimeType}. Please contact Tristan Jin (tjin368@gmail.com) to upload this file.`);
+        }
+        
         const uniqueId = `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
-        
-        // Configure upload options based on file type
         const uploadOptions = {
           folder: "demo",
           upload_preset: 'ml_default',
-          public_id: uniqueId
+          public_id: uniqueId,
+          resource_type: isVideo ? 'video' : 'image'
         };
         
-        // Add resource_type for videos
-        if (fileInfo.isVideo) {
-          uploadOptions.resource_type = 'video';
+        if (!isVideo) {
+          const imageSettings = getOptimalImageSettings(mimeType);
+          Object.assign(uploadOptions, imageSettings);
         }
-        
-        // Upload to Cloudinary
-        const result = await cloudinary.uploader.upload(fileInfo.dataUrl, uploadOptions);
-        
-        // Save to database
-        const mediaItem = new Photo({ 
+        const result = await uploadToCloudinary(file.buffer, uploadOptions);
+
+        mediaItems.push({
           url: result.url, 
           location: req.body.location || '',
-          mediaType: fileInfo.isVideo ? 'video' : fileInfo.isImage ? 'image' : 'unknown',
+          mediaType: isVideo ? 'video' : 'image',
           uploadedAt: new Date(),
           uploadedBy: req.body.username || 'Guest',
         });
         
-        await mediaItem.save();
-        return mediaItem;
-        
+        return { success: true, index, url: result.url };
       } catch (fileError) {
         console.error(`Error processing file ${index + 1}:`, fileError);
-        throw new Error(`Failed to process file ${index + 1}: ${fileError.message}`);
+        uploadErrors.push({ 
+          index: index + 1, 
+          filename: file.originalname,
+          error: fileError.message 
+        });
+        return { success: false, index, error: fileError.message };
       }
-    });
-
-    const savedMedia = await Promise.all(uploadPromises);
+    };
+    
+    // Process all files with concurrency limit
+    const uploadResults = await Promise.allSettled(
+      req.files.map((file, index) => limit(() => processFile(file, index)))
+    );
+    
+    // Bulk insert all successful uploads
+    let savedMedia = [];
+    if (mediaItems.length > 0) {
+      try {
+        savedMedia = await Photo.insertMany(mediaItems);
+        console.log(`Bulk inserted ${savedMedia.length} media items`);
+      } catch (bulkInsertError) {
+        console.error('Bulk insert failed:', bulkInsertError);
+        throw new Error('Failed to save media to database');
+      }
+    }
     
     // Emit updates for real-time functionality
     savedMedia.forEach(item => {
@@ -480,6 +488,34 @@ app.delete('/api/photos/:id', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// ############################### Photo Helper Functions ########################
+// Letting Cloudinary deal w best format for quality
+const getOptimalImageSettings = (mimeType) => {
+  const settings = {
+    format: 'auto',
+    quality: 'auto:good',
+  };
+  
+  return settings;
+};
+
+// Stream upload helper for better memory efficiency
+const uploadToCloudinary = (buffer, options) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      options,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+    uploadStream.end(buffer);
+  });
+};
 
 // ############################### Registry Routes ###############################
 app.get('/api/registry', async (req, res) => {

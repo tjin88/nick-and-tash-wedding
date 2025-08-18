@@ -5,19 +5,27 @@ import './Schedule.css';
 function Schedule({ invitedLocation }) {
   const canadianSchedule = [
     {
-      title: "5 PM: Appetizers, Family and Friends Group Photos",
+      title: "5:00pm | Arrival time - Appetizers and Open bar",
       details: [],
     },
     {
-      title: "6 PM: Guests to be Seated",
+      title: "5:45pm | Guests seated",
       details: [],
     },
     {
-      title: "6:30 PM: Food is Served",
+      title: "6:00pm | Welcome Speech",
       details: [],
     },
     {
-      title: "Dinner and dancing to follow",
+      title: "6:10pm | Food is served",
+      details: [],
+    },
+    {
+      title: "6:10pm | Family and friends group photos to be taken during the first 3 dinner courses",
+      details: [],
+    },
+    {
+      title: "Dancing to follow",
       details: [],
     }
   ];

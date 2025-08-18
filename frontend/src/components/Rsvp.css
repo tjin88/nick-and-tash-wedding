@@ -861,6 +861,48 @@ input[type="text"], input[type="text"]:focus {
   font-family: 'Open Sans', Arial, sans-serif;
 }
 
+/* DateAndVenue Component Styles */
+.date-venue-container {
+  background: #faf0f2 !important;
+  min-height: calc(100vh - 110px);
+}
+
+/* Map Container Styles */
+.map-container {
+  margin: 1rem 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 50vw;
+}
+
+.directions-link {
+  display: block;
+  padding: 0.5rem 0;
+  background-color: #4a90e2;
+  color: white;
+  text-decoration: none;
+  width: 100%;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.directions-link:hover {
+  background-color: #357abd;
+}
+
+@media (max-width: 700px) {
+  .map-container {
+    width: 90vw;
+    margin: 1rem auto;
+  }
+  
+  .map-container iframe {
+    height: 200px;
+  }
+}
+
 /* CSV Download Section Styles */
 .csv-download-section {
   margin: 2rem 0;

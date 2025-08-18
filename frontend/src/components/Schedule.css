@@ -110,7 +110,7 @@
 
 .schedule .schedule-item {
   position: relative;
-  padding: 0 0 20px 40px; /* 16px (circle) + 10px (gap) + 10px (line thickness/offset) */
+  padding: 0 0 5px 40px; /* 16px (circle) + 10px (gap) + 10px (line thickness/offset) */
   margin-top: -2px;
 }
 
