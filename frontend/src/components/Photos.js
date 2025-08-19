@@ -1,5 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import imageCompression from 'browser-image-compression';
 import './Photos.css';
+
+const VIDEO_FILE_TYPES = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv', 'wmv'];
+const IMAGE_FILE_TYPES = [
+  'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'svg', 'ico',
+  'dng', 'cr2', 'nef', 'arw', 'raf', 'orf', 'rw2'
+];
+
+const videoRegex = new RegExp(`\\.(${VIDEO_FILE_TYPES.join('|')})$`, 'i');
+const imageRegex = new RegExp(`\\.(${IMAGE_FILE_TYPES.join('|')})$`, 'i');
+const ACCEPT_FILE_TYPES = [
+  'image/*',
+  'video/*',
+  ...IMAGE_FILE_TYPES.map(ext => `.${ext}`),
+  ...VIDEO_FILE_TYPES.map(ext => `.${ext}`),
+].join(',');
+
 
 function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -8,15 +25,36 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
   const [uploadProgress, setUploadProgress] = useState('');
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // Cloudinary configuration
   const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`;
-  const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET; // You'll need to create this
+  const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
   useEffect(() => {
     fetchPhotos();
   }, []);
 
-  // Generate unique ID (moved from server)
+  const getOptimizedImageUrl = (url) => {
+    if (url.includes('/upload/f_jpg') || videoRegex.test(url)) {
+      return url;
+    }
+    return url.replace('/upload/', '/upload/f_jpg,q_auto/');
+  };
+
+  const getFileTypeInfo = (file) => {
+    const fileName = file.name.toLowerCase();
+    const mimeType = file.type.toLowerCase();
+    
+    if (mimeType.startsWith('video/') || videoRegex.test(fileName)) {
+      return { type: 'video', isSupported: true };
+    }
+    
+    if (mimeType.startsWith('image/') || imageRegex.test(fileName)) {
+      return { type: 'image', isSupported: true };
+    }
+    
+    return { type: 'unknown', isSupported: false };
+  };
+
+  // Generate unique ID
   const generateUniqueId = (index) => {
     const now = new Date();
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -36,23 +74,15 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
     return `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
   };
 
-  // Upload single file directly to Cloudinary
   const uploadFileToCloudinary = async (file, index) => {
     const formData = new FormData();
-    const isVideo = file.type.startsWith('video/');
     const uniqueId = generateUniqueId(index);
 
     formData.append('file', file);
     formData.append('upload_preset', UPLOAD_PRESET);
     formData.append('public_id', uniqueId);
-    formData.append('folder', `${UPLOAD_PRESET}_${invitedLocation}`);
-    formData.append('resource_type', isVideo ? 'video' : 'image');
-    
-    // Add image optimization settings for non-videos
-    if (!isVideo) {
-      formData.append('format', 'jpg');
-      formData.append('quality', 'auto:good');
-    }
+
+    console.log(`Uploading file: ${file.name}, Type: ${file.type}, Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
 
     const response = await fetch(CLOUDINARY_UPLOAD_URL, {
       method: 'POST',
@@ -61,13 +91,15 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Cloudinary error response:', errorData);
       throw new Error(`Cloudinary upload failed: ${errorData.error?.message || 'Unknown error'}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('Cloudinary upload success:', result.public_id, result.format);
+    return result;
   };
 
-  // Save media metadata to your database
   const saveMediaMetadata = async (mediaItems) => {
     const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/save-media-metadata', {
     // const response = await fetch('http://localhost:3003/api/save-media-metadata', {
@@ -108,114 +140,137 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
     setUploadError('');
     setUploadProgress('');
 
-    const mediaItems = [];
     const uploadErrors = [];
+    const mediaItems = [];
 
     try {
-      // Client-side validation
-      const validFiles = [];
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const isVideo = file.type.startsWith('video/');
-        const isImage = file.type.startsWith('image/');
+      // Step 1: Pre-process files (convert large images) and validate them.
+      const processingPromises = Array.from(files).map(async (originalFile, index) => {
+        let file = originalFile;
+        let fileInfo = getFileTypeInfo(file);
+
+        // --- 2. Convert large images to JPG before validation and upload ---
+        const MAX_IMAGE_SIZE_FOR_CONVERSION = 10 * 1024 * 1024; // 10MB threshold
+        if (fileInfo.type === 'image' && file.size > MAX_IMAGE_SIZE_FOR_CONVERSION) {
+          try {
+            console.log(`Compressing ${file.name} because it's over 10MB...`);
+            const options = {
+              maxSizeMB: 10,
+              maxWidthOrHeight: 1920,
+              useWebWorker: true,
+              fileType: 'image/jpeg', // Force output to JPEG
+            };
+            const compressedBlob = await imageCompression(file, options);
+            const newFileName = `${file.name.split('.').slice(0, -1).join('.')}.jpg`;
+            file = new File([compressedBlob], newFileName, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            console.log(`Compression complete for ${newFileName}. New size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+          } catch (error) {
+            return {
+              status: 'error',
+              index: index + 1,
+              filename: originalFile.name,
+              error: `Image conversion failed: ${error.message}`
+            };
+          }
+        }
+
+        // Re-evaluate fileInfo after potential conversion and validate size.
+        fileInfo = getFileTypeInfo(file);
         
-        if (!isVideo && !isImage) {
-          uploadErrors.push({
-            index: i + 1,
-            filename: file.name,
-            error: `Unsupported file type: ${file.type}`
-          });
-          continue;
+        if (!fileInfo.isSupported) {
+          return { status: 'error', index: index + 1, filename: originalFile.name, error: `Unsupported file type.` };
         }
 
         // File size limits
-        const maxSize = isVideo ? 2 * 1024 * 1024 * 1024 : 20 * 1024 * 1024; // 2GB for video, 20MB for image
+        const maxSize = fileInfo.type === 'video' ? 2 * 1024 * 1024 * 1024 : 20 * 1024 * 1024; // 2GB for video, 20MB for image
         if (file.size > maxSize) {
-          uploadErrors.push({
-            index: i + 1,
-            filename: file.name,
-            error: `File too large. Max size: ${isVideo ? '2GB' : '20MB'}`
-          });
-          continue;
+          return { status: 'error', index: index + 1, filename: originalFile.name, error: `File too large (max ${fileInfo.type === 'video' ? '2GB' : '20MB'}).` };
         }
+        
+        return { status: 'valid', data: { file, originalIndex: index, fileInfo } };
+      });
 
-        validFiles.push({ file, originalIndex: i });
-      }
+      const processedFiles = await Promise.all(processingPromises);
 
+      const validFiles = processedFiles.filter(p => p.status === 'valid').map(p => p.data);
+      const initialErrors = processedFiles.filter(p => p.status === 'error');
+      uploadErrors.push(...initialErrors);
+      
       const totalValidFiles = validFiles.length;
 
-      // Process uploads function (moved outside loop to fix ESLint warning)
-      const processUpload = async (fileData, fileIndex) => {
-        try {
-          const result = await uploadFileToCloudinary(fileData.file, fileData.originalIndex);
-          const isVideo = fileData.file.type.startsWith('video/');
-          
-          const mediaItem = {
-            url: result.secure_url,
-            mediaType: isVideo ? 'video' : 'image',
-            uploadedAt: new Date().toISOString(),
-            uploadedBy: username || 'Guest'
-          };
-          
-          mediaItems.push(mediaItem);
-          setUploadProgress(`Uploaded ${mediaItems.length}/${totalValidFiles} files`);
-          
-          return { success: true, index: fileData.originalIndex, result: mediaItem };
-        } catch (error) {
-          console.error(`Upload error for file ${fileData.originalIndex + 1}:`, error);
-          uploadErrors.push({
-            index: fileData.originalIndex + 1,
-            filename: fileData.file.name,
-            error: error.message
-          });
-          return { success: false, index: fileData.originalIndex, error: error.message };
-        }
-      };
+      // Step 2: Process uploads with a concurrency limit.
+      if (totalValidFiles > 0) {
+        setUploadProgress(`Uploading 0/${totalValidFiles} files...`);
 
-      // Process uploads with concurrency limit
-      const concurrencyLimit = 3;
-      const uploadPromises = [];
-      
-      for (let i = 0; i < validFiles.length; i++) {
-        const uploadPromise = processUpload(validFiles[i], i);
-        uploadPromises.push(uploadPromise);
+        const processUpload = async (fileData) => {
+          try {
+            const result = await uploadFileToCloudinary(fileData.file, fileData.originalIndex);
+            return {
+              success: true,
+              result: {
+                url: result.secure_url,
+                mediaType: fileData.fileInfo.type,
+                uploadedAt: new Date().toISOString(),
+                uploadedBy: username || 'Guest'
+              }
+            };
+          } catch (error) {
+            uploadErrors.push({ index: fileData.originalIndex + 1, filename: fileData.file.name, error: error.message });
+            return { success: false };
+          }
+        };
 
-        // Process in batches
-        if (uploadPromises.length >= concurrencyLimit || i === validFiles.length - 1) {
-          await Promise.allSettled(uploadPromises.splice(0, concurrencyLimit));
-        }
+        const concurrencyLimit = 3;
+        let completedCount = 0;
+        const queue = [...validFiles];
+
+        const worker = async () => {
+          while (queue.length > 0) {
+            const task = queue.shift();
+            if (task) {
+              const res = await processUpload(task);
+              if (res.success) {
+                mediaItems.push(res.result);
+              }
+              completedCount++;
+              setUploadProgress(`Uploaded ${completedCount}/${totalValidFiles} files`);
+            }
+          }
+        };
+        
+        const workers = Array(concurrencyLimit).fill(null).map(() => worker());
+        await Promise.all(workers);
       }
 
-      // Save metadata to database
+      // Step 3: Save metadata to your database.
       if (mediaItems.length > 0) {
         setUploadProgress('Saving to database...');
         const savedResult = await saveMediaMetadata(mediaItems);
-        
-        // Update local state with new photos
         const newPhotoUrls = savedResult.media.map(mediaItem => mediaItem.url);
-        setPhotos(prevPhotos => [...prevPhotos, ...newPhotoUrls]);
+        setPhotos(prevPhotos => [...newPhotoUrls, ...prevPhotos]);
       }
 
-      // Show results
+      // Step 4: Show final results.
       if (uploadErrors.length > 0) {
-        setUploadError(`${uploadErrors.length} files failed to upload. ${mediaItems.length} files uploaded successfully.`);
+        setUploadError(`${uploadErrors.length} files failed. ${mediaItems.length} files succeeded.`);
         console.error('Upload errors:', uploadErrors);
-      } else {
+      } else if (mediaItems.length > 0) {
         setUploadProgress(`Successfully uploaded all ${mediaItems.length} files!`);
+      } else {
+        setUploadProgress('No valid files were uploaded.');
       }
 
-      // Clear the file input
       event.target.value = '';
 
     } catch (error) {
-      console.error('Upload error:', error);
-      setUploadError('Failed to upload photos: ' + error.message);
+      console.error('Upload process error:', error);
+      setUploadError('A critical error occurred: ' + error.message);
     } finally {
       setIsUploading(false);
-      // Clear progress message after delay
-      setTimeout(() => {
-        setUploadProgress('');
-      }, 3000);
+      setTimeout(() => setUploadProgress(''), 5000);
     }
   };
 
@@ -230,7 +285,7 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
         {isUploading && !uploadProgress && <p className="uploading">Uploading ...</p>}
         <input 
           type="file" 
-          accept="image/*,video/*" 
+          accept={ACCEPT_FILE_TYPES}
           multiple 
           onChange={handleFileSelect} 
           id="file-upload" 
@@ -238,25 +293,25 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
           disabled={isUploading}
         />
         <label htmlFor="file-upload" className={`upload-option ${isUploading ? 'disabled' : ''}`}>
-          {isUploading ? 'Uploading ...' : 'Upload Photos / Videos'}
+          {isUploading ? 'Uploading...' : 'Upload Photos / Videos'}
         </label>
       </div>
       <div className="photo-gallery">
         {photos.map((photo, index) => {
-          const isVideo = /\.(mp4|webm|ogg)$/i.test(photo);
+          const isVideo = videoRegex.test(photo);
           return isVideo ? (
             <video key={index} src={photo} className="photo-item" controls onClick={() => setSelectedPhoto(photo)} />
           ) : (
-            <img key={index} src={photo} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(photo)} />
+            <img key={index} src={getOptimizedImageUrl(photo)} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(getOptimizedImageUrl(photo))} />
           );
         })}
       </div>
       {selectedPhoto && (
         <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
-          {/\.(mp4|webm|ogg)$/i.test(selectedPhoto) ? (
+          {videoRegex.test(selectedPhoto) ? (
             <video src={selectedPhoto} className="modal-content" controls autoPlay />
           ) : (
-            <img src={selectedPhoto} alt="Enlarged view" className="modal-content"/>
+            <img src={getOptimizedImageUrl(selectedPhoto)} alt="Enlarged view" className="modal-content"/>
           )}
           <span className="close-modal" onClick={() => setSelectedPhoto(null)}>&times;</span>
         </div>
