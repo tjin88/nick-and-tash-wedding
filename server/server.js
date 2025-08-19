@@ -22,7 +22,7 @@ import Vendors from "./schemas/VendorsSchema.js";
 dotenv.config();
 const PORT = process.env.PORT || 3003;
 
-const limit = pLimit(5);
+const limit = pLimit(3);
 
 // ############################### NODE JS SERVER SETUP ###############################
 const app = express();
@@ -421,7 +421,7 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
 
         mediaItems.push({
           url: result.url, 
-          location: req.body.location || '',
+          location: req.body.location || WEDDING_LOCATIONS.CANADA,
           mediaType: isVideo ? 'video' : 'image',
           uploadedAt: new Date(),
           uploadedBy: req.body.username || 'Guest',
@@ -438,6 +438,8 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
         return { success: false, index, error: fileError.message };
       }
     };
+
+    console.log(`Found ${uploadErrors.length} upload errors and ${mediaItems.length} media items`);
     
     // Process all files with concurrency limit
     const uploadResults = await Promise.allSettled(
@@ -448,6 +450,7 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
     let savedMedia = [];
     if (mediaItems.length > 0) {
       try {
+        console.log(`Attempting to insert ${mediaItems.length} items into MongoDB`);
         savedMedia = await Photo.insertMany(mediaItems);
         console.log(`Bulk inserted ${savedMedia.length} media items`);
       } catch (bulkInsertError) {
