@@ -3,14 +3,14 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
-import { v2 as cloudinary } from 'cloudinary';
-import multer from 'multer';
+// import { v2 as cloudinary } from 'cloudinary';
+// import multer from 'multer';
 import { Server } from 'socket.io';
 import http from 'http';
 import ics from 'ics';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
-import pLimit from 'p-limit';
+// import pLimit from 'p-limit';
 
 // Schema Imports
 import { Invite, Event, WEDDING_LOCATIONS, RSVP_STATUSES } from "./schemas/InviteSchema.js";
@@ -22,7 +22,8 @@ import Vendors from "./schemas/VendorsSchema.js";
 dotenv.config();
 const PORT = process.env.PORT || 3003;
 
-const limit = pLimit(3);
+// TODO: Remove once tested new frontend direct upload approach
+// const limit = pLimit(3);
 
 // ############################### NODE JS SERVER SETUP ###############################
 const app = express();
@@ -50,16 +51,17 @@ db.once("open", () => {
   console.log("Connected to MongoDB successfully");
 });
 
-// Connect to Cloudinary (store images and retrieve URLs)
-cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET 
-});
+// TODO: Remove once tested new frontend direct upload approach
+// // Connect to Cloudinary (store images and retrieve URLs)
+// cloudinary.config({ 
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+//   api_key: process.env.CLOUDINARY_API_KEY, 
+//   api_secret: process.env.CLOUDINARY_API_SECRET 
+// });
 
-// Temporary memory storage for uploaded files
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// // Temporary memory storage for uploaded files
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
 
 // Used for security purposes
 // const verifyToken = (adminRequired = false) => (req, res, next) => {
@@ -364,101 +366,151 @@ app.get('/api/photos', async (req, res) => {
   }
 });
 
-app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ message: "No files uploaded." });
-  }
-  if (req.files.length > 200) {
-    return res.status(400).json({ message: "You can only upload up to 200 files at a time." });
-  }
+// TODO: Remove once tested new frontend direct upload approach
+// app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
+//   if (!req.files || req.files.length === 0) {
+//     return res.status(400).json({ message: "No files uploaded." });
+//   }
+//   if (req.files.length > 200) {
+//     return res.status(400).json({ message: "You can only upload up to 200 files at a time." });
+//   }
   
+//   try {
+//     const now = new Date();
+//     const monthNames = ["January", "February", "March", "April", "May", "June",
+//       "July", "August", "September", "October", "November", "December"];
+//     const month = monthNames[now.getMonth()];
+//     const day = now.getDate();
+//     const year = now.getFullYear();
+    
+//     // Convert to 12-hour format
+//     let hour = now.getHours();
+//     const ampm = hour >= 12 ? 'PM' : 'AM';
+//     hour = hour % 12;
+//     hour = hour ? hour : 12;
+//     const minute = String(now.getMinutes()).padStart(2, '0');
+//     const second = String(now.getSeconds()).padStart(2, '0');
+    
+//     const username = req.body.username || 'user';
+    
+//     // Array to collect media items for bulk insert
+//     const mediaItems = [];
+//     const uploadErrors = [];
+    
+//     // Optimized file processing function
+//     const processFile = async (file, index) => {
+//       try {
+//         const mimeType = file.mimetype;
+//         const isVideo = mimeType.startsWith('video/');
+//         const isImage = mimeType.startsWith('image/');
+        
+//         if (!isVideo && !isImage) {
+//           throw new Error(`Unsupported file type: ${mimeType}. Please contact Tristan Jin (tjin368@gmail.com) to upload this file.`);
+//         }
+        
+//         const uniqueId = `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
+//         const uploadOptions = {
+//           folder: "demo",
+//           upload_preset: 'ml_default',
+//           public_id: uniqueId,
+//           resource_type: isVideo ? 'video' : 'image'
+//         };
+        
+//         if (!isVideo) {
+//           const imageSettings = getOptimalImageSettings(mimeType);
+//           Object.assign(uploadOptions, imageSettings);
+//         }
+//         const result = await uploadToCloudinary(file.buffer, uploadOptions);
+
+//         mediaItems.push({
+//           url: result.url, 
+//           location: req.body.location || WEDDING_LOCATIONS.CANADA,
+//           mediaType: isVideo ? 'video' : 'image',
+//           uploadedAt: new Date(),
+//           uploadedBy: req.body.username || 'Guest',
+//         });
+        
+//         return { success: true, index, url: result.url };
+//       } catch (fileError) {
+//         console.error(`Error processing file ${index + 1}:`, fileError);
+//         uploadErrors.push({ 
+//           index: index + 1, 
+//           filename: file.originalname,
+//           error: fileError.message 
+//         });
+//         return { success: false, index, error: fileError.message };
+//       }
+//     };
+
+//     console.log(`Found ${uploadErrors.length} upload errors and ${mediaItems.length} media items`);
+    
+//     // Process all files with concurrency limit
+//     const uploadResults = await Promise.allSettled(
+//       req.files.map((file, index) => limit(() => processFile(file, index)))
+//     );
+    
+//     // Bulk insert all successful uploads
+//     let savedMedia = [];
+//     if (mediaItems.length > 0) {
+//       try {
+//         console.log(`Attempting to insert ${mediaItems.length} items into MongoDB`);
+//         savedMedia = await Photo.insertMany(mediaItems);
+//         console.log(`Bulk inserted ${savedMedia.length} media items`);
+//       } catch (bulkInsertError) {
+//         console.error('Bulk insert failed:', bulkInsertError);
+//         throw new Error('Failed to save media to database');
+//       }
+//     }
+    
+//     // Emit updates for real-time functionality
+//     savedMedia.forEach(item => {
+//       io.emit('photo-updated', { 
+//         url: item.url, 
+//         location: item.location,
+//         mediaType: item.mediaType 
+//       });
+//     });
+
+//     res.status(201).json({ 
+//       message: `Successfully uploaded ${savedMedia.length} files`,
+//       media: savedMedia 
+//     });
+    
+//   } catch (error) {
+//     console.error("Upload Error:", error);
+//     res.status(500).json({ 
+//       message: "Failed to upload files", 
+//       error: error.message 
+//     });
+//   }
+// });
+
+app.post('/api/save-media-metadata', async (req, res) => {
   try {
-    const now = new Date();
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"];
-    const month = monthNames[now.getMonth()];
-    const day = now.getDate();
-    const year = now.getFullYear();
-    
-    // Convert to 12-hour format
-    let hour = now.getHours();
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12;
-    hour = hour ? hour : 12;
-    const minute = String(now.getMinutes()).padStart(2, '0');
-    const second = String(now.getSeconds()).padStart(2, '0');
-    
-    const username = req.body.username || 'user';
-    
-    // Array to collect media items for bulk insert
-    const mediaItems = [];
-    const uploadErrors = [];
-    
-    // Optimized file processing function
-    const processFile = async (file, index) => {
-      try {
-        const mimeType = file.mimetype;
-        const isVideo = mimeType.startsWith('video/');
-        const isImage = mimeType.startsWith('image/');
-        
-        if (!isVideo && !isImage) {
-          throw new Error(`Unsupported file type: ${mimeType}. Please contact Tristan Jin (tjin368@gmail.com) to upload this file.`);
-        }
-        
-        const uniqueId = `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
-        const uploadOptions = {
-          folder: "demo",
-          upload_preset: 'ml_default',
-          public_id: uniqueId,
-          resource_type: isVideo ? 'video' : 'image'
-        };
-        
-        if (!isVideo) {
-          const imageSettings = getOptimalImageSettings(mimeType);
-          Object.assign(uploadOptions, imageSettings);
-        }
-        const result = await uploadToCloudinary(file.buffer, uploadOptions);
+    const { media, location, username } = req.body;
 
-        mediaItems.push({
-          url: result.url, 
-          location: req.body.location || WEDDING_LOCATIONS.CANADA,
-          mediaType: isVideo ? 'video' : 'image',
-          uploadedAt: new Date(),
-          uploadedBy: req.body.username || 'Guest',
-        });
-        
-        return { success: true, index, url: result.url };
-      } catch (fileError) {
-        console.error(`Error processing file ${index + 1}:`, fileError);
-        uploadErrors.push({ 
-          index: index + 1, 
-          filename: file.originalname,
-          error: fileError.message 
-        });
-        return { success: false, index, error: fileError.message };
-      }
-    };
-
-    console.log(`Found ${uploadErrors.length} upload errors and ${mediaItems.length} media items`);
-    
-    // Process all files with concurrency limit
-    const uploadResults = await Promise.allSettled(
-      req.files.map((file, index) => limit(() => processFile(file, index)))
-    );
-    
-    // Bulk insert all successful uploads
-    let savedMedia = [];
-    if (mediaItems.length > 0) {
-      try {
-        console.log(`Attempting to insert ${mediaItems.length} items into MongoDB`);
-        savedMedia = await Photo.insertMany(mediaItems);
-        console.log(`Bulk inserted ${savedMedia.length} media items`);
-      } catch (bulkInsertError) {
-        console.error('Bulk insert failed:', bulkInsertError);
-        throw new Error('Failed to save media to database');
-      }
+    if (!media || !Array.isArray(media) || media.length === 0) {
+      return res.status(400).json({ message: "No media metadata provided." });
     }
-    
+
+    if (media.length > 200) {
+      return res.status(400).json({ message: "Cannot save metadata for more than 200 files at once." });
+    }
+
+    // Validate and prepare media items for database
+    const mediaItems = media.map(item => ({
+      url: item.url,
+      location: location || WEDDING_LOCATIONS.CANADA,
+      mediaType: item.mediaType,
+      uploadedAt: new Date(),
+      uploadedBy: username || 'Guest'
+    }));
+
+    // Bulk insert to database
+    console.log(`Attempting to insert ${mediaItems.length} media metadata items into MongoDB`);
+    const savedMedia = await Photo.insertMany(mediaItems);
+    console.log(`Bulk inserted ${savedMedia.length} media items`);
+
     // Emit updates for real-time functionality
     savedMedia.forEach(item => {
       io.emit('photo-updated', { 
@@ -469,14 +521,14 @@ app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
     });
 
     res.status(201).json({ 
-      message: `Successfully uploaded ${savedMedia.length} files`,
+      message: `Successfully saved metadata for ${savedMedia.length} files`,
       media: savedMedia 
     });
-    
+
   } catch (error) {
-    console.error("Upload Error:", error);
+    console.error("Save metadata error:", error);
     res.status(500).json({ 
-      message: "Failed to upload files", 
+      message: "Failed to save media metadata", 
       error: error.message 
     });
   }
@@ -492,33 +544,34 @@ app.delete('/api/photos/:id', async (req, res) => {
   }
 });
 
+// TODO: Remove once tested new frontend direct upload approach
 // ############################### Photo Helper Functions ########################
-// Letting Cloudinary deal w best format for quality
-const getOptimalImageSettings = (mimeType) => {
-  const settings = {
-    format: 'jpg',
-    quality: 'auto:good',
-  };
+// // Letting Cloudinary deal w best format for quality
+// const getOptimalImageSettings = (mimeType) => {
+//   const settings = {
+//     format: 'jpg',
+//     quality: 'auto:good',
+//   };
   
-  return settings;
-};
+//   return settings;
+// };
 
-// Stream upload helper for better memory efficiency
-const uploadToCloudinary = (buffer, options) => {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      options,
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      }
-    );
-    uploadStream.end(buffer);
-  });
-};
+// // Stream upload helper for better memory efficiency
+// const uploadToCloudinary = (buffer, options) => {
+//   return new Promise((resolve, reject) => {
+//     const uploadStream = cloudinary.uploader.upload_stream(
+//       options,
+//       (error, result) => {
+//         if (error) {
+//           reject(error);
+//         } else {
+//           resolve(result);
+//         }
+//       }
+//     );
+//     uploadStream.end(buffer);
+//   });
+// };
 
 // ############################### Registry Routes ###############################
 app.get('/api/registry', async (req, res) => {
