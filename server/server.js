@@ -496,7 +496,7 @@ app.delete('/api/photos/:id', async (req, res) => {
 // Letting Cloudinary deal w best format for quality
 const getOptimalImageSettings = (mimeType) => {
   const settings = {
-    format: 'auto',
+    format: 'jpg',
     quality: 'auto:good',
   };
   
