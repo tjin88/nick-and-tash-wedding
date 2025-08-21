@@ -544,7 +544,15 @@ app.post('/api/save-media-metadata', async (req, res) => {
 app.delete('/api/photos/:id', async (req, res) => {
   try {
     const photo = await Photo.findByIdAndDelete(req.params.id);
-    if (!photo) res.status(404).json({ message: "Photo not found" });
+    if (!photo) {
+      return res.status(404).json({ message: "Photo not found" });
+    }
+
+    io.emit('photo-deleted', { 
+      photoId: req.params.id,
+      url: photo.url 
+    });
+
     res.status(200).json({ message: "Photo deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });

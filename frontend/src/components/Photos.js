@@ -24,7 +24,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
   const [deletingPhotoId, setDeletingPhotoId] = useState(null);
-  // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const [deleteSuccess, setDeleteSuccess] = useState('');
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`;
@@ -136,6 +136,9 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
       return;
     }
 
+    // Clear any previous error messages
+    setUploadError('');
+    setDeleteSuccess('');
     setDeletingPhotoId(photoId);
     try {
       const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos/${photoId}`, {
@@ -146,13 +149,12 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         throw new Error('Failed to delete photo');
       }
 
-      // Remove the photo from the local state
-      setPhotos(prevPhotos => prevPhotos.filter(photo => {
-        if (typeof photo === 'string') {
-          return true; // Keep string photos (they don't have IDs)
-        }
-        return photo._id !== photoId;
-      }));
+      // Show success message
+      setDeleteSuccess('Photo deleted successfully!');
+      setTimeout(() => setDeleteSuccess(''), 3000);
+
+      // Note: The photo will be removed from all clients via socket.io
+      // No need to manually update local state here
     } catch (error) {
       console.error('Error deleting photo:', error);
       setUploadError('Failed to delete photo. Please try again.');
@@ -324,6 +326,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         {uploadError && <p className="error">{uploadError}</p>}
         {uploadProgress && <p className="uploading">{uploadProgress}</p>}
         {isUploading && !uploadProgress && <p className="uploading">Uploading ...</p>}
+        {deleteSuccess && <p className="success">{deleteSuccess}</p>}
         <input 
           type="file" 
           accept={ACCEPT_FILE_TYPES}
@@ -341,11 +344,10 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         {photos.map((photo, index) => {
           const photoUrl = typeof photo === 'string' ? photo : photo.url;
           const photoId = photo._id;
-          console.log("photoUrl", photoUrl, ", photoId", photoId);
           const isVideo = videoRegex.test(photoUrl);
           
           return (
-            <div key={photoId || index} className="photo-item-container">
+            <div key={photoId || index} className={`photo-item-container ${deletingPhotoId === photoId ? 'deleting' : ''}`}>
               {isVideo ? (
                 <video src={photoUrl} className="photo-item" controls onClick={() => setSelectedPhoto(photoUrl)} />
               ) : (

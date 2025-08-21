@@ -92,6 +92,18 @@
   text-align: center;
 }
 
+.success {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px auto 20px auto;
+  max-width: 80vw;
+  width: fit-content;
+  text-align: center;
+}
+
 .mobile {
   margin: 5px 0;
   background-color: #E6C3C1;
@@ -184,4 +196,23 @@
 
 .delete-photo-btn:disabled:hover {
   background-color: #6c757d;
+}
+
+.photo-item-container.deleting {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.photo-item-container.deleting::after {
+  content: "Deleting...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 20;
 }

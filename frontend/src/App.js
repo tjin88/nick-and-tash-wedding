@@ -77,6 +77,17 @@ function App({ isAdmin, isPlaceholderGuest }) {
     socketRef.current.on('photo-updated', (photoData) => {
       setPhotos(prevPhotos => [...prevPhotos, photoData]);
     });
+
+    socketRef.current.on('photo-deleted', (deletedPhotoData) => {
+      console.log('Photo deleted via socket:', deletedPhotoData);
+      setPhotos(prevPhotos => prevPhotos.filter(photo => {
+        // Handle both string and object photo formats
+        if (typeof photo === 'string') {
+          return photo !== deletedPhotoData.url;
+        }
+        return photo._id !== deletedPhotoData.photoId;
+      }));
+    });
   
     socketRef.current.on('registry-item-added', (newItem) => {
       setRegistry(prevRegistry => ({ ...prevRegistry, [newItem.key]: newItem.isBought }));
