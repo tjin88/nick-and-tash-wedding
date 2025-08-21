@@ -14,6 +14,7 @@ import Photos from './components/Photos';
 import FAQ from './components/Faq';
 import Vendors from './components/Vendors';
 import DateAndVenue from './components/DateAndVenue';
+import Seating from './components/Seating';
 import './App.css';
 
 function App({ isAdmin, isPlaceholderGuest }) {
@@ -287,6 +288,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
       { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos} username={guests[0].firstName + "_" + guests[0].lastName} invitedLocation={invitedLocation} /> }
+      { isOpened && navOption === 'seating' && <Seating /> }
       { isOpened && navOption === 'faq' && <FAQ locations={locations} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
     </div>

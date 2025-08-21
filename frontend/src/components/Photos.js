@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// TODO: May remove if using AWS instead of Cloudinary
 import imageCompression from 'browser-image-compression';
 import './Photos.css';
 
@@ -16,7 +17,6 @@ const ACCEPT_FILE_TYPES = [
   ...IMAGE_FILE_TYPES.map(ext => `.${ext}`),
   ...VIDEO_FILE_TYPES.map(ext => `.${ext}`),
 ].join(',');
-
 
 function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -150,10 +150,10 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
         let fileInfo = getFileTypeInfo(file);
 
         // --- 2. Convert large images to JPG before validation and upload ---
-        const MAX_IMAGE_SIZE_FOR_CONVERSION = 10 * 1024 * 1024; // 10MB threshold
+        const MAX_IMAGE_SIZE_FOR_CONVERSION = 20 * 1024 * 1024; // 20MB threshold
         if (fileInfo.type === 'image' && file.size > MAX_IMAGE_SIZE_FOR_CONVERSION) {
           try {
-            console.log(`Compressing ${file.name} because it's over 10MB...`);
+            console.log(`Compressing ${file.name} because it's over 20MB...`);
             const options = {
               maxSizeMB: 10,
               maxWidthOrHeight: 1920,
@@ -172,7 +172,7 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
               status: 'error',
               index: index + 1,
               filename: originalFile.name,
-              error: `Image conversion failed: ${error.message}`
+              error: `Image too large. Please contact Tristan Jin (tjin368@gmail.com) to manually upload the image.`
             };
           }
         }
@@ -249,8 +249,10 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
       if (mediaItems.length > 0) {
         setUploadProgress('Saving to database...');
         const savedResult = await saveMediaMetadata(mediaItems);
-        const newPhotoUrls = savedResult.media.map(mediaItem => mediaItem.url);
-        setPhotos(prevPhotos => [...newPhotoUrls, ...prevPhotos]);
+
+        // Removing this as we're already retrieving the photos through socket.io
+        // const newPhotoUrls = savedResult.media.map(mediaItem => mediaItem.url);
+        // setPhotos(prevPhotos => [...newPhotoUrls, ...prevPhotos]);
       }
 
       // Step 4: Show final results.

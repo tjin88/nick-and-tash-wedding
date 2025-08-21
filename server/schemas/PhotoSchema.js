@@ -6,6 +6,10 @@ const photoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  jpgUrl: {
+    type: String,
+    required: true,
+  },
   uploadedAt: {
     type: Date,
     default: Date.now,

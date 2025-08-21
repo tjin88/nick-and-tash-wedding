@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 // import { v2 as cloudinary } from 'cloudinary';
-// import multer from 'multer';
+import multer from 'multer';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import sharp from 'sharp';
 import { Server } from 'socket.io';
 import http from 'http';
 import ics from 'ics';
@@ -485,6 +487,7 @@ app.get('/api/photos', async (req, res) => {
 //   }
 // });
 
+// TODO: For CLOUDINARY. Looking into switching to use AWS S3 for cheaper + no file size limits
 app.post('/api/save-media-metadata', async (req, res) => {
   try {
     const { media, location, username } = req.body;
@@ -534,6 +537,7 @@ app.post('/api/save-media-metadata', async (req, res) => {
   }
 });
 
+// TODO: this should delete from Cloudinary OR AWS S3 bucket. Will fix once decided on easier / better option
 app.delete('/api/photos/:id', async (req, res) => {
   try {
     const photo = await Photo.findByIdAndDelete(req.params.id);
@@ -933,12 +937,10 @@ app.get('/api/export-rsvp-csv/:location', async (req, res) => {
   }
 });
 
-// start here
-
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['https://nick-and-tash-wedding.web.app', 'http://localhost:3000'],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });

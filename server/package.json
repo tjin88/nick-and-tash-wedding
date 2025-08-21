@@ -12,11 +12,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.864.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "ics": "^3.8.1",
     "mongoose": "^8.3.3",
+    "multer": "^2.0.2",
+    "sharp": "^0.34.3",
     "socket.io": "^4.7.5",
     "uuid": "^11.0.3"
   }

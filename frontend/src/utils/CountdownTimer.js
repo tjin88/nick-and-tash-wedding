@@ -34,7 +34,7 @@ const CountdownTimer = ({ targetDate }) => {
 
   return (
     <div className="flex items-center space-x-2 text-lg">
-      <p>{timeLeft.days} Days To Go!</p>
+      <p>{timeLeft.days} {timeLeft.days > 1 ? 'Days' : 'Day'} To Go!</p>
       {/* <p>{timeLeft.days} Days, {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')} To Go!</p> */}
     </div>
   );

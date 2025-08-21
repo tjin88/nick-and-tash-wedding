@@ -24,7 +24,7 @@ function GuestStart({ setNavOption, locations, setIsOpened, invitedLocation }) {
         <div className='navbar-options'>
           {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('date/venue');}}>Date & Venue</button>}
           <button onClick={() => {setIsOpened(true); setNavOption('schedule');}}>Schedule</button>
-          {/* {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('seatingPlan');}}>Seating Plan</button>} */}
+          {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('seating');}}>Seating</button>}
           <button onClick={() => {setIsOpened(true); setNavOption('menu');}}>Menu</button>
           <button onClick={() => {setIsOpened(true); setNavOption('photos');}}>Photos/Videos</button>
           <button onClick={() => {setIsOpened(true); setNavOption('faq');}}>FAQ</button>
