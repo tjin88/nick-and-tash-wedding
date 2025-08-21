@@ -368,6 +368,32 @@ app.get('/api/photos', async (req, res) => {
   }
 });
 
+app.get('/api/photos/random', async (req, res) => {
+  try {
+    const { count = 4, location } = req.query;
+    const limit = Math.min(parseInt(count), 10); // Max 10 photos at once
+    
+    let query = {};
+    if (location) {
+      query = {
+        $or: [
+          { location: location },
+          { location: "Both Australia and Canada" }
+        ]
+      };
+    }
+    
+    const photos = await Photo.aggregate([
+      { $match: query },
+      { $sample: { size: limit } }
+    ]);
+    
+    res.json(photos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // TODO: Remove once tested new frontend direct upload approach
 // app.post('/api/upload-photos', upload.array('files', 200), async (req, res) => {
 //   if (!req.files || req.files.length === 0) {

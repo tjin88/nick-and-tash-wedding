@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import PhotoSlideshow from './components/PhotoSlideshow';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
-function ValidateInvite() {
+function ValidateInvite({ isWeddingSlideshow = false }) {
   const { inviteId } = useParams();
 
   const [isValid, setIsValid] = useState(false);
@@ -30,6 +31,10 @@ function ValidateInvite() {
     if (inviteId === 'admin') {
       setIsValid(true);
       setIsAdmin(true);
+      setLoading(false);
+    } else if (isWeddingSlideshow) {
+      setIsValid(true);
+      setIsPlaceholderGuest("Canada");
       setLoading(false);
     } else if (inviteId === 'canada-guest') {
       setIsValid(true);
@@ -60,6 +65,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path="/canadian-wedding-slideshow" element={<PhotoSlideshow />} />
         <Route path="/invite/:inviteId" element={<ValidateInvite />} />
         <Route path="/invalid-invite" element={<InvalidInvite />} />
         <Route path="*" element={<Navigate to="/invalid-invite" replace />} />
