@@ -320,7 +320,8 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
   return (
     <div className="photo-container">
       <p className='title'>Photos</p>
-      <p style={{paddingBottom: '16px'}}>Please upload your photos from the wedding day to share with us!</p>
+      <p>Please upload your photos from the wedding day to share with us!</p>
+      <p style={{paddingBottom: '16px', fontSize: '0.9em', color: '#666'}}><span style={{color: 'red'}}>*</span>If you've had issues uploading or would like any photos taken down, please contact Tristan (tjin368@gmail.com)</p>
       
       <div className="upload-section">
         {uploadError && <p className="error">{uploadError}</p>}

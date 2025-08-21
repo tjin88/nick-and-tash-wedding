@@ -8,7 +8,7 @@ function DateAndVenue() {
     <div className="rsvp-table-container date-venue-container">
       <div className='title'>Date & Venue</div>
       <p>We're looking forward to celebrating Nicholas and Natasha’s wedding with you.</p>
-      <p>Saturday August 23, 2025 @ 5:00 PM</p>
+      <p><strong>Saturday August 23, 2025 @ 5:00 PM</strong></p>
       <p>Location: {canadaLocation}</p>
       
       <div className="map-container">
