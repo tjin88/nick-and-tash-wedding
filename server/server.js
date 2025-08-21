@@ -503,6 +503,7 @@ app.post('/api/save-media-metadata', async (req, res) => {
     // Validate and prepare media items for database
     const mediaItems = media.map(item => ({
       url: item.url,
+      jpgUrl: item.url,
       location: location || WEDDING_LOCATIONS.CANADA,
       mediaType: item.mediaType,
       uploadedAt: new Date(),

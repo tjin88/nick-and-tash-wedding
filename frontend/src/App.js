@@ -75,7 +75,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
 
     // Event listeners
     socketRef.current.on('photo-updated', (photoData) => {
-      setPhotos(prevPhotos => [...prevPhotos, photoData.url]);
+      setPhotos(prevPhotos => [...prevPhotos, photoData]);
     });
   
     socketRef.current.on('registry-item-added', (newItem) => {
@@ -178,7 +178,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setPhotos(data.map(photo => photo.url));
+      setPhotos(data);
     } catch (error) {
       // TODO: Change to setError rather than alert
       console.error('Error fetching photos:', error.message);
@@ -287,7 +287,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
-      { isOpened && navOption === 'photos' && <Photos photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos} username={guests[0].firstName + "_" + guests[0].lastName} invitedLocation={invitedLocation} /> }
+      { isOpened && navOption === 'photos' && <Photos isAdmin={isAdmin} photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos} username={guests[0].firstName + "_" + guests[0].lastName} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'seating' && <Seating /> }
       { isOpened && navOption === 'faq' && <FAQ locations={locations} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }

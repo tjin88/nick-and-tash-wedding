@@ -18,11 +18,13 @@ const ACCEPT_FILE_TYPES = [
   ...VIDEO_FILE_TYPES.map(ext => `.${ext}`),
 ].join(',');
 
-function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
+function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLocation }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadError, setUploadError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
+  const [deletingPhotoId, setDeletingPhotoId] = useState(null);
+  // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`;
@@ -120,6 +122,43 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
     }
 
     return await response.json();
+  };
+
+  const deletePhoto = async (photoId) => {
+    if (!isAdmin) {
+      console.error('Only admins can delete photos');
+      return;
+    }
+
+    if (!photoId) {
+      console.error('No photo ID provided for deletion');
+      setUploadError('Cannot delete photo: missing photo ID');
+      return;
+    }
+
+    setDeletingPhotoId(photoId);
+    try {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos/${photoId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete photo');
+      }
+
+      // Remove the photo from the local state
+      setPhotos(prevPhotos => prevPhotos.filter(photo => {
+        if (typeof photo === 'string') {
+          return true; // Keep string photos (they don't have IDs)
+        }
+        return photo._id !== photoId;
+      }));
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      setUploadError('Failed to delete photo. Please try again.');
+    } finally {
+      setDeletingPhotoId(null);
+    }
   };
 
   const handleFileSelect = async (event) => {
@@ -300,11 +339,32 @@ function Photos({ photos, setPhotos, fetchPhotos, username, invitedLocation }) {
       </div>
       <div className="photo-gallery">
         {photos.map((photo, index) => {
-          const isVideo = videoRegex.test(photo);
-          return isVideo ? (
-            <video key={index} src={photo} className="photo-item" controls onClick={() => setSelectedPhoto(photo)} />
-          ) : (
-            <img key={index} src={getOptimizedImageUrl(photo)} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(getOptimizedImageUrl(photo))} />
+          const photoUrl = typeof photo === 'string' ? photo : photo.url;
+          const photoId = photo._id;
+          const isVideo = videoRegex.test(photoUrl);
+          
+          return (
+            <div key={photoId || index} className="photo-item-container">
+              {isVideo ? (
+                <video src={photoUrl} className="photo-item" controls onClick={() => setSelectedPhoto(photoUrl)} />
+              ) : (
+                <img src={getOptimizedImageUrl(photoUrl)} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(getOptimizedImageUrl(photoUrl))} />
+              )}
+              {isAdmin && photoId && (
+                <button
+                  className="delete-photo-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm('Are you sure you want to delete this photo?')) {
+                      deletePhoto(photoId);
+                    }
+                  }}
+                  disabled={deletingPhotoId === photoId}
+                >
+                  {deletingPhotoId === photoId ? 'Deleting...' : '×'}
+                </button>
+              )}
+            </div>
           );
         })}
       </div>
