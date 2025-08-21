@@ -348,14 +348,18 @@ app.get('/api/photos', async (req, res) => {
   try {
     const location = req.query.location;
     
+    // Base query to only return images (no videos)
+    let baseQuery = { mediaType: "image" };
+    
     if (!location) {
-      const photos = await Photo.find();
+      const photos = await Photo.find(baseQuery);
       res.json(photos);
     } else if (location === "Both Australia and Canada") {
-      const photos = await Photo.find();
+      const photos = await Photo.find(baseQuery);
       res.json(photos);
     } else {
       const photos = await Photo.find({
+        ...baseQuery,
         $or: [
           { location: location },
           { location: "Both Australia and Canada" }
@@ -371,11 +375,13 @@ app.get('/api/photos', async (req, res) => {
 app.get('/api/photos/random', async (req, res) => {
   try {
     const { count = 4, location } = req.query;
-    const limit = Math.min(parseInt(count), 10); // Max 10 photos at once
+    const limit = Math.min(parseInt(count), 30); // Max 30 photos at once
     
-    let query = {};
+    // Base query to only return images (no videos)
+    let query = { mediaType: "image" };
     if (location) {
       query = {
+        ...query,
         $or: [
           { location: location },
           { location: "Both Australia and Canada" }
