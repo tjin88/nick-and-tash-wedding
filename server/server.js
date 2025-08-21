@@ -468,6 +468,7 @@ app.get('/api/photos', async (req, res) => {
 //     savedMedia.forEach(item => {
 //       io.emit('photo-updated', { 
 //         url: item.url, 
+//         _id: item._id,
 //         location: item.location,
 //         mediaType: item.mediaType 
 //       });
@@ -519,6 +520,7 @@ app.post('/api/save-media-metadata', async (req, res) => {
     savedMedia.forEach(item => {
       io.emit('photo-updated', { 
         url: item.url, 
+        _id: item._id,
         location: item.location,
         mediaType: item.mediaType 
       });

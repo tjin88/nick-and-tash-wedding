@@ -299,7 +299,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         setUploadError(`${uploadErrors.length} files failed. ${mediaItems.length} files succeeded.`);
         console.error('Upload errors:', uploadErrors);
       } else if (mediaItems.length > 0) {
-        setUploadProgress(`Successfully uploaded all ${mediaItems.length} files!`);
+        setUploadProgress(`Successfully uploaded ${mediaItems.length === 1 ? "1 file" : `all ${mediaItems.length} files`}!`);
       } else {
         setUploadProgress('No valid files were uploaded.');
       }
@@ -341,6 +341,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         {photos.map((photo, index) => {
           const photoUrl = typeof photo === 'string' ? photo : photo.url;
           const photoId = photo._id;
+          console.log("photoUrl", photoUrl, ", photoId", photoId);
           const isVideo = videoRegex.test(photoUrl);
           
           return (
