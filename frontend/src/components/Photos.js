@@ -27,7 +27,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
   const [deleteSuccess, setDeleteSuccess] = useState('');
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`;
+  // const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`;
   const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
   useEffect(() => {
@@ -40,6 +40,11 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
     }
     return url.replace('/upload/', '/upload/f_jpg,q_auto/');
   };
+
+  const getOptimizedVideoUrl = (url) => {
+    return url.replace(/\/upload\/(?!.*\/upload\/)/, "/upload/f_auto,q_auto/");
+  };
+  
 
   const getFileTypeInfo = (file) => {
     const fileName = file.name.toLowerCase();
@@ -76,6 +81,14 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
     return `nnjin_wedding_${month}_${day}_${year}_${hour}-${minute}-${second}-${ampm}_${username}_${index + 1}`;
   };
 
+  const getUploadUrl = (fileType) => {
+    if (fileType.startsWith("video/")) {
+      return `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/video/upload`;
+    } else {
+      return `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`;
+    }
+  };  
+
   const uploadFileToCloudinary = async (file, index) => {
     const formData = new FormData();
     const uniqueId = generateUniqueId(index);
@@ -86,7 +99,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
 
     console.log(`Uploading file: ${file.name}, Type: ${file.type}, Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
 
-    const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+    const response = await fetch(getUploadUrl(file.type), {
       method: 'POST',
       body: formData,
     });
@@ -346,11 +359,14 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
           const photoUrl = typeof photo === 'string' ? photo : photo.url;
           const photoId = photo._id;
           const isVideo = videoRegex.test(photoUrl);
+          console.log("photoUrl", photoUrl);
+          console.log("isVideo", isVideo);
+          console.log("videoRegex", videoRegex);
           
           return (
             <div key={photoId || index} className={`photo-item-container ${deletingPhotoId === photoId ? 'deleting' : ''}`}>
               {isVideo ? (
-                <video src={photoUrl} className="photo-item" controls onClick={() => setSelectedPhoto(photoUrl)} />
+                <video src={getOptimizedVideoUrl(photoUrl)} className="photo-item" controls playsInline onClick={() => setSelectedPhoto(photoUrl)} /> && console.log(getOptimizedVideoUrl(photoUrl))
               ) : (
                 <img src={getOptimizedImageUrl(photoUrl)} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(getOptimizedImageUrl(photoUrl))} />
               )}

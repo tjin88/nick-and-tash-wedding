@@ -348,9 +348,6 @@ app.get('/api/photos', async (req, res) => {
   try {
     const location = req.query.location;
     
-    // Base query to only return images (no videos)
-    let baseQuery = { mediaType: "image" };
-    
     if (!location) {
       const photos = await Photo.find(baseQuery);
       res.json(photos);

@@ -86,7 +86,7 @@ function PhotoSlideshow() {
       );
       const data = await response.json();
   
-      console.log("Random photo response:", data);
+      // console.log("Random photo response:", data);
   
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error("No photos available");
@@ -112,7 +112,7 @@ function PhotoSlideshow() {
 
   const fetchPhotoCount = useCallback(async () => {
     try {
-      console.log('Fetching photo count...');
+      // console.log('Fetching photo count...');
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       
@@ -125,7 +125,7 @@ function PhotoSlideshow() {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Photo count received:', data.count);
+        // console.log('Photo count received:', data.count);
         setPhotoCount(data.count || 0);
       }
     } catch (error) {
@@ -140,9 +140,9 @@ function PhotoSlideshow() {
 
   const changeSlide = useCallback(async () => {
     if (!mountedRef.current) {
-      console.log("mountedRef: ", mountedRef);
-      console.log("mountedRef.current: ", mountedRef.current);
-      console.log('changeSlide: Component not mounted, returning');
+      // console.log("mountedRef: ", mountedRef);
+      // console.log("mountedRef.current: ", mountedRef.current);
+      // console.log('changeSlide: Component not mounted, returning');
       return;
     }
 
@@ -151,8 +151,7 @@ function PhotoSlideshow() {
       setError(null);
       
       const newPhoto = await fetchRandomPhoto();
-      console.log('fetchRandomPhoto returned:', newPhoto);
-      console.log('mountedRef.current after fetch:', mountedRef.current);
+      // console.log('mountedRef.current after fetch:', mountedRef.current);
       
       if (!newPhoto) {
         console.log('No photo returned, exiting');
@@ -164,11 +163,11 @@ function PhotoSlideshow() {
         return;
       }
 
-      console.log('Setting new photo:', newPhoto);
+      // console.log('Setting new photo:', newPhoto);
       setCurrentPhoto(newPhoto);
-      console.log('Photo set, updating last photo time');
+      // console.log('Photo set, updating last photo time');
       setLastPhotoTime(Date.now());
-      console.log('changeSlide completed successfully');
+      // console.log('changeSlide completed successfully');
 
     } catch (error) {
       console.error('Slide change failed:', error);
@@ -237,10 +236,10 @@ function PhotoSlideshow() {
   useEffect(() => {
     mountedRef.current = true; 
     const initialize = async () => {
-      console.log('Initializing slideshow...');
+      // console.log('Initializing slideshow...');
       
       // Set loading to false immediately to prevent unmount issues
-      console.log('Setting loading to false immediately');
+      // console.log('Setting loading to false immediately');
       setLoading(false);
       
       try {
@@ -249,10 +248,10 @@ function PhotoSlideshow() {
         console.log('Socket initialization completed');
         
         // Fetch count first (non-blocking but with error handling)
-        console.log('Starting photo count fetch...');
+        // console.log('Starting photo count fetch...');
         try {
           await fetchPhotoCount();
-          console.log('Photo count fetch completed');
+          // console.log('Photo count fetch completed');
         } catch (error) {
           console.warn('Photo count fetch failed, continuing...', error);
         }
@@ -261,12 +260,12 @@ function PhotoSlideshow() {
         console.log('Starting first photo load...');
         try {
           await changeSlide();
-          console.log('First photo loaded successfully');
+          // console.log('First photo loaded successfully');
         } catch (error) {
           console.error('Failed to load first photo:', error);
           // Continue with initialization even if first photo fails
         }
-        console.log('Photo load attempt completed');
+        // console.log('Photo load attempt completed');
         
       } catch (error) {
         console.error('Initialization failed:', error);
@@ -276,7 +275,7 @@ function PhotoSlideshow() {
       }
     };
 
-    console.log('Calling initialize function...');
+    // console.log('Calling initialize function...');
     initialize();
 
     slideIntervalRef.current = setInterval(() => {
