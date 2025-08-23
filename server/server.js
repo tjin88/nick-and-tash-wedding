@@ -578,11 +578,10 @@ app.post('/api/save-media-metadata', async (req, res) => {
     console.log(`Attempting to insert ${mediaItems.length} media metadata items into MongoDB`);
     
     const savedMedia = await Photo.insertMany(mediaItems, { 
-      ordered: false, // Continue on individual errors
-      rawResult: true 
+      ordered: false // Continue on individual errors
     });
     
-    console.log(`Successfully inserted ${savedMedia.insertedCount || mediaItems.length} media items`);
+    console.log(`Successfully inserted ${savedMedia.length} media items`);
 
     // Emit updates for real-time functionality
     savedMedia.forEach(item => {

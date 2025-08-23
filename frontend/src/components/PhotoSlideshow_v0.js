@@ -79,59 +79,40 @@ function PhotoSlideshow() {
     }
   }, []);
 
-  // Optimized for large datasets - server handles random selection efficiently
   const fetchRandomPhoto = useCallback(async (retryCount = 0) => {
-    if (!mountedRef.current) return null;
-
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-
-      // Server-side random selection is more efficient for large datasets
       const response = await fetch(
-        `${API_BASE}/api/photos/random?count=1&location=Canada&seed=${Math.random()}`, 
-        { 
-          signal: controller.signal,
-          headers: {
-            'Cache-Control': 'no-store', // Prevent any caching
-            'Pragma': 'no-cache'
-          }
-        }
+        `${API_BASE}/api/photos/random?count=1&location=Canada&seed=${Math.random()}`
       );
-      
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unknown error');
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-
       const data = await response.json();
-      
-      if (!data || !Array.isArray(data) || data.length === 0) {
-        throw new Error('No photos available');
+  
+      console.log("Random photo response:", data);
+  
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("No photos available");
       }
-
-      return data[0];
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        throw new Error('Request timeout');
+  
+      const photo = data[0];
+  
+      // Ensure we have a usable URL
+      if (!photo.url && !photo.secure_url && !photo.imageUrl) {
+        throw new Error("Photo object missing URL");
       }
-      
-      console.error(`Fetch attempt ${retryCount + 1} failed:`, error.message);
-      
-      if (retryCount < MAX_RETRIES && mountedRef.current) {
-        const backoffDelay = RETRY_DELAY * Math.pow(1.5, retryCount); // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+  
+      return photo;
+    } catch (err) {
+      console.error("fetchRandomPhoto failed:", err);
+      if (retryCount < MAX_RETRIES) {
+        await new Promise(res => setTimeout(res, RETRY_DELAY));
         return fetchRandomPhoto(retryCount + 1);
       }
-      
-      throw error;
+      throw err;
     }
-  }, []);
+  }, []);  
 
   const fetchPhotoCount = useCallback(async () => {
     try {
+      console.log('Fetching photo count...');
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       
@@ -144,6 +125,7 @@ function PhotoSlideshow() {
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Photo count received:', data.count);
         setPhotoCount(data.count || 0);
       }
     } catch (error) {
@@ -157,16 +139,36 @@ function PhotoSlideshow() {
   }, []);
 
   const changeSlide = useCallback(async () => {
-    if (!mountedRef.current) return;
+    if (!mountedRef.current) {
+      console.log("mountedRef: ", mountedRef);
+      console.log("mountedRef.current: ", mountedRef.current);
+      console.log('changeSlide: Component not mounted, returning');
+      return;
+    }
 
     try {
+      console.log('Changing slide...');
       setError(null);
       
       const newPhoto = await fetchRandomPhoto();
-      if (!newPhoto || !mountedRef.current) return;
+      console.log('fetchRandomPhoto returned:', newPhoto);
+      console.log('mountedRef.current after fetch:', mountedRef.current);
+      
+      if (!newPhoto) {
+        console.log('No photo returned, exiting');
+        return;
+      }
+      
+      if (!mountedRef.current) {
+        console.log('Component unmounted after fetch, exiting');
+        return;
+      }
 
+      console.log('Setting new photo:', newPhoto);
       setCurrentPhoto(newPhoto);
+      console.log('Photo set, updating last photo time');
       setLastPhotoTime(Date.now());
+      console.log('changeSlide completed successfully');
 
     } catch (error) {
       console.error('Slide change failed:', error);
@@ -233,23 +235,48 @@ function PhotoSlideshow() {
 
   // Initialize on mount
   useEffect(() => {
+    mountedRef.current = true; 
     const initialize = async () => {
+      console.log('Initializing slideshow...');
+      
+      // Set loading to false immediately to prevent unmount issues
+      console.log('Setting loading to false immediately');
+      setLoading(false);
+      
       try {
+        console.log('Starting socket initialization...');
         initializeSocket();
-        await Promise.all([
-          fetchPhotoCount(),
-          changeSlide()
-        ]);
-        if (mountedRef.current) setLoading(false);
+        console.log('Socket initialization completed');
+        
+        // Fetch count first (non-blocking but with error handling)
+        console.log('Starting photo count fetch...');
+        try {
+          await fetchPhotoCount();
+          console.log('Photo count fetch completed');
+        } catch (error) {
+          console.warn('Photo count fetch failed, continuing...', error);
+        }
+        
+        // Try to load first photo
+        console.log('Starting first photo load...');
+        try {
+          await changeSlide();
+          console.log('First photo loaded successfully');
+        } catch (error) {
+          console.error('Failed to load first photo:', error);
+          // Continue with initialization even if first photo fails
+        }
+        console.log('Photo load attempt completed');
+        
       } catch (error) {
         console.error('Initialization failed:', error);
         if (mountedRef.current) {
           setError(`Initialization failed: ${error.message}`);
-          setLoading(false);
         }
       }
     };
 
+    console.log('Calling initialize function...');
     initialize();
 
     slideIntervalRef.current = setInterval(() => {
@@ -308,6 +335,7 @@ function PhotoSlideshow() {
       <div className="slideshow-loading">
         <div className="loading-spinner"></div>
         <p>Loading wedding photos...</p>
+        <p>Status: {connectionStatus} | Photos: {photoCount}</p>
         {error && <p className="error-message">Error: {error}</p>}
       </div>
     );
