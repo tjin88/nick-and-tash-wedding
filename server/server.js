@@ -374,12 +374,12 @@ app.get('/api/photos', async (req, res) => {
 
 app.get('/api/photos/random', async (req, res) => {
   try {
-    const { count = 4, location } = req.query;
+    const { count = 1, location } = req.query;
     const limit = Math.min(parseInt(count), 30); // Max 30 photos at once
     
     // Base query to only return images (no videos)
     let query = { mediaType: "image" };
-    if (location) {
+    if (location && location !== "Both Australia and Canada") {
       query = {
         ...query,
         $or: [
@@ -396,7 +396,12 @@ app.get('/api/photos/random', async (req, res) => {
     
     res.json(photos);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error fetching random photos:', error);
+    res.status(500).json({ 
+      message: "Error fetching random photos", 
+      error: error.message,
+      photos: []
+    });
   }
 });
 
@@ -534,19 +539,50 @@ app.post('/api/save-media-metadata', async (req, res) => {
     }
 
     // Validate and prepare media items for database
-    const mediaItems = media.map(item => ({
-      url: item.url,
-      jpgUrl: item.url,
-      location: location || WEDDING_LOCATIONS.CANADA,
-      mediaType: item.mediaType,
-      uploadedAt: new Date(),
-      uploadedBy: username || 'Guest'
-    }));
+    const mediaItems = [];
+    const validationErrors = [];
 
-    // Bulk insert to database
+    media.forEach((item, index) => {
+      try {
+        if (!item.url) {
+          validationErrors.push(`Item ${index + 1}: Missing URL`);
+          return;
+        }
+        
+        if (!item.mediaType || !['image', 'video'].includes(item.mediaType)) {
+          validationErrors.push(`Item ${index + 1}: Invalid or missing mediaType`);
+          return;
+        }
+
+        mediaItems.push({
+          url: item.url,
+          jpgUrl: item.jpgUrl || item.url,
+          location: location || WEDDING_LOCATIONS.CANADA,
+          mediaType: item.mediaType,
+          uploadedAt: new Date(),
+          uploadedBy: username || 'Guest'
+        });
+      } catch (error) {
+        validationErrors.push(`Item ${index + 1}: ${error.message}`);
+      }
+    });
+
+    if (validationErrors.length > 0) {
+      return res.status(400).json({ 
+        message: "Validation errors found",
+        errors: validationErrors
+      });
+    }
+
+    // Bulk insert to database with error handling
     console.log(`Attempting to insert ${mediaItems.length} media metadata items into MongoDB`);
-    const savedMedia = await Photo.insertMany(mediaItems);
-    console.log(`Bulk inserted ${savedMedia.length} media items`);
+    
+    const savedMedia = await Photo.insertMany(mediaItems, { 
+      ordered: false, // Continue on individual errors
+      rawResult: true 
+    });
+    
+    console.log(`Successfully inserted ${savedMedia.insertedCount || mediaItems.length} media items`);
 
     // Emit updates for real-time functionality
     savedMedia.forEach(item => {
@@ -565,6 +601,15 @@ app.post('/api/save-media-metadata', async (req, res) => {
 
   } catch (error) {
     console.error("Save metadata error:", error);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      return res.status(409).json({ 
+        message: "Duplicate media detected - some items already exist", 
+        error: error.message 
+      });
+    }
+    
     res.status(500).json({ 
       message: "Failed to save media metadata", 
       error: error.message 
@@ -572,7 +617,37 @@ app.post('/api/save-media-metadata', async (req, res) => {
   }
 });
 
-// TODO: this should delete from Cloudinary OR AWS S3 bucket. Will fix once decided on easier / better option
+app.get('/api/photos/count', async (req, res) => {
+  try {
+    const location = req.query.location;
+    
+    // Base query to only count images (no videos)
+    let query = { mediaType: "image" };
+    
+    if (location) {
+      query = {
+        ...query,
+        $or: [
+          { location: location },
+          { location: "Both Australia and Canada" }
+        ]
+      };
+    }
+    
+    const count = await Photo.countDocuments(query);
+    
+    res.json({ count });
+  } catch (error) {
+    console.error('Error counting photos:', error);
+    res.status(500).json({ 
+      message: "Error counting photos", 
+      error: error.message,
+      count: 0 // Return 0 as fallback
+    });
+  }
+});
+
+// Enhanced delete endpoint with better error handling and real-time updates
 app.delete('/api/photos/:id', async (req, res) => {
   try {
     const photo = await Photo.findByIdAndDelete(req.params.id);
@@ -580,14 +655,32 @@ app.delete('/api/photos/:id', async (req, res) => {
       return res.status(404).json({ message: "Photo not found" });
     }
 
+    // Emit deletion event for real-time updates
     io.emit('photo-deleted', { 
       photoId: req.params.id,
-      url: photo.url 
+      url: photo.url,
+      location: photo.location,
+      mediaType: photo.mediaType
     });
 
-    res.status(200).json({ message: "Photo deleted successfully" });
+    // Log for monitoring
+    console.log(`Photo deleted: ${req.params.id} (${photo.mediaType}) from ${photo.location}`);
+
+    res.status(200).json({ 
+      message: "Photo deleted successfully",
+      deletedPhoto: {
+        id: req.params.id,
+        url: photo.url,
+        location: photo.location,
+        mediaType: photo.mediaType
+      }
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error deleting photo:', error);
+    res.status(500).json({ 
+      message: "Error deleting photo", 
+      error: error.message 
+    });
   }
 });
 

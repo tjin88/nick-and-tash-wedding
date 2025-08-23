@@ -1,7 +1,8 @@
 // Adjust mobile to take up full page height and width
 import React, { useState } from 'react';
 // import GooseHandDrawn from '../images/logo.png';
-import GooseTransparent from '../images/goose_no_white.png';
+// import GooseTransparent from '../images/goose_no_white.png';
+import GooseTransparent from '../images/goose_final.png';
 // import GooseWhite from '../images/goose_white_wheels.png';
 import './Navbar.css';
 

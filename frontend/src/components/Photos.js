@@ -94,7 +94,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Cloudinary error response:', errorData);
-      throw new Error(`Cloudinary upload failed: ${errorData.error?.message || 'Unknown error'}`);
+      throw new Error(`Looks like there was an error with uploading the file. Please send the file to Tristan Jin (tjin368@gmail.com) to upload manually.`);
     }
 
     const result = await response.json();
@@ -118,7 +118,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to save metadata: ${errorText}`);
+      throw new Error(`Looks like there was an error with uploading the file. Please send the file to Tristan Jin (tjin368@gmail.com) to upload manually.`);
     }
 
     return await response.json();
@@ -228,7 +228,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         // File size limits
         const maxSize = fileInfo.type === 'video' ? 2 * 1024 * 1024 * 1024 : 20 * 1024 * 1024; // 2GB for video, 20MB for image
         if (file.size > maxSize) {
-          return { status: 'error', index: index + 1, filename: originalFile.name, error: `File too large (max ${fileInfo.type === 'video' ? '2GB' : '20MB'}).` };
+          return { status: 'error', index: index + 1, filename: originalFile.name, error: `File too large (max ${fileInfo.type === 'video' ? '2GB' : '20MB'}). Please contact Tristan Jin (tjin368@gmail.com) to manually upload the file.` };
         }
         
         return { status: 'valid', data: { file, originalIndex: index, fileInfo } };
@@ -310,7 +310,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
 
     } catch (error) {
       console.error('Upload process error:', error);
-      setUploadError('A critical error occurred: ' + error.message);
+      setUploadError('Looks like there was an error with uploading the file. Please send the file to Tristan Jin (tjin368@gmail.com) to upload manually.');
     } finally {
       setIsUploading(false);
       setTimeout(() => setUploadProgress(''), 5000);

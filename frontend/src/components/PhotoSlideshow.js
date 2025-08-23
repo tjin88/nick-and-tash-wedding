@@ -1,51 +1,82 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { io } from "socket.io-client";
+import { ReactPhotoCollage } from "react-photo-collage";
 import './PhotoSlideshow.css';
 
-const VIDEO_FILE_TYPES = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv', 'wmv'];
-const videoRegex = new RegExp(`\\.(${VIDEO_FILE_TYPES.join('|')})$`, 'i');
-
-/**
- * PhotoSlideshow Component
- * 
- * A fullscreen slideshow component designed for projector display at the wedding.
- * Features:
- * - Random photo selection from Canada location photos
- * - Multiple layout options (single, grid, horizontal, vertical, triptych, mosaic)
- * - Automatic slide changes every 8 seconds
- * - Fullscreen support
- * - Keyboard controls (Space/Arrow Right: Next, F: Fullscreen, Esc: Exit)
- * - Responsive design for different screen sizes
- * 
- * Access via: /canadian-wedding-slideshow
- */
 function PhotoSlideshow() {
   const [photos, setPhotos] = useState([]);
   const [currentPhotos, setCurrentPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentLayout, setCurrentLayout] = useState('grid');
   const [slideInterval, setSlideInterval] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  // Layout configurations
-  const layouts = [
-    'grid',           // 2x2 grid
-    'horizontal',     // 2 photos side by side
-    'vertical',       // 2 photos stacked
-    'single',         // 1 large photo
-    'triptych',       // 3 photos in a row
-    'mosaic'          // 4 photos in a creative arrangement
-  ];
-
-  // Orientation configurations
-  const orientations = [
-    'landscape',      // 16:9 aspect ratio
-    'portrait',       // 9:16 aspect ratio
-    'square',         // 1:1 aspect ratio
-    'ultrawide'       // 21:9 aspect ratio
-  ];
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    fetchPhotos();
+    // Create socket connection for real-time updates
+    socketRef.current = io('https://nick-and-tash-wedding.onrender.com', {
+      reconnectionDelay: 1000,
+      reconnection: true,
+      reconnectionAttempts: 10,
+      transports: ['websocket'],
+      agent: false,
+      upgrade: false,
+      rejectUnauthorized: false
+    });
+
+    // Listen for new photo uploads (images only)
+    socketRef.current.on('photo-updated', (photoData) => {
+      // Only add images, not videos
+      if (photoData.mediaType === 'image') {
+        console.log('New photo received via socket:', photoData);
+        setPhotos(prevPhotos => {
+          // Check if photo already exists to prevent duplicates
+          const exists = prevPhotos.some(photo => 
+            (typeof photo === 'string' ? photo : photo._id) === 
+            (typeof photoData === 'string' ? photoData : photoData._id)
+          );
+          if (exists) {
+            console.log('Photo already exists, not adding duplicate');
+            return prevPhotos;
+          }
+          return [...prevPhotos, photoData];
+        });
+      }
+    });
+
+    // Listen for photo deletions
+    socketRef.current.on('photo-deleted', (deletedPhotoData) => {
+      console.log('Photo deleted via socket:', deletedPhotoData);
+      setPhotos(prevPhotos => prevPhotos.filter(photo => {
+        if (typeof photo === 'string') {
+          return photo !== deletedPhotoData.url;
+        }
+        return photo._id !== deletedPhotoData.photoId;
+      }));
+    });
+
+    // Handle socket connection errors
+    socketRef.current.on('connect_error', (error) => {
+      console.log('Socket connection error:', error);
+    });
+
+    socketRef.current.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+    });
+
+    // Cleanup socket on unmount
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    // Only fetch photos if we don't have any yet
+    if (photos.length === 0) {
+      fetchPhotos();
+    }
     
     // Set up automatic slide changes every 8 seconds
     const interval = setInterval(() => {
@@ -83,22 +114,33 @@ function PhotoSlideshow() {
       }
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [isFullscreen]);
+  }, [isFullscreen, photos.length]);
 
   useEffect(() => {
     if (photos.length > 0) {
+      console.log('Photos changed, triggering changeSlides. Photos count:', photos.length);
       changeSlides();
+    } else {
+      console.log('No photos available, skipping changeSlides');
     }
-  }, [photos]);
+  }, [photos.length]);
 
   const fetchPhotos = async () => {
     try {
+      console.log('Fetching photos...');
       const response = await fetch('https://nick-and-tash-wedding.onrender.com/api/photos?location=Canada');
       if (!response.ok) {
         throw new Error('Failed to fetch photos');
       }
       const data = await response.json();
-      setPhotos(data);
+      console.log('Fetched photos:', data.length);
+      
+      if (data && data.length > 0) {
+        setPhotos(data);
+      } else {
+        console.log('No photos returned from API');
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching photos:', error);
@@ -120,14 +162,6 @@ function PhotoSlideshow() {
     }
   };
 
-  const getRandomLayout = () => {
-    return layouts[Math.floor(Math.random() * layouts.length)];
-  };
-
-  const getRandomOrientation = () => {
-    return orientations[Math.floor(Math.random() * orientations.length)];
-  };
-
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -138,10 +172,16 @@ function PhotoSlideshow() {
   };
 
   const getRandomPhotos = (count) => {
-    if (photos.length === 0) return [];
+    if (photos.length === 0) {
+      console.log('No photos available for selection');
+      return [];
+    }
     
+    // TODO: This may not be the best implementation
     const shuffled = shuffleArray(photos);
-    return shuffled.slice(0, Math.min(count, photos.length));
+    const selected = shuffled.slice(0, Math.min(count, photos.length));
+    console.log(`Selected ${selected.length} photos from ${photos.length} available`);
+    return selected;
   };
 
   const toggleFullscreen = () => {
@@ -171,148 +211,68 @@ function PhotoSlideshow() {
   };
 
   const changeSlides = async () => {
-    const newLayout = getRandomLayout();
-    const newOrientation = getRandomOrientation();
-    
-    setCurrentLayout(newLayout);
-    
-    // Determine how many photos to show based on layout
-    let photoCount = 1;
-    switch (newLayout) {
-      case 'grid':
-      case 'mosaic':
-        photoCount = 4;
-        break;
-      case 'horizontal':
-      case 'vertical':
-        photoCount = 2;
-        break;
-      case 'triptych':
-        photoCount = 3;
-        break;
-      case 'single':
-      default:
-        photoCount = 1;
-        break;
+    // Check if we have photos available
+    if (photos.length === 0) {
+      console.log('No photos available, skipping slide change');
+      return;
     }
+    
+    const photoCount = 18 // TODO: this should be a random number. Something like 6-12 ;
     
     // Use the random photos API for better performance
     const randomPhotos = await fetchRandomPhotos(photoCount);
     if (randomPhotos.length > 0) {
+      console.log('Using API photos:', randomPhotos.length);
       setCurrentPhotos(randomPhotos);
     } else {
       // Fallback to local random selection if API fails
-      const selectedPhotos = getRandomPhotos(photoCount);
-      setCurrentPhotos(selectedPhotos);
+      const localPhotos = getRandomPhotos(photoCount);
+      console.log('Using local photos:', localPhotos.length);
+      setCurrentPhotos(localPhotos);
     }
   };
 
   const getOptimizedImageUrl = (url) => {
-    if (url.includes('/upload/f_jpg') || videoRegex.test(url)) {
+    if (url.includes('/upload/f_jpg')) {
       return url;
     }
     return url.replace('/upload/', '/upload/f_jpg,q_auto/');
   };
 
-  const renderPhoto = (photo, index) => {
-    const photoUrl = typeof photo === 'string' ? photo : photo.url;
-    const isVideo = videoRegex.test(photoUrl);
+  const renderPhotoCollage = () => {
+    if (currentPhotos.length === 0) return null;
     
-    if (isVideo) {
-      return (
-        <video 
-          key={index}
-          src={photoUrl} 
-          className="slideshow-media"
-          autoPlay 
-          muted 
-          loop
-          playsInline
-        />
-      );
-    } else {
-      return (
-        <img 
-          key={index}
-          src={getOptimizedImageUrl(photoUrl)} 
-          alt={`Slideshow ${index}`} 
-          className="slideshow-media"
-        />
-      );
-    }
-  };
-
-  const renderLayout = () => {
-    if (currentPhotos.length === 0) {
-      return (
-        <div className="slideshow-container no-photos">
-          <div className="no-photos-message">
-            <h2>Wedding Photos</h2>
-            <p>Photos will appear here shortly...</p>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className={`slideshow-container ${currentLayout}`}>
-        {currentLayout === 'single' && (
-          <div className="single-layout">
-            {renderPhoto(currentPhotos[0], 0)}
-          </div>
-        )}
-        
-        {currentLayout === 'horizontal' && (
-          <div className="horizontal-layout">
-            {currentPhotos.map((photo, index) => (
-              <div key={index} className="horizontal-item">
-                {renderPhoto(photo, index)}
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {currentLayout === 'vertical' && (
-          <div className="vertical-layout">
-            {currentPhotos.map((photo, index) => (
-              <div key={index} className="vertical-item">
-                {renderPhoto(photo, index)}
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {currentLayout === 'grid' && (
-          <div className="grid-layout">
-            {currentPhotos.map((photo, index) => (
-              <div key={index} className="grid-item">
-                {renderPhoto(photo, index)}
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {currentLayout === 'triptych' && (
-          <div className="triptych-layout">
-            {currentPhotos.map((photo, index) => (
-              <div key={index} className="triptych-item">
-                {renderPhoto(photo, index)}
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {currentLayout === 'mosaic' && (
-          <div className="mosaic-layout">
-            {currentPhotos.map((photo, index) => (
-              <div key={index} className={`mosaic-item mosaic-${index + 1}`}>
-                {renderPhoto(photo, index)}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
+    // Prepare photos for the collage component
+    const collagePhotos = currentPhotos.map(photo => {
+      const photoUrl = typeof photo === 'string' ? photo : photo.url;
+      return getOptimizedImageUrl(photoUrl);
+    });
+    
+    // Define collage layout - this creates a nice grid pattern
+    const layout = [
+      { w: 2, h: 2 }, // Large photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 2, h: 1 }, // Medium photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+      { w: 1, h: 1 }, // Small photo
+    ];
+    
+    const setting = {
+      width: '100%',
+      height: ['250px', '170px'],
+      layout: layout,
+      photos: collagePhotos,
+      showNumOfRemainingPhotos: false
+    };
+    
+    return <ReactPhotoCollage {...setting} />;
   };
 
   if (loading) {
@@ -326,18 +286,25 @@ function PhotoSlideshow() {
 
   return (
     <div className="photo-slideshow">
-      {renderLayout()}
+      <div className="slideshow-container">
+        {currentPhotos.length === 0 ? (
+          <div className="no-photos">
+            <div className="no-photos-message">
+              <h2>Wedding Photos</h2>
+              <p>Photos will appear here shortly...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="photos-section">
+            {renderPhotoCollage()}
+          </div>
+        )}
+      </div>
       
       {/* Manual controls for testing */}
       <div className="slideshow-controls">
-        {/* <button onClick={() => changeSlides()} className="change-slides-btn">
-          Change Slides
-        </button>
-        <button onClick={toggleFullscreen} className="fullscreen-btn">
-          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-        </button> */}
         <div className="layout-info">
-          Current Layout: {currentLayout} | Photos: {currentPhotos.length}
+          Photos: {photos.length} | Current: {currentPhotos.length}
         </div>
         <div className="keyboard-info">
           Space/→: Next | F: Fullscreen | Esc: Exit

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import PhotoSlideshow from './components/PhotoSlideshow';
+// import PhotoSlideshow from './components/PhotoSlideshow';
+import PhotoSlideshow from './components/PhotoSlideshow_v0';
+// import PhotoSlideshow from './components/PhotoSlideshow_test';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
