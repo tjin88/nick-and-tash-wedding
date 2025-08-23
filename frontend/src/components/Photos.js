@@ -359,14 +359,11 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
           const photoUrl = typeof photo === 'string' ? photo : photo.url;
           const photoId = photo._id;
           const isVideo = videoRegex.test(photoUrl);
-          console.log("photoUrl", photoUrl);
-          console.log("isVideo", isVideo);
-          console.log("videoRegex", videoRegex);
           
           return (
             <div key={photoId || index} className={`photo-item-container ${deletingPhotoId === photoId ? 'deleting' : ''}`}>
               {isVideo ? (
-                <video src={getOptimizedVideoUrl(photoUrl)} className="photo-item" controls playsInline onClick={() => setSelectedPhoto(photoUrl)} /> && console.log(getOptimizedVideoUrl(photoUrl))
+                <video src={getOptimizedVideoUrl(photoUrl)} className="photo-item" controls onClick={() => setSelectedPhoto(photoUrl)} />
               ) : (
                 <img src={getOptimizedImageUrl(photoUrl)} alt={`Gallery item ${index}`} className="photo-item" onClick={() => setSelectedPhoto(getOptimizedImageUrl(photoUrl))} />
               )}
@@ -391,9 +388,20 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
       {selectedPhoto && (
         <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
           {videoRegex.test(selectedPhoto) ? (
-            <video src={selectedPhoto} className="modal-content" controls autoPlay />
+            <video 
+              src={getOptimizedVideoUrl(selectedPhoto)} 
+              className="modal-content" 
+              controls 
+              autoPlay 
+              onClick={(e) => e.stopPropagation()}
+            />
           ) : (
-            <img src={getOptimizedImageUrl(selectedPhoto)} alt="Enlarged view" className="modal-content"/>
+            <img 
+              src={getOptimizedImageUrl(selectedPhoto)} 
+              alt="Enlarged view" 
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            />
           )}
           <span className="close-modal" onClick={() => setSelectedPhoto(null)}>&times;</span>
         </div>

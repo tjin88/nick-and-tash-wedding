@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import CanadaSeating from '../images/canada_seat_chart.png';
+// import CanadaSeating from '../images/canada_seat_chart.png';
+import CanadaSeating from '../images/canada_seat_chart.jpg';
 import './Seating.css';
 
 function Seating() {
@@ -59,7 +60,7 @@ function Seating() {
           <div className="download-section">
             <p>Having trouble viewing the seating chart?</p>
             <a 
-              href="/canada_seat_chart.png" 
+              href="/canada_seat_chart.jpg" 
               target="_blank" 
               rel="noopener noreferrer"
               className="download-link"
