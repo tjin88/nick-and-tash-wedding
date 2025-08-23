@@ -349,14 +349,13 @@ app.get('/api/photos', async (req, res) => {
     const location = req.query.location;
     
     if (!location) {
-      const photos = await Photo.find(baseQuery);
+      const photos = await Photo.find({});
       res.json(photos);
     } else if (location === "Both Australia and Canada") {
-      const photos = await Photo.find(baseQuery);
+      const photos = await Photo.find({});
       res.json(photos);
     } else {
       const photos = await Photo.find({
-        ...baseQuery,
         $or: [
           { location: location },
           { location: "Both Australia and Canada" }
