@@ -347,22 +347,39 @@ app.delete('/api/invites/:id', async (req, res) => {
 app.get('/api/photos', async (req, res) => {
   try {
     const location = req.query.location;
-    
-    if (!location) {
-      const photos = await Photo.find({});
-      res.json(photos);
-    } else if (location === "Both Australia and Canada") {
-      const photos = await Photo.find({});
-      res.json(photos);
-    } else {
-      const photos = await Photo.find({
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    let locationQuery = {};
+    if (location && location !== "Both Australia and Canada") {
+      locationQuery = {
         $or: [
           { location: location },
           { location: "Both Australia and Canada" }
         ]
-      });
-      res.json(photos);
+      };
     }
+
+    const totalPhotos = await Photo.countDocuments(locationQuery);
+    const totalPages = Math.ceil(totalPhotos / limit);
+
+    const photos = await Photo.find(locationQuery)
+      .sort({ uploadedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      photos,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalPhotos,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+        limit
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
