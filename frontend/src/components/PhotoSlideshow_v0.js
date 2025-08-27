@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
+import { useSocket } from "../utils/SocketProvider";
 import './PhotoSlideshow_v0.css';
 
 function PhotoSlideshow() {
@@ -11,7 +12,8 @@ function PhotoSlideshow() {
   const [connectionStatus, setConnectionStatus] = useState('connecting');
   const [lastPhotoTime, setLastPhotoTime] = useState(Date.now());
   
-  const socketRef = useRef(null);
+  // const socketRef = useRef(null);
+  const socket = useSocket();
   const slideIntervalRef = useRef(null);
   const retryTimeoutRef = useRef(null);
   const mountedRef = useRef(true);
@@ -23,59 +25,70 @@ function PhotoSlideshow() {
   const REQUEST_TIMEOUT = 15000; // Increased for large datasets
 
   const initializeSocket = useCallback(() => {
-    if (socketRef.current?.connected) return;
+    // if (socketRef.current?.connected) return;
 
     try {
-      socketRef.current = io(API_BASE, {
-        reconnectionDelay: 1000,
-        reconnection: true,
-        reconnectionAttempts: MAX_RETRIES,
-        transports: ['websocket', 'polling'],
-        timeout: 15000, // Increased timeout
-        forceNew: true
-      });
+      // socketRef.current = io(API_BASE, {
+      //   reconnectionDelay: 1000,
+      //   reconnection: true,
+      //   reconnectionAttempts: MAX_RETRIES,
+      //   transports: ['websocket', 'polling'],
+      //   timeout: 15000, // Increased timeout
+      //   forceNew: true
+      // });
 
-      socketRef.current.on('connect', () => {
-        console.log('Socket connected');
-        setConnectionStatus('connected');
-        setError(null);
-      });
+      // socketRef.current.on('connect', () => {
+      //   console.log('Socket connected');
+      //   setConnectionStatus('connected');
+      //   setError(null);
+      // });
 
-      socketRef.current.on('disconnect', (reason) => {
-        console.log('Socket disconnected:', reason);
-        setConnectionStatus('disconnected');
+      // socketRef.current.on('disconnect', (reason) => {
+      //   console.log('Socket disconnected:', reason);
+      //   setConnectionStatus('disconnected');
         
-        if (reason !== 'io client disconnect') {
-          retryTimeoutRef.current = setTimeout(() => {
-            if (mountedRef.current && !socketRef.current?.connected) {
-              initializeSocket();
-            }
-          }, RETRY_DELAY);
-        }
-      });
+      //   if (reason !== 'io client disconnect') {
+      //     retryTimeoutRef.current = setTimeout(() => {
+      //       if (mountedRef.current && !socketRef.current?.connected) {
+      //         initializeSocket();
+      //       }
+      //     }, RETRY_DELAY);
+      //   }
+      // });
 
-      socketRef.current.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
-        setConnectionStatus('error');
-        setError(`Connection error: ${error.message}`);
-      });
+      // socketRef.current.on('connect_error', (error) => {
+      //   console.error('Socket connection error:', error);
+      //   setConnectionStatus('error');
+      //   setError(`Connection error: ${error.message}`);
+      // });
 
       // Handle real-time photo updates
-      socketRef.current.on('photo-updated', (photoData) => {
+      // socketRef.current.on('photo-updated', (photoData) => {
+      //   if (photoData.mediaType === 'image' && 
+      //       (photoData.location === 'Canada' || photoData.location === 'Both Australia and Canada')) {
+      //     setPhotoCount(prev => prev + 1);
+      //   }
+      // });
+
+      // socketRef.current.on('photo-deleted', () => {
+      //   setPhotoCount(prev => Math.max(0, prev - 1));
+      // });
+
+      socket.on('photo-updated', (photoData) => {
         if (photoData.mediaType === 'image' && 
             (photoData.location === 'Canada' || photoData.location === 'Both Australia and Canada')) {
           setPhotoCount(prev => prev + 1);
         }
       });
 
-      socketRef.current.on('photo-deleted', () => {
+      socket.on('photo-deleted', () => {
         setPhotoCount(prev => Math.max(0, prev - 1));
       });
 
     } catch (error) {
       console.error('Socket initialization failed:', error);
       setConnectionStatus('error');
-      setError(`Connection failed: ${error.message}`);
+      // setError(`Connection failed: ${error.message}`);
     }
   }, []);
 
@@ -243,9 +256,9 @@ function PhotoSlideshow() {
       setLoading(false);
       
       try {
-        console.log('Starting socket initialization...');
+        // console.log('Starting socket initialization...');
         initializeSocket();
-        console.log('Socket initialization completed');
+        // console.log('Socket initialization completed');
         
         // Fetch count first (non-blocking but with error handling)
         // console.log('Starting photo count fetch...');
@@ -269,9 +282,9 @@ function PhotoSlideshow() {
         
       } catch (error) {
         console.error('Initialization failed:', error);
-        if (mountedRef.current) {
-          setError(`Initialization failed: ${error.message}`);
-        }
+        // if (mountedRef.current) {
+        //   setError(`Initialization failed: ${error.message}`);
+        // }
       }
     };
 
@@ -287,7 +300,7 @@ function PhotoSlideshow() {
       
       if (slideIntervalRef.current) clearInterval(slideIntervalRef.current);
       if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
-      if (socketRef.current) socketRef.current.disconnect();
+      // if (socketRef.current) socketRef.current.disconnect();
     };
   }, []);
 

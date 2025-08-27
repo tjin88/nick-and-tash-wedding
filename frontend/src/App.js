@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import Start from './components/Start';
 import GuestStart from './components/GuestStart';
 import Navbar from './components/Navbar';
@@ -16,11 +16,13 @@ import Vendors from './components/Vendors';
 import DateAndVenue from './components/DateAndVenue';
 import Seating from './components/Seating';
 import './App.css';
+import { useSocket } from "./utils/SocketProvider"; 
 
-function App({ isAdmin, isPlaceholderGuest }) {
-  const [isOpened, setIsOpened] = useState(false);
+function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
+  const socket = useSocket();
+  const [isOpened, setIsOpened] = useState(isPlaceholderGuest === "Canada Post-Wedding" ? true : false);
   const [givenPlusOne, setGivenPlusOne] = useState(true);
-  const [navOption, setNavOption] = useState('rsvp');
+  const [navOption, setNavOption] = useState(navOptionPlaceholder);
   const [invites, setInvites] = useState([]);
   const [hasRSVPd, setHasRSVPd] = useState(false);
   const [guests, setGuests] = useState([{"firstName": "Admin", "lastName": ""}]);
@@ -41,7 +43,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
   const [loading, setLoading] = useState(false);
   // const socket = io('https://nick-and-tash-wedding.onrender.com');
   // const socket = io('http://localhost:3003');
-  const socketRef = useRef(null);
+  // const socketRef = useRef(null);
 
   const locations = {
     canada: {
@@ -60,58 +62,99 @@ function App({ isAdmin, isPlaceholderGuest }) {
     }
   };
 
-  useEffect(() => {
-    // Create socket connection
-    socketRef.current = io('https://nick-and-tash-wedding.onrender.com', {
-      // Optional configuration
-      reconnectionDelay: 1000,
-      reconnection: true,
-      reconnectionAttempts: 10,
-      transports: ['websocket'],
-      agent: false,
-      upgrade: false,
-      rejectUnauthorized: false
-    });
+  // useEffect(() => {
+  //   // Create socket connection
+  //   socketRef.current = io('https://nick-and-tash-wedding.onrender.com', {
+  //     // Optional configuration
+  //     reconnectionDelay: 1000,
+  //     reconnection: true,
+  //     reconnectionAttempts: 10,
+  //     transports: ['websocket'],
+  //     agent: false,
+  //     upgrade: false,
+  //     rejectUnauthorized: false
+  //   });
 
-    // Event listeners
-    socketRef.current.on('photo-updated', (photoData) => {
-      setPhotos(prevPhotos => [...prevPhotos, photoData]);
-    });
+  //   // Event listeners
+  //   socketRef.current.on('photo-updated', (photoData) => {
+  //     setPhotos(prevPhotos => [...prevPhotos, photoData]);
+  //   });
 
-    socketRef.current.on('photo-deleted', (deletedPhotoData) => {
-      console.log('Photo deleted via socket:', deletedPhotoData);
-      setPhotos(prevPhotos => prevPhotos.filter(photo => {
-        // Handle both string and object photo formats
-        if (typeof photo === 'string') {
-          return photo !== deletedPhotoData.url;
-        }
-        return photo._id !== deletedPhotoData.photoId;
-      }));
-    });
+  //   socketRef.current.on('photo-deleted', (deletedPhotoData) => {
+  //     console.log('Photo deleted via socket:', deletedPhotoData);
+  //     setPhotos(prevPhotos => prevPhotos.filter(photo => {
+  //       // Handle both string and object photo formats
+  //       if (typeof photo === 'string') {
+  //         return photo !== deletedPhotoData.url;
+  //       }
+  //       return photo._id !== deletedPhotoData.photoId;
+  //     }));
+  //   });
   
-    socketRef.current.on('registry-item-added', (newItem) => {
-      setRegistry(prevRegistry => ({ ...prevRegistry, [newItem.key]: newItem.isBought }));
-    });
+  //   socketRef.current.on('registry-item-added', (newItem) => {
+  //     setRegistry(prevRegistry => ({ ...prevRegistry, [newItem.key]: newItem.isBought }));
+  //   });
     
-    socketRef.current.on('registry-updated', (updatedItem) => {
-      setRegistry(prev => ({ ...prev, [updatedItem.key]: updatedItem.isBought }));
-    });
+  //   socketRef.current.on('registry-updated', (updatedItem) => {
+  //     setRegistry(prev => ({ ...prev, [updatedItem.key]: updatedItem.isBought }));
+  //   });
   
-    socketRef.current.on('registry-item-deleted', (key) => {
-      setRegistry(prev => {
-        const { [key]: _, ...newState } = prev;
-        return newState;
+  //   socketRef.current.on('registry-item-deleted', (key) => {
+  //     setRegistry(prev => {
+  //       const { [key]: _, ...newState } = prev;
+  //       return newState;
+  //     });
+  //   });
+
+  //   // Cleanup function
+  //   return () => {
+  //     if (socketRef.current) {
+  //       socketRef.current.disconnect();
+  //       socketRef.current = null;
+  //     }
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("photo-updated", (photoData) => {
+      setPhotos((prev) => [...prev, photoData]);
+    });
+
+    socket.on("photo-deleted", (deletedPhotoData) => {
+      setPhotos((prev) =>
+        prev.filter((photo) =>
+          typeof photo === "string"
+            ? photo !== deletedPhotoData.url
+            : photo._id !== deletedPhotoData.photoId
+        )
+      );
+    });
+
+    socket.on("registry-item-added", (newItem) => {
+      setRegistry((prev) => ({ ...prev, [newItem.key]: newItem.isBought }));
+    });
+
+    socket.on("registry-updated", (updatedItem) => {
+      setRegistry((prev) => ({ ...prev, [updatedItem.key]: updatedItem.isBought }));
+    });
+
+    socket.on("registry-item-deleted", (key) => {
+      setRegistry((prev) => {
+        const { [key]: _, ...rest } = prev;
+        return rest;
       });
     });
 
-    // Cleanup function
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socket.off("photo-updated");
+      socket.off("photo-deleted");
+      socket.off("registry-item-added");
+      socket.off("registry-updated");
+      socket.off("registry-item-deleted");
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (invitedLocation) {
@@ -246,7 +289,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
     if (isAdmin) {
       setInvitedLocation("Both Australia and Canada");
       fetchAllInvites();
-    } else if (isPlaceholderGuest === "Canada") {
+    } else if (isPlaceholderGuest === "Canada" || isPlaceholderGuest === "Canada Post-Wedding") {
       setInvitedLocation("Canada");
       fetchAllInvites();
     } else if (isPlaceholderGuest === "Australia") {
@@ -268,7 +311,7 @@ function App({ isAdmin, isPlaceholderGuest }) {
   
   return (
     <div className="App">
-      { !isOpened && isPlaceholderGuest && <GuestStart setNavOption={setNavOption} locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
+      { !isOpened && isPlaceholderGuest && <GuestStart isPlaceholderGuest={isPlaceholderGuest} setNavOption={setNavOption} locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
       { !isOpened && !isPlaceholderGuest && <Start setNavOption={setNavOption} locations={locations} isAdmin={isAdmin} setIsOpened={setIsOpened} guests={guests} invitedLocation={invitedLocation}/> }
       { isOpened && <Navbar setNavOption={setNavOption} setIsOpened={setIsOpened} invitedLocation={invitedLocation} hasRSVPd={hasRSVPd} isAdmin={isAdmin} isPlaceholderGuest={isPlaceholderGuest}/> }
       {/* { isOpened && navOption === 'welcome' && <Welcome/> } */}

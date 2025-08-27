@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from "socket.io-client";
 import { ReactPhotoCollage } from "react-photo-collage";
-import './PhotoSlideshow.css';
+// import './PhotoSlideshow.css';
 
 function PhotoSlideshow() {
   const [photos, setPhotos] = useState([]);
@@ -247,29 +247,15 @@ function PhotoSlideshow() {
       const photoUrl = typeof photo === 'string' ? photo : photo.url;
       return getOptimizedImageUrl(photoUrl);
     });
-    
-    // Define collage layout - this creates a nice grid pattern
-    const layout = [
-      { w: 2, h: 2 }, // Large photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 2, h: 1 }, // Medium photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-      { w: 1, h: 1 }, // Small photo
-    ];
-    
+
+    // console.log("collagePhotos: ", collagePhotos);
+
     const setting = {
-      width: '100%',
-      height: ['250px', '170px'],
-      layout: layout,
-      photos: collagePhotos,
-      showNumOfRemainingPhotos: false
+        width: "600px",
+        height: ["250px"],
+        layout: [2, 5, 3],
+        photos: collagePhotos,
+        showNumOfRemainingPhotos: false
     };
     
     return <ReactPhotoCollage {...setting} />;
@@ -284,6 +270,18 @@ function PhotoSlideshow() {
     );
   }
 
+  const setting = {
+    width: "95vw",
+    height: ["295vh"],
+    layout: [
+        Math.floor(Math.random() * (10)), 
+        Math.floor(Math.random() * (10)), 
+        Math.floor(Math.random() * (10))
+    ],
+    photos: currentPhotos,
+    showNumOfRemainingPhotos: false,
+  };
+
   return (
     <div className="photo-slideshow">
       <div className="slideshow-container">
@@ -297,6 +295,7 @@ function PhotoSlideshow() {
         ) : (
           <div className="photos-section">
             {renderPhotoCollage()}
+            {/* <ReactPhotoCollage {...setting} /> */}
           </div>
         )}
       </div>

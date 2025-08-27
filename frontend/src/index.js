@@ -6,6 +6,7 @@ import App from './App';
 import PhotoSlideshow from './components/PhotoSlideshow_v0';
 // import PhotoSlideshow from './components/PhotoSlideshow_test';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { SocketProvider } from "./utils/SocketProvider";
 import reportWebVitals from './reportWebVitals';
 
 function ValidateInvite({ isWeddingSlideshow = false }) {
@@ -38,6 +39,10 @@ function ValidateInvite({ isWeddingSlideshow = false }) {
       setIsValid(true);
       setIsPlaceholderGuest("Canada");
       setLoading(false);
+    } else if (inviteId === 'canada-post-wedding') {
+      setIsValid(true);
+      setIsPlaceholderGuest("Canada Post-Wedding");
+      setLoading(false);
     } else if (inviteId === 'canada-guest') {
       setIsValid(true);
       setIsPlaceholderGuest("Canada");
@@ -55,7 +60,12 @@ function ValidateInvite({ isWeddingSlideshow = false }) {
     return <p>Loading...</p>;
   }
 
-  return isValid ? <App isAdmin={isAdmin} isPlaceholderGuest={isPlaceholderGuest} /> : <Navigate to="/invalid-invite" replace />;
+  return isValid 
+    ? 
+      <SocketProvider>
+        <App isAdmin={isAdmin} isPlaceholderGuest={isPlaceholderGuest} navOptionPlaceholder={isPlaceholderGuest === "Canada Post-Wedding" ? "photos" : "rsvp"} /> 
+      </SocketProvider>
+    : <Navigate to="/invalid-invite" replace />;
 }
 
 function InvalidInvite() {
@@ -67,7 +77,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/canadian-wedding-slideshow" element={<PhotoSlideshow />} />
+        <Route path="/canadian-wedding-slideshow" element={
+          <SocketProvider>
+            <PhotoSlideshow />
+          </SocketProvider>
+        } />
         <Route path="/invite/:inviteId" element={<ValidateInvite />} />
         <Route path="/invalid-invite" element={<InvalidInvite />} />
         <Route path="*" element={<Navigate to="/invalid-invite" replace />} />

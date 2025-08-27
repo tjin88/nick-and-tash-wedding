@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CountdownTimer from '../utils/CountdownTimer';
 import './Start.css';
 
-function GuestStart({ setNavOption, locations, setIsOpened, invitedLocation }) {
+function GuestStart({ isPlaceholderGuest, setNavOption, locations, setIsOpened, invitedLocation }) {
   const canadaWeddingDate = new Date('August 23, 2025 00:00:00');
   const australiaWeddingDate = new Date('October 11, 2025 00:00:00');
   const [showCanada, setShowCanada] = useState(false);
@@ -22,12 +22,18 @@ function GuestStart({ setNavOption, locations, setIsOpened, invitedLocation }) {
         <p className='title_beautifully_delicious_script'>Nicholas and Natasha’s</p>
         <p className='title_beautifully_delicious_script'>Wedding{invitedLocation === 'Canada' ? " Reception" : ""}</p>
         <div className='navbar-options'>
-          {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('date/venue');}}>Date & Venue</button>}
-          <button onClick={() => {setIsOpened(true); setNavOption('schedule');}}>Schedule</button>
-          <button onClick={() => {setIsOpened(true); setNavOption('menu');}}>Menu</button>
-          {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('seating');}}>Seating</button>}
-          <button onClick={() => {setIsOpened(true); setNavOption('photos');}}>Photos/Videos</button>
-          <button onClick={() => {setIsOpened(true); setNavOption('faq');}}>FAQ</button>
+          {
+            isPlaceholderGuest === "Canada Post-Wedding"
+            ? <button onClick={() => {setIsOpened(true); setNavOption('photos');}}>Photos/Videos</button>
+            : <>
+                {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('date/venue');}}>Date & Venue</button>}
+                <button onClick={() => {setIsOpened(true); setNavOption('schedule');}}>Schedule</button>
+                <button onClick={() => {setIsOpened(true); setNavOption('menu');}}>Menu</button>
+                {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('seating');}}>Seating</button>}
+                <button onClick={() => {setIsOpened(true); setNavOption('photos');}}>Photos/Videos</button>
+                <button onClick={() => {setIsOpened(true); setNavOption('faq');}}>FAQ</button>
+              </>
+          }
         </div>
         {showCanada && (
           <div className="canada-row">
