@@ -547,9 +547,9 @@ app.post('/api/save-media-metadata', async (req, res) => {
       return res.status(400).json({ message: "No media metadata provided." });
     }
 
-    if (media.length > 200) {
-      return res.status(400).json({ message: "Cannot save metadata for more than 200 files at once." });
-    }
+    // if (media.length > 200) {
+    //   return res.status(400).json({ message: "Cannot save metadata for more than 200 files at once." });
+    // }
 
     // Validate and prepare media items for database
     const mediaItems = [];

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 // TODO: May remove if using AWS instead of Cloudinary
 import imageCompression from 'browser-image-compression';
 import './Photos.css';
@@ -26,13 +26,129 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
   const [deletingPhotoId, setDeletingPhotoId] = useState(null);
   const [deleteSuccess, setDeleteSuccess] = useState('');
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
   // const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`;
+
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalPhotos, setTotalPhotos] = useState(0);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
+  const [pageInput, setPageInput] = useState('');
+  const PHOTOS_PER_PAGE = 20;
+
   const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
+  // Modified fetchPhotos function to replace photos instead of appending
+  const fetchPhotosWithPagination = async (page = 1) => {
+    if (!invitedLocation) {
+      console.log('Skipping photo fetch - no invitedLocation available');
+      return;
+    }
+
+    setIsLoadingPage(true);
+    try {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos?location=${encodeURIComponent(invitedLocation)}&page=${page}&limit=${PHOTOS_PER_PAGE}`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      const data = await response.json();
+      
+      // Always replace photos (no appending)
+      setPhotos(data.photos);
+      
+      // Update pagination state
+      setCurrentPage(data.pagination.currentPage);
+      setTotalPages(data.pagination.totalPages);
+      setTotalPhotos(data.pagination.totalPhotos);
+      
+    } catch (error) {
+      console.error('Error fetching photos:', error.message);
+    } finally {
+      setIsLoadingPage(false);
+    }
+  };
+
+  // Navigation functions
+  const goToNextPage = useCallback(() => {
+    if (currentPage < totalPages && !isLoadingPage) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      fetchPhotosWithPagination(nextPage);
+    }
+  }, [currentPage, totalPages, isLoadingPage, invitedLocation]);
+
+  const goToPrevPage = useCallback(() => {
+    if (currentPage > 1 && !isLoadingPage) {
+      const prevPage = currentPage - 1;
+      setCurrentPage(prevPage);
+      fetchPhotosWithPagination(prevPage);
+    }
+  }, [currentPage, isLoadingPage, invitedLocation]);
+
+  const goToPage = useCallback((page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage && !isLoadingPage) {
+      setCurrentPage(page);
+      fetchPhotosWithPagination(page);
+    }
+  }, [currentPage, totalPages, isLoadingPage, invitedLocation]);
+
+  const handlePageInputChange = (e) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === '' || /^\d+$/.test(value)) {
+      setPageInput(value);
+    }
+  };
+
+  const handlePageInputSubmit = (e) => {
+    e.preventDefault();
+    const page = parseInt(pageInput);
+    if (page >= 1 && page <= totalPages) {
+      goToPage(page);
+      setPageInput('');
+    } else if (pageInput !== '') {
+      setPageInput('');
+    }
+  };
+
+  const handlePageInputKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handlePageInputSubmit(e);
+    }
+  };
+
+  // Keyboard navigation
   useEffect(() => {
-    fetchPhotos();
-  }, []);
+    const handleKeyPress = (event) => {
+      // Only handle keyboard navigation if modal is not open
+      if (selectedPhoto) return;
+      
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goToNextPage();
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goToPrevPage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [goToNextPage, goToPrevPage, selectedPhoto]);
+
+  // Initial load
+  useEffect(() => {
+    if (invitedLocation) {
+      fetchPhotosWithPagination(1);
+    }
+  }, [invitedLocation]);
+
+  // Handle new photo uploads - refresh current page
+  const refreshCurrentPage = useCallback(() => {
+    fetchPhotosWithPagination(currentPage);
+  }, [currentPage, invitedLocation]);
 
   const getOptimizedImageUrl = (url) => {
     if (url.includes('/upload/f_jpg') || videoRegex.test(url)) {
@@ -45,7 +161,6 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
     return url.replace(/\/upload\/(?!.*\/upload\/)/, "/upload/f_auto,q_auto/");
   };
   
-
   const getFileTypeInfo = (file) => {
     const fileName = file.name.toLowerCase();
     const mimeType = file.type.toLowerCase();
@@ -166,8 +281,11 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
       setDeleteSuccess('Photo deleted successfully!');
       setTimeout(() => setDeleteSuccess(''), 3000);
 
-      // Note: The photo will be removed from all clients via socket.io
-      // No need to manually update local state here
+      // Refresh current page after deletion
+      setTimeout(() => {
+        refreshCurrentPage();
+      }, 1000);
+
     } catch (error) {
       console.error('Error deleting photo:', error);
       setUploadError('Failed to delete photo. Please try again.');
@@ -180,10 +298,10 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
-    if (files.length > 200) {
-      setUploadError('You can only upload up to 200 files at a time.');
-      return;
-    }
+    // if (files.length > 200) {
+    //   setUploadError('You can only upload up to 200 files at a time.');
+    //   return;
+    // }
     
     if (!UPLOAD_PRESET) {
       setUploadError('Upload configuration missing. Please contact Tristan Jin (tjin368@gmail.com).');
@@ -304,9 +422,11 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
         setUploadProgress('Saving to database...');
         const savedResult = await saveMediaMetadata(mediaItems);
 
-        // Removing this as we're already retrieving the photos through socket.io
-        // const newPhotoUrls = savedResult.media.map(mediaItem => mediaItem.url);
-        // setPhotos(prevPhotos => [...newPhotoUrls, ...prevPhotos]);
+        // Reset to first page after upload to see new photos
+        setTimeout(() => {
+          setCurrentPage(1);
+          fetchPhotosWithPagination(1);
+        }, 1000);
       }
 
       // Step 4: Show final results.
@@ -334,7 +454,9 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
     <div className="photo-container">
       <p className='title'>Photos</p>
       <p>Please upload your photos from the wedding day to share with us!</p>
-      <p style={{paddingBottom: '16px', fontSize: '0.9em', color: '#666'}}><span style={{color: 'red'}}>*</span>If you've had issues uploading or would like any photos taken down, please contact Tristan (tjin368@gmail.com)</p>
+      <p style={{paddingBottom: '16px', fontSize: '0.9em', color: '#666'}}>
+        <span style={{color: 'red'}}>*</span>If you've had issues uploading or would like any photos taken down, please contact Tristan (tjin368@gmail.com)
+      </p>
       
       <div className="upload-section">
         {uploadError && <p className="error">{uploadError}</p>}
@@ -354,6 +476,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
           {isUploading ? 'Uploading...' : 'Upload Photos / Videos'}
         </label>
       </div>
+      {isLoadingPage && <p className="uploading">Loading photos...</p>}
       <div className="photo-gallery">
         {photos.map((photo, index) => {
           const photoUrl = typeof photo === 'string' ? photo : photo.url;
@@ -385,6 +508,53 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
           );
         })}
       </div>
+      {totalPages > 1 && (
+        <div className="pagination-controls">
+          <button 
+            className="pagination-arrow left" 
+            onClick={goToPrevPage}
+            disabled={currentPage === 1 || isLoadingPage}
+            title="Previous page (Left arrow key)"
+          >
+            &#8249;
+          </button>
+          
+          <div className="pagination-info">
+            <span>Page {currentPage} of {totalPages}</span>
+            <span className="photo-count">({totalPhotos} total photos)</span>
+            <div className="page-input-container">
+              <form onSubmit={handlePageInputSubmit} className="page-input-form">
+                <input
+                  type="text"
+                  value={pageInput}
+                  onChange={handlePageInputChange}
+                  onKeyPress={handlePageInputKeyPress}
+                  placeholder={`1-${totalPages}`}
+                  className="page-input"
+                  disabled={isLoadingPage}
+                  maxLength="4"
+                />
+                <button 
+                  type="submit" 
+                  className="page-go-btn"
+                  disabled={isLoadingPage || !pageInput}
+                >
+                  Go
+                </button>
+              </form>
+            </div>
+          </div>
+          
+          <button 
+            className="pagination-arrow right" 
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages || isLoadingPage}
+            title="Next page (Right arrow key)"
+          >
+            &#8250;
+          </button>
+        </div>
+      )}
       {selectedPhoto && (
         <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
           {videoRegex.test(selectedPhoto) ? (

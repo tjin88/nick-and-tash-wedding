@@ -41,6 +41,12 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
   const [vendors, setVendors] = useState({});
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [photosPaginationInfo, setPhotosPaginationInfo] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalPhotos: 0,
+    hasNextPage: false
+  });
   // const socket = io('https://nick-and-tash-wedding.onrender.com');
   // const socket = io('http://localhost:3003');
   // const socketRef = useRef(null);
@@ -119,17 +125,42 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
     if (!socket) return;
 
     socket.on("photo-updated", (photoData) => {
-      setPhotos((prev) => [...prev, photoData]);
+      setPhotos((prev) => {
+        // Check if photo already exists to avoid duplicates
+        const exists = prev.some(photo => 
+          typeof photo === "string" 
+            ? photo === photoData.url 
+            : photo._id === photoData._id
+        );
+        
+        if (!exists) {
+          return [photoData, ...prev];
+        }
+        return prev;
+      });
+
+      // Update pagination info when new photos are added
+      setPhotosPaginationInfo(prev => ({
+        ...prev,
+        totalPhotos: prev.totalPhotos + 1
+      }));
     });
 
     socket.on("photo-deleted", (deletedPhotoData) => {
-      setPhotos((prev) =>
-        prev.filter((photo) =>
+      setPhotos((prev) => {
+        const filtered = prev.filter((photo) =>
           typeof photo === "string"
             ? photo !== deletedPhotoData.url
             : photo._id !== deletedPhotoData.photoId
-        )
-      );
+        );
+        return filtered;
+      });
+
+      // Update pagination info when photos are deleted
+      setPhotosPaginationInfo(prev => ({
+        ...prev,
+        totalPhotos: Math.max(0, prev.totalPhotos - 1)
+      }));
     });
 
     socket.on("registry-item-added", (newItem) => {
@@ -156,9 +187,55 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
     };
   }, [socket]);
 
+  // Modified fetchPhotos function with pagination support
+  const fetchPhotos = async (page = 1, limit = 20) => {
+    // Don't fetch if invitedLocation is not available
+    if (!invitedLocation) {
+      console.log('Skipping photo fetch - no invitedLocation available');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos?location=${encodeURIComponent(invitedLocation)}&page=${page}&limit=${limit}`);
+      // const response = await fetch('http://localhost:3003/api/photos');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      
+      if (page === 1) {
+        // First page load - replace photos
+        setPhotos(data.photos);
+      } else {
+        // Subsequent pages - append photos
+        setPhotos(prev => [...prev, ...data.photos]);
+      }
+      
+      // Update pagination info
+      setPhotosPaginationInfo({
+        currentPage: data.pagination.currentPage,
+        totalPages: data.pagination.totalPages,
+        totalPhotos: data.pagination.totalPhotos,
+        hasNextPage: data.pagination.hasNextPage
+      });
+      
+    } catch (error) {
+      // TODO: Change to setError rather than alert
+      console.error('Error fetching photos:', error.message);
+      // setError(error.message);
+    }
+    setLoading(false);
+  };
+
+  // Legacy fetchPhotos function for compatibility (loads first page only)
+  const fetchPhotosLegacy = () => {
+    fetchPhotos(1, 20);
+  };
+
   useEffect(() => {
     if (invitedLocation) {
-      fetchPhotos();
+      fetchPhotosLegacy();
     }
   }, [invitedLocation]);
 
@@ -175,7 +252,7 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
       if (!response.ok) throw new Error('Failed to fetch invites');
       const data = await response.json();
       setInvites(data);
-      fetchPhotos();
+      fetchPhotosLegacy();
     } catch (error) {
       console.error('Error fetching invites:', error.message);
     }
@@ -196,7 +273,7 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
       setNumGuestsMorningBreakfast(data.numGuestsMorningBreakfast);
       setGuestAccommodationAddress(data.guestAccommodationAddress);
       setGuestAccommodationLocalName(data.guestAccommodationLocalName);
-      fetchPhotos();
+      fetchPhotosLegacy();
       if (data.invitedLocation !== "Australia") { fetchAllInvites(); }
     } catch (error) {
       console.error('Error fetching invite by ID:', error);
@@ -216,30 +293,6 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
   //   }
   //   setLoading(false);
   // };
-
-  const fetchPhotos = async () => {
-    // Don't fetch if invitedLocation is not available
-    if (!invitedLocation) {
-      console.log('Skipping photo fetch - no invitedLocation available');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetch(`https://nick-and-tash-wedding.onrender.com/api/photos?location=${encodeURIComponent(invitedLocation)}`);
-      // const response = await fetch('http://localhost:3003/api/photos');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setPhotos(data);
-    } catch (error) {
-      // TODO: Change to setError rather than alert
-      console.error('Error fetching photos:', error.message);
-      // setError(error.message);
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
     const fetchRegistry = async () => {
@@ -341,7 +394,7 @@ function App({ isAdmin, isPlaceholderGuest, navOptionPlaceholder = 'rsvp' }) {
       { isOpened && navOption === 'menu' && <Menu selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'schedule' && <Schedule selectedLocation={selectedLocation} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'registry' && <Registry registry={registry} setRegistry={setRegistry} isAdmin={isAdmin}/> }
-      { isOpened && navOption === 'photos' && <Photos isAdmin={isAdmin} photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotos} username={guests[0].firstName + "_" + guests[0].lastName} invitedLocation={invitedLocation} /> }
+      { isOpened && navOption === 'photos' && <Photos isAdmin={isAdmin} photos={photos} setPhotos={setPhotos} fetchPhotos={fetchPhotosLegacy} username={guests[0].firstName + "_" + guests[0].lastName} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'seating' && <Seating /> }
       { isOpened && navOption === 'faq' && <FAQ locations={locations} invitedLocation={invitedLocation} /> }
       { isOpened && navOption === 'vendors' && <Vendors initialVendors={vendors} isAdmin={isAdmin}/> }
