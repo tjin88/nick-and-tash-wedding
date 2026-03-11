@@ -27,11 +27,11 @@ function GuestStart({ isPlaceholderGuest, setNavOption, locations, setIsOpened, 
             ? <button onClick={() => {setIsOpened(true); setNavOption('photos');}}>Photos/Videos</button>
             : <>
                 {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('date/venue');}}>Date & Venue</button>}
-                <button onClick={() => {setIsOpened(true); setNavOption('schedule');}}>Schedule</button>
-                <button onClick={() => {setIsOpened(true); setNavOption('menu');}}>Menu</button>
+                {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('schedule');}}>Schedule</button>}
+                {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('menu');}}>Menu</button>}
                 {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('seating');}}>Seating</button>}
                 <button onClick={() => {setIsOpened(true); setNavOption('photos');}}>Photos/Videos</button>
-                <button onClick={() => {setIsOpened(true); setNavOption('faq');}}>FAQ</button>
+                {showCanada && <button onClick={() => {setIsOpened(true); setNavOption('faq');}}>FAQ</button>}
               </>
           }
         </div>

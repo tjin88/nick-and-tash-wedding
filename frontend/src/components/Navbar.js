@@ -44,17 +44,17 @@ function Navbar({ setNavOption, setIsOpened, invitedLocation, isAdmin, hasRSVPd,
       </div>
       <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
         {invitedLocation !== "Canada" && !isPlaceholderGuest && <li onClick={() => handleClick("rsvp")}><p>RSVP</p></li>}
-        {isPlaceholderGuest !== "Canada Post-Wedding" && <li onClick={() => handleClick("date/venue")}><p>Date & Venue</p></li>}
-        {isPlaceholderGuest !== "Canada Post-Wedding" && <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>}
-        {isPlaceholderGuest !== "Canada Post-Wedding" && <li onClick={() => handleClick("menu")}><p>Menu</p></li>}
+        {(isPlaceholderGuest !== "Canada Post-Wedding" && isPlaceholderGuest !== "Australia") && <li onClick={() => handleClick("date/venue")}><p>Date & Venue</p></li>}
+        {(isPlaceholderGuest !== "Canada Post-Wedding" && isPlaceholderGuest !== "Australia") && <li onClick={() => handleClick("schedule")}><p>Schedule</p></li>}
+        {(isPlaceholderGuest !== "Canada Post-Wedding" && isPlaceholderGuest !== "Australia") && <li onClick={() => handleClick("menu")}><p>Menu</p></li>}
         {invitedLocation !== "Australia" && isPlaceholderGuest !== "Canada Post-Wedding" && <li onClick={() => handleClick("seating")}><p>Seating</p></li>}
         {invitedLocation !== "Australia" && !isPlaceholderGuest && <li onClick={() => handleClick("seeAllRSVPs")}><p>See Who’s Coming</p></li>}
         {/* Decided to remove registry from Canada and Australia */}
         {/* {invitedLocation !== "Canada" && <li onClick={() => handleClick("registry")}><p>Registry</p></li>} */}
         {/* Hidden for now */}
         <li onClick={() => handleClick("photos")}><p>Photos</p></li>
-        {isPlaceholderGuest !== "Canada Post-Wedding" && <li onClick={() => handleClick("faq")}><p>FAQ</p></li>}
-        {invitedLocation !== "Canada" && <li onClick={() => handleClick("vendors")}><p>Vendors</p></li>}
+        {(isPlaceholderGuest !== "Canada Post-Wedding" && isPlaceholderGuest !== "Australia") && <li onClick={() => handleClick("faq")}><p>FAQ</p></li>}
+        {invitedLocation !== "Canada" && !isPlaceholderGuest && <li onClick={() => handleClick("vendors")}><p>Vendors</p></li>}
       </ul>
     </nav>
   );

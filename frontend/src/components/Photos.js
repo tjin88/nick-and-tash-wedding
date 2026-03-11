@@ -453,9 +453,12 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
   return (
     <div className="photo-container">
       <p className='title'>Photos</p>
-      <p>Please upload your photos from the wedding day to share with us!</p>
+      {/* <p>Please upload your photos from the wedding day to share with us!</p> */}
+      {/* TODO: Update this ? */}
       <p style={{paddingBottom: '16px', fontSize: '0.9em', color: '#666'}}>
-        <span style={{color: 'red'}}>*</span>If you've had issues uploading or would like any photos taken down, please contact Tristan (tjin368@gmail.com)
+        {/* <span style={{color: 'red'}}>*</span>If you've had issues uploading or would like any photos taken down, please contact Tristan (tjin368@gmail.com) */}
+        <span style={{color: 'red'}}>*</span>As we are in a remote location, the photos will take a while to load
+        {!isUploading ? <><br/><br/><span style={{color: 'red'}}>*</span><span style={{color: 'red'}}>*</span>If photos are not visible, please refresh your page</> : null}
       </p>
       
       <div className="upload-section">
@@ -473,7 +476,7 @@ function Photos({ isAdmin, photos, setPhotos, fetchPhotos, username, invitedLoca
           disabled={isUploading}
         />
         <label htmlFor="file-upload" className={`upload-option ${isUploading ? 'disabled' : ''}`}>
-          {isUploading ? 'Uploading...' : 'Upload Photos / Videos'}
+          {isUploading ? 'Uploading - Please do not refresh!' : 'Upload Photos / Videos'}
         </label>
       </div>
       {isLoadingPage && <p className="uploading">Loading photos...</p>}

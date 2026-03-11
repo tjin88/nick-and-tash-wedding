@@ -5,9 +5,9 @@ import App from './App';
 // import PhotoSlideshow from './components/PhotoSlideshow';
 import PhotoSlideshow from './components/PhotoSlideshow_v0';
 // import PhotoSlideshow from './components/PhotoSlideshow_test';
+import PhotoSlideshowAustralia from './components/PhotoSlideshow_v0_australia';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { SocketProvider } from "./utils/SocketProvider";
-import reportWebVitals from './reportWebVitals';
 
 function ValidateInvite({ isWeddingSlideshow = false }) {
   const { inviteId } = useParams();
@@ -82,6 +82,11 @@ root.render(
             <PhotoSlideshow />
           </SocketProvider>
         } />
+        <Route path="/australian-wedding-slideshow" element={
+          <SocketProvider>
+            <PhotoSlideshowAustralia />
+          </SocketProvider>
+        } />
         <Route path="/invite/:inviteId" element={<ValidateInvite />} />
         <Route path="/invalid-invite" element={<InvalidInvite />} />
         <Route path="*" element={<Navigate to="/invalid-invite" replace />} />
@@ -89,5 +94,3 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
-
-reportWebVitals();
